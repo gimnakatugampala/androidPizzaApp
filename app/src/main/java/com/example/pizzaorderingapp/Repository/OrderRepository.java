@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.pizzaorderingapp.Models.Order;
-import com.example.pizzaorderingapp.Database.DatabaseHelper;
+import com.example.pizzaorderingapp.Helper.DatabaseHelper;
 
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class OrderRepository {
     private DatabaseHelper dbHelper;
 
     public OrderRepository(Context context) {
-        dbHelper = new com.example.pizzaorderingapp.Database.DatabaseHelper(context);
+        dbHelper = new DatabaseHelper(context);
     }
 
     public void addOrder(Order order) {
@@ -43,7 +43,7 @@ public class OrderRepository {
                 DatabaseHelper.COLUMN_DATE
         };
 
-        String selection = com.example.pizzaorderingapp.Database.DatabaseHelper.COLUMN_USER_EMAIL + " = ?";
+        String selection = DatabaseHelper.COLUMN_USER_EMAIL + " = ?";
         String[] selectionArgs = {email};
 
         Cursor cursor = db.query(
