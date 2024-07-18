@@ -35,12 +35,21 @@ public class AllStores extends AppCompatActivity implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationClient;
 
     private LatLng[] storeLocations = {
-            new LatLng(-34.0, 151.0),
-            new LatLng(-33.9, 151.1),
-            new LatLng(-33.8, 151.2),
-            new LatLng(-33.7, 151.3),
-            new LatLng(-33.6, 151.4),
-            new LatLng(-33.5, 151.5)
+            new LatLng(37.3382, -121.8863), // San Jose
+            new LatLng(37.3541, -121.9552), // Santa Clara
+            new LatLng(37.3220, -121.8832), // South San Jose
+            new LatLng(37.3688, -122.0363), // Sunnyvale
+            new LatLng(37.7749, -122.4194), // San Francisco
+            new LatLng(37.4419, -122.1430)  // Palo Alto
+    };
+
+    private String[] storeNames = {
+            "Store 1",
+            "Store 2",
+            "Store 3",
+            "Store 4",
+            "Store 5",
+            "Store 6"
     };
 
     @Override
@@ -94,7 +103,7 @@ public class AllStores extends AppCompatActivity implements OnMapReadyCallback {
                                             .position(currentLocation)
                                             .title("You are here")
                                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-                                    myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 12));
+                                    myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 10));
                                 }
                                 findClosestStore(currentLocation);
                             }
@@ -140,10 +149,10 @@ public class AllStores extends AppCompatActivity implements OnMapReadyCallback {
 
         Bitmap customMarker = BitmapFactory.decodeResource(getResources(), R.drawable.store);
 
-        for (LatLng storeLocation : storeLocations) {
+        for (int i = 0; i < storeLocations.length; i++) {
             myMap.addMarker(new MarkerOptions()
-                    .position(storeLocation)
-                    .title("Store")
+                    .position(storeLocations[i])
+                    .title(storeNames[i])
                     .icon(BitmapDescriptorFactory.fromBitmap(customMarker)));
         }
 
