@@ -22,7 +22,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 public class AllStores extends AppCompatActivity implements OnMapReadyCallback {
@@ -87,6 +89,13 @@ public class AllStores extends AppCompatActivity implements OnMapReadyCallback {
                         public void onSuccess(Location location) {
                             if (location != null) {
                                 LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                                if (myMap != null) {
+                                    myMap.addMarker(new MarkerOptions()
+                                            .position(currentLocation)
+                                            .title("You are here")
+                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                                    myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 12));
+                                }
                                 findClosestStore(currentLocation);
                             }
                         }
@@ -117,7 +126,11 @@ public class AllStores extends AppCompatActivity implements OnMapReadyCallback {
                     .position(closestStore)
                     .title("Closest Store")
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-            myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(closestStore, 12)); // Adjust the zoom level
+
+            myMap.addPolyline(new PolylineOptions()
+                    .add(currentLocation, closestStore)
+                    .width(10)
+                    .color(ContextCompat.getColor(this, R.color.teal_700))); // Adjust the color as needed
         }
     }
 
@@ -132,6 +145,23 @@ public class AllStores extends AppCompatActivity implements OnMapReadyCallback {
                     .position(storeLocation)
                     .title("Store")
                     .icon(BitmapDescriptorFactory.fromBitmap(customMarker)));
+        }
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (LatLng storeLocation : storeLocations) {
+            builder.include(storeLocation);
+        }
+        LatLngBounds bounds = builder.build();
+        int padding = 50; // Padding around the edges of the map in pixels
+        myMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            myMap.setMyLocationEnabled(true);
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
 }
