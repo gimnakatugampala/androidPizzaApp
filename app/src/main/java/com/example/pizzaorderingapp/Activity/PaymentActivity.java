@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pizzaorderingapp.R;
+import com.example.pizzaorderingapp.Utils.MailSender;
 
 public class PaymentActivity extends AppCompatActivity {
 
@@ -43,14 +44,23 @@ public class PaymentActivity extends AppCompatActivity {
             } else {
                 // Here, you can add the logic to process the payment
                 // For now, we'll just display a success message
-
                 Toast.makeText(PaymentActivity.this, "Payment Successful", Toast.LENGTH_SHORT).show();
 
-                // Navigate back to the main screen or order confirmation screen
+                // Send confirmation email
+                sendConfirmationEmail("gimnakatugampala1@gmail.com", totalAmount);  // replace with actual user email
+
+                // Navigate to order confirmation screen
                 Intent confirmationIntent = new Intent(PaymentActivity.this, OrderConfirmationActivity.class);
                 startActivity(confirmationIntent);
                 finish();
             }
         });
+    }
+
+    private void sendConfirmationEmail(String email, String totalAmount) {
+        String subject = "Payment Confirmation";
+        String message = "Your payment of $" + totalAmount + " was successful. Thank you for your order!";
+        MailSender mailSender = new MailSender(email, subject, message);
+        mailSender.execute();
     }
 }

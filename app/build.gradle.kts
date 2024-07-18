@@ -39,5 +39,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.8")
     implementation("com.google.android.gms:play-services-maps:19.0.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.sun.mail:android-mail:1.6.5")
+    implementation("com.sun.mail:android-activation:1.6.5")
 
 }
