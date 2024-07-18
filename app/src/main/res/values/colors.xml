@@ -5,4 +5,8 @@
 
     <color name="lavender">#8692f7</color>
     <color name="teal_700">#8692f7</color>
+
+    <color name="colorPrimary">#F8CB2E</color>
+    <color name="colorPrimaryDark">#F8CB2E</color>
+    <color name="colorAccent">#F8CB2E</color>
 </resources>

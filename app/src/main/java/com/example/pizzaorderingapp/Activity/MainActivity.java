@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.Toolbar;
 
 import com.example.pizzaorderingapp.Adapter.CategoryAdapter;
 import com.example.pizzaorderingapp.Adapter.RecommendedAdapter;
@@ -29,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+
 
 
         recyclerViewCategory();
