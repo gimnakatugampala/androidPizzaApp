@@ -41,6 +41,7 @@
         android:fontFamily="@font/alger"
         android:text="@string/logo_desc"
         android:textColor="#b70007"
+
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/textView3"
         app:layout_constraintStart_toStartOf="@+id/textView3"
@@ -72,7 +73,7 @@
         android:layout_marginRight="25dp"
         android:drawablePadding="15sp"
         android:ems="10"
-        android:hint="E-mail or Phone Number"
+        android:hint="Enter E-mail"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="@+id/textView"
         app:layout_constraintStart_toStartOf="@+id/textView"
