@@ -44,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout storeBtn = findViewById(R.id.storeBtn);
 
+        LinearLayout myOrdersBtn = findViewById(R.id.myOrdersBtn);
+
+
 
 
 
@@ -67,6 +70,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, AllStores.class));
             }
         });
+
+        myOrdersBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, OrderHistoryActivity.class));
+            }
+        });
+
+
+
     }
 
     private void recyclerViewPopular() {

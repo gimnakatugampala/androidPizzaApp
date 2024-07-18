@@ -40,6 +40,8 @@
         <activity android:name=".Activity.PaymentActivity" android:exported="false"  />
         <activity android:name=".Activity.OrderConfirmationActivity" android:exported="false"  />
 
+        <activity android:name=".Activity.OrderHistoryActivity" android:exported="false"  />
+
 
 
         <activity
