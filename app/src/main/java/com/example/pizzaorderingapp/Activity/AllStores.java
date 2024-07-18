@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import com.example.pizzaorderingapp.R;
@@ -64,29 +65,51 @@ public class AllStores extends AppCompatActivity implements OnMapReadyCallback {
             mapFragment.getMapAsync(this);
         }
 
-        checkLocationPermission();
-    }
-
-    private void checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_PERMISSION_REQUEST_CODE);
-        } else {
-            getCurrentLocation();
-        }
+        // Move permission check to onMapReady or handle it after map is initialized
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getCurrentLocation();
-            } else {
-                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
-            }
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        myMap = googleMap;
+
+        // Check and request location permission if not granted
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            myMap.setMyLocationEnabled(true);
+            getCurrentLocation();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        }
+
+        Bitmap customMarker = BitmapFactory.decodeResource(getResources(), R.drawable.store);
+
+        for (int i = 0; i < storeLocations.length; i++) {
+            myMap.addMarker(new MarkerOptions()
+                    .position(storeLocations[i])
+                    .title(storeNames[i])
+                    .icon(BitmapDescriptorFactory.fromBitmap(customMarker)));
+        }
+
+        // Use ViewTreeObserver to wait for layout completion
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null && mapFragment.getView() != null) {
+            mapFragment.getView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    for (LatLng storeLocation : storeLocations) {
+                        builder.include(storeLocation);
+                    }
+                    LatLngBounds bounds = builder.build();
+                    int padding = 50; // Padding around the edges of the map in pixels
+                    myMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
+
+                    // Remove the listener after layout is done
+                    mapFragment.getView().getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
         }
     }
 
@@ -96,15 +119,13 @@ public class AllStores extends AppCompatActivity implements OnMapReadyCallback {
                     .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                         @Override
                         public void onSuccess(Location location) {
-                            if (location != null) {
+                            if (location != null && myMap != null) {
                                 LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                                if (myMap != null) {
-                                    myMap.addMarker(new MarkerOptions()
-                                            .position(currentLocation)
-                                            .title("You are here")
-                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-                                    myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 10));
-                                }
+                                myMap.addMarker(new MarkerOptions()
+                                        .position(currentLocation)
+                                        .title("You are here")
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                                myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 10));
                                 findClosestStore(currentLocation);
                             }
                         }
@@ -144,33 +165,14 @@ public class AllStores extends AppCompatActivity implements OnMapReadyCallback {
     }
 
     @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        myMap = googleMap;
-
-        Bitmap customMarker = BitmapFactory.decodeResource(getResources(), R.drawable.store);
-
-        for (int i = 0; i < storeLocations.length; i++) {
-            myMap.addMarker(new MarkerOptions()
-                    .position(storeLocations[i])
-                    .title(storeNames[i])
-                    .icon(BitmapDescriptorFactory.fromBitmap(customMarker)));
-        }
-
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (LatLng storeLocation : storeLocations) {
-            builder.include(storeLocation);
-        }
-        LatLngBounds bounds = builder.build();
-        int padding = 50; // Padding around the edges of the map in pixels
-        myMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            myMap.setMyLocationEnabled(true);
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_PERMISSION_REQUEST_CODE);
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getCurrentLocation();
+            } else {
+                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

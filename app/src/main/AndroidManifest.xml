@@ -34,9 +34,10 @@
             android:name=".Activity.SignUp_Screen"
             android:exported="false" />
 
-        <activity
-            android:name=".Activity.AllStores"
-            android:exported="false" />
+
+        <activity android:name=".Activity.PaymentActivity" android:exported="false"  />
+        <activity android:name=".Activity.OrderConfirmationActivity" android:exported="false"  />
+
 
 
         <activity

@@ -1,5 +1,6 @@
 package com.example.pizzaorderingapp.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ScrollView;
@@ -84,6 +85,14 @@ public class CartActivity extends AppCompatActivity {
         emptyTxt=findViewById(R.id.emptyTxt);
 
 
+    }
+
+    public void onCheckout(View view){
+
+        // Navigate to the PaymentActivity and pass the total amount
+        Intent paymentIntent = new Intent(this, PaymentActivity.class);
+        paymentIntent.putExtra("TOTAL_AMOUNT", totalTxt.getText());
+        startActivity(paymentIntent);
     }
 
 }

@@ -24,7 +24,7 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintBottom_toTopOf="@+id/checkoutBtn"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -188,7 +188,7 @@
     </ScrollView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+        android:id="@+id/checkoutBtn"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_margin="16dp"
@@ -197,6 +197,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:onClick="onCheckout"
         app:layout_constraintVertical_bias="0.7">
 
         <TextView
