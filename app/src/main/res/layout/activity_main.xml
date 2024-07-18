@@ -56,11 +56,12 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/userProfileDetails"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_gravity="center_vertical"
                     android:scaleType="centerCrop"
+                    android:onClick="onGoToUserDashboard"
                     android:src="@drawable/profile" />
 
             </LinearLayout>

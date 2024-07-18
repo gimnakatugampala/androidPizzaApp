@@ -42,6 +42,8 @@
 
         <activity android:name=".Activity.OrderHistoryActivity" android:exported="false"  />
 
+        <activity android:name=".Activity.UserDashboardActivity" android:exported="false"  />
+
 
 
         <activity

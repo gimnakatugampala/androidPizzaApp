@@ -113,4 +113,11 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewCategoryList.setAdapter(adapter);
 
     }
+
+
+    public void onGoToUserDashboard(View view){
+        Intent dashboardIntent = new Intent(MainActivity.this, UserDashboardActivity.class);
+        startActivity(dashboardIntent);
+    }
+
 }
