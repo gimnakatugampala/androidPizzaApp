@@ -55,4 +55,9 @@ public class UserDashboardActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    public void onAddMenuItem(View view){
+        Intent intent = new Intent(UserDashboardActivity.this, AddMenuItemActivity.class);
+        startActivity(intent);
+    }
 }
