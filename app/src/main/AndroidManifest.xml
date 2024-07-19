@@ -44,10 +44,12 @@
 
         <activity android:name=".Activity.UserDashboardActivity" android:exported="false"  />
 
+        <activity android:name=".Activity.IntroActivity" android:exported="false"  />
+
 
 
         <activity
-            android:name=".Activity.IntroActivity"
+            android:name=".Activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

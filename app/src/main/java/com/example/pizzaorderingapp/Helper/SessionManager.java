@@ -9,6 +9,7 @@ public class SessionManager {
     private static final String KEY_IS_LOGGEDIN = "isLoggedIn";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_ROLE = "role";
+    private static final String KEY_FIRST_TIME_LAUNCH = "isFirstTimeLaunch";
 
     SharedPreferences pref;
     SharedPreferences.Editor editor;
@@ -44,5 +45,14 @@ public class SessionManager {
 
     public String getRole() {
         return pref.getString(KEY_ROLE, null);
+    }
+
+    public boolean isFirstTimeLaunch() {
+        return pref.getBoolean(KEY_FIRST_TIME_LAUNCH, true);
+    }
+
+    public void setFirstTimeLaunch(boolean isFirstTime) {
+        editor.putBoolean(KEY_FIRST_TIME_LAUNCH, isFirstTime);
+        editor.commit();
     }
 }
