@@ -1,11 +1,14 @@
 package com.example.pizzaorderingapp.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pizzaorderingapp.R;
+import com.example.pizzaorderingapp.Util.SessionManager;
 
 public class UserDashboardActivity extends AppCompatActivity {
 
@@ -20,29 +23,36 @@ public class UserDashboardActivity extends AppCompatActivity {
     private TextView navItem4;
     private TextView navItem5;
 
+    private SessionManager sessionManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_dashboard);
 
-//        profileImage = findViewById(R.id.profile_image);
-//        userName = findViewById(R.id.user_name);
-//        userEmail = findViewById(R.id.user_email);
-//        navItem1 = findViewById(R.id.nav_item_1);
-//        navSubItem1 = findViewById(R.id.nav_sub_item_1);
-//        navSubItem2 = findViewById(R.id.nav_sub_item_2);
-//        navItem2 = findViewById(R.id.nav_item_2);
-//        navItem3 = findViewById(R.id.nav_item_3);
-//        navItem4 = findViewById(R.id.nav_item_4);
-//        navItem5 = findViewById(R.id.nav_item_5);
+        sessionManager = new SessionManager(getApplicationContext());
 
-        // Set the data dynamically or leave as static content as per your needs
-        // For example, you can load profile image from a URL using libraries like Picasso or Glide
-        // userName.setText("New User Name");
-        // userEmail.setText("newemail@example.com");
+        // Initialize UI elements
+        profileImage = findViewById(R.id.profile_image);
+        userName = findViewById(R.id.user_name);
+        userEmail = findViewById(R.id.user_email);
 
-        // Set onClickListeners for navigation items and sub-items if needed
-        // navItem1.setOnClickListener(view -> { /* Handle click */ });
-        // navSubItem1.setOnClickListener(view -> { /* Handle click */ });
+        // Set user details
+        userName.setText(sessionManager.getEmail());
+        userEmail.setText(sessionManager.getEmail());
+
+        // Initialize other UI elements if needed
+    }
+
+    public void onhandleLogout(View view) {
+        // Clear session data
+        sessionManager.logoutUser();
+
+        // Redirect to login screen with message
+        Intent intent = new Intent(UserDashboardActivity.this, LoginScreen.class);
+        intent.putExtra("logout_message", "Successfully logged out");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

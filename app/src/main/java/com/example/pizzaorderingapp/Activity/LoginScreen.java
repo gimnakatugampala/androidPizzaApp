@@ -30,6 +30,12 @@ public class LoginScreen extends AppCompatActivity {
         passwordEditText = findViewById(R.id.editTextTextPassword);
         userRepository = new UserRepository(this);
         sessionManager = new SessionManager(this);
+
+        // Display logout message if available
+        if (getIntent().hasExtra("logout_message")) {
+            String message = getIntent().getStringExtra("logout_message");
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void onLoginSubmit(View view){

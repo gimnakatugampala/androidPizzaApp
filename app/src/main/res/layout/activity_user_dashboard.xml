@@ -246,6 +246,7 @@
                     android:focusable="true"
                     android:gravity="start|center_vertical"
                     android:padding="16dp"
+                    android:onClick="onhandleLogout"
                     android:text="Logout"
                     android:textSize="17sp" />
             </LinearLayout>
