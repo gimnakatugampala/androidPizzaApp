@@ -46,6 +46,8 @@
 
         <activity android:name=".Activity.IntroActivity" android:exported="false"  />
 
+        <activity android:name=".Activity.AddMenuItemActivity" android:exported="false"  />
+
 
 
         <activity

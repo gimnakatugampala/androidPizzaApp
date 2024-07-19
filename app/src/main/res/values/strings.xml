@@ -11,4 +11,11 @@
 
     <string name="my_map_api_key">AIzaSyCA_MfDKdwn7U5O12bwpw3tVJfSgPkeDWA</string>
 
+    <string-array name="pizza_categories">
+        <item>Veg</item>
+        <item>Cheese</item>
+        <item>Onion</item>
+        <!-- Add more categories as needed -->
+    </string-array>
+
 </resources>
