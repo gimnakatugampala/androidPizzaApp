@@ -13,103 +13,115 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.pizzaorderingapp.Repository.MenuItemRepository;
+import com.example.pizzaorderingapp.Model.MenuItem;
 import com.example.pizzaorderingapp.R;
 
 public class AddMenuItemActivity extends AppCompatActivity {
 
-    private static final int PICK_IMAGE_REQUEST = 1;
+    private ImageView imageViewMenuItem;
+    private Button buttonChooseImage, buttonSubmit;
+    private EditText editTextName, editTextDescription, editTextPrice;
+    private Spinner spinnerCategory;
+    private CheckBox checkBoxTopping1, checkBoxTopping2, checkBoxTopping3;
+    private Uri imageUri;
 
-    private ImageView menuItemImage;
-    private Button chooseImageButton;
-    private EditText menuItemName;
-    private EditText menuItemDescription;
-    private EditText menuItemPrice;
-    private Spinner categorySpinner;
-    private CheckBox topping1;
-    private CheckBox topping2;
-    private CheckBox topping3;
-    private Button submitButton;
+    private MenuItemRepository menuItemRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_menu_item);
 
-        menuItemImage = findViewById(R.id.menu_item_image);
-        chooseImageButton = findViewById(R.id.button_choose_image);
-        menuItemName = findViewById(R.id.edit_text_menu_item_name);
-        menuItemDescription = findViewById(R.id.edit_text_menu_item_description);
-        menuItemPrice = findViewById(R.id.edit_text_menu_item_price);
-        categorySpinner = findViewById(R.id.spinner_category);
-        topping1 = findViewById(R.id.check_box_topping1);
-        topping2 = findViewById(R.id.check_box_topping2);
-        topping3 = findViewById(R.id.check_box_topping3);
-        submitButton = findViewById(R.id.button_submit);
+        // Initialize views
+        imageViewMenuItem = findViewById(R.id.menu_item_image);
+        buttonChooseImage = findViewById(R.id.button_choose_image);
+        editTextName = findViewById(R.id.edit_text_menu_item_name);
+        editTextDescription = findViewById(R.id.edit_text_menu_item_description);
+        editTextPrice = findViewById(R.id.edit_text_menu_item_price);
+        spinnerCategory = findViewById(R.id.spinner_category);
+        checkBoxTopping1 = findViewById(R.id.check_box_topping1);
+        checkBoxTopping2 = findViewById(R.id.check_box_topping2);
+        checkBoxTopping3 = findViewById(R.id.check_box_topping3);
+        buttonSubmit = findViewById(R.id.button_submit);
 
-        // Initialize category spinner
+        menuItemRepository = new MenuItemRepository(this);
+
+        // Set up the category spinner
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.pizza_categories, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        categorySpinner.setAdapter(adapter);
+        spinnerCategory.setAdapter(adapter);
 
-        // Set click listener for choosing image
-        chooseImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openImagePicker();
-            }
+        buttonChooseImage.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, 1);
         });
 
-        // Set click listener for submitting the form
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addMenuItem();
-            }
-        });
-    }
-
-    private void openImagePicker() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+        buttonSubmit.setOnClickListener(v -> addMenuItem());
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri imageUri = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                menuItemImage.setImageBitmap(bitmap);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+            imageUri = data.getData();
+            imageViewMenuItem.setImageURI(imageUri);
         }
     }
 
     private void addMenuItem() {
-        // Retrieve input data
-        String name = menuItemName.getText().toString();
-        String description = menuItemDescription.getText().toString();
-        String price = menuItemPrice.getText().toString();
-        String category = categorySpinner.getSelectedItem().toString();
-        boolean hasTopping1 = topping1.isChecked();
-        boolean hasTopping2 = topping2.isChecked();
-        boolean hasTopping3 = topping3.isChecked();
+        String name = editTextName.getText().toString().trim();
+        String description = editTextDescription.getText().toString().trim();
+        String priceText = editTextPrice.getText().toString().trim();
+        String category = spinnerCategory.getSelectedItem().toString();
+        boolean topping1 = checkBoxTopping1.isChecked();
+        boolean topping2 = checkBoxTopping2.isChecked();
+        boolean topping3 = checkBoxTopping3.isChecked();
 
-        // Handle form submission (e.g., save to database)
-        // For demonstration purposes, we’ll just log the data
-        // You should replace this with actual database insertion code
-        System.out.println("Name: " + name);
-        System.out.println("Description: " + description);
-        System.out.println("Price: " + price);
-        System.out.println("Category: " + category);
-        System.out.println("Topping 1: " + hasTopping1);
-        System.out.println("Topping 2: " + hasTopping2);
-        System.out.println("Topping 3: " + hasTopping3);
+        if (name.isEmpty() || description.isEmpty() || priceText.isEmpty() || imageUri == null) {
+            Toast.makeText(this, "Please fill all fields and choose an image", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        // Implement actual saving logic here
+        double price;
+        try {
+            price = Double.parseDouble(priceText);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Please enter a valid price", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String toppings = "";
+        if (topping1) toppings += "Topping 1,";
+        if (topping2) toppings += "Topping 2,";
+        if (topping3) toppings += "Topping 3,";
+        if (!toppings.isEmpty()) toppings = toppings.substring(0, toppings.length() - 1); // Remove trailing comma
+
+        // Create a MenuItem object
+        MenuItem menuItem = new MenuItem(
+                1, // Assuming ID is auto-generated
+                name,
+                description,
+                price,
+                category,
+                toppings,
+                imageUri.toString()
+        );
+
+        // Use the repository to add the menu item
+        boolean isInserted = menuItemRepository.addMenuItem(menuItem);
+
+        if (isInserted) {
+            Toast.makeText(this, "Menu Item Added Successfully", Toast.LENGTH_SHORT).show();
+            finish(); // Close activity
+        } else {
+            Toast.makeText(this, "Error Adding Menu Item", Toast.LENGTH_SHORT).show();
+        }
     }
 }
