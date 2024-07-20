@@ -4,139 +4,176 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
-import com.example.pizzaorderingapp.Model.MenuItem;
 import com.example.pizzaorderingapp.Helper.DatabaseHelper;
+import com.example.pizzaorderingapp.Model.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuItemRepository {
 
-    private SQLiteOpenHelper dbHelper;
+    private static final String TAG = "MenuItemRepository";
+
+    private static final String TABLE_MENU_ITEMS = "menu_items";
+    private static final String TABLE_MENU_ITEM_CATEGORY = "menu_item_category";
+
+    private static final String COLUMN_ID = "_id";
+    private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_DESCRIPTION = "description";
+    private static final String COLUMN_PRICE = "price";
+    private static final String COLUMN_CATEGORY = "category";
+    private static final String COLUMN_TOPPINGS = "toppings";
+    private static final String COLUMN_IMAGE_URI = "image_uri";
+    private static final String COLUMN_IS_DELETED = "is_deleted";
+    private static final String COLUMN_CATEGORY_NAME = "categoryName";
+
+    private DatabaseHelper databaseHelper;
 
     public MenuItemRepository(Context context) {
-        dbHelper = new DatabaseHelper(context);
+        this.databaseHelper = new DatabaseHelper(context);
     }
 
+    // Insert a new menu item
     public boolean addMenuItem(MenuItem menuItem) {
-        SQLiteDatabase db = null;
-        boolean result = false;
-        try {
-            db = dbHelper.getWritableDatabase();
+        try (SQLiteDatabase db = databaseHelper.getWritableDatabase()) {
             ContentValues values = new ContentValues();
-            values.put(DatabaseHelper.COLUMN_NAME, menuItem.getName());
-            values.put(DatabaseHelper.COLUMN_DESCRIPTION, menuItem.getDescription());
-            values.put(DatabaseHelper.COLUMN_PRICE, menuItem.getPrice());
-            values.put(DatabaseHelper.COLUMN_CATEGORY, menuItem.getCategory());
-            values.put(DatabaseHelper.COLUMN_TOPPINGS, menuItem.getToppings());
-            values.put(DatabaseHelper.COLUMN_IMAGE_URI, menuItem.getImageUri());
-
-            long insertResult = db.insert(DatabaseHelper.TABLE_MENU_ITEMS, null, values);
-            result = insertResult != -1;
-        } finally {
-            if (db != null) {
-                db.close();
-            }
+            values.put(COLUMN_NAME, menuItem.getName());
+            values.put(COLUMN_DESCRIPTION, menuItem.getDescription());
+            values.put(COLUMN_PRICE, menuItem.getPrice());
+            values.put(COLUMN_CATEGORY, menuItem.getCategory());
+            values.put(COLUMN_TOPPINGS, menuItem.getToppings());
+            values.put(COLUMN_IMAGE_URI, menuItem.getImageUri());
+            long result = db.insert(TABLE_MENU_ITEMS, null, values);
+            return result != -1;
         }
-        return result;
     }
 
+    // Update an existing menu item
+    public boolean updateMenuItem(MenuItem menuItem) {
+        try (SQLiteDatabase db = databaseHelper.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_NAME, menuItem.getName());
+            values.put(COLUMN_DESCRIPTION, menuItem.getDescription());
+            values.put(COLUMN_PRICE, menuItem.getPrice());
+            values.put(COLUMN_CATEGORY, menuItem.getCategory());
+            values.put(COLUMN_TOPPINGS, menuItem.getToppings());
+            values.put(COLUMN_IMAGE_URI, menuItem.getImageUri());
+            String whereClause = COLUMN_ID + " = ?";
+            String[] whereArgs = { String.valueOf(menuItem.getId()) };
+            int result = db.update(TABLE_MENU_ITEMS, values, whereClause, whereArgs);
+            return result > 0;
+        }
+    }
+
+    // Soft delete a menu item (mark as deleted)
     public boolean softDeleteMenuItem(int id) {
-        SQLiteDatabase db = null;
-        boolean result = false;
-        try {
-            db = dbHelper.getWritableDatabase();
+        try (SQLiteDatabase db = databaseHelper.getWritableDatabase()) {
             ContentValues values = new ContentValues();
-            values.put("is_deleted", 1); // Mark as deleted
-
-            int rowsAffected = db.update(DatabaseHelper.TABLE_MENU_ITEMS, values,
-                    DatabaseHelper.COLUMN_ID + "=?", new String[]{String.valueOf(id)});
-            result = rowsAffected > 0;
-        } finally {
-            if (db != null) {
-                db.close();
-            }
+            values.put(COLUMN_IS_DELETED, 1);
+            String whereClause = COLUMN_ID + " = ?";
+            String[] whereArgs = { String.valueOf(id) };
+            int result = db.update(TABLE_MENU_ITEMS, values, whereClause, whereArgs);
+            return result > 0;
         }
-        return result;
     }
 
+    // Retrieve all non-deleted menu items
     public List<MenuItem> getAllMenuItems() {
         List<MenuItem> menuItems = new ArrayList<>();
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
-        try {
-            db = dbHelper.getReadableDatabase();
-            String[] columns = {
-                    DatabaseHelper.COLUMN_ID,
-                    DatabaseHelper.COLUMN_NAME,
-                    DatabaseHelper.COLUMN_DESCRIPTION,
-                    DatabaseHelper.COLUMN_PRICE,
-                    DatabaseHelper.COLUMN_CATEGORY,
-                    DatabaseHelper.COLUMN_TOPPINGS,
-                    DatabaseHelper.COLUMN_IMAGE_URI
-            };
+        String query = "SELECT * FROM " + TABLE_MENU_ITEMS + " WHERE " + COLUMN_IS_DELETED + " = 0";
+        try (SQLiteDatabase db = databaseHelper.getReadableDatabase();
+             Cursor cursor = db.rawQuery(query, null)) {
 
-            cursor = db.query(DatabaseHelper.TABLE_MENU_ITEMS, columns,
-                    "is_deleted = ?", new String[]{"0"}, null, null, null); // Exclude deleted items
+            int idIndex = cursor.getColumnIndex(COLUMN_ID);
+            int nameIndex = cursor.getColumnIndex(COLUMN_NAME);
+            int descriptionIndex = cursor.getColumnIndex(COLUMN_DESCRIPTION);
+            int priceIndex = cursor.getColumnIndex(COLUMN_PRICE);
+            int categoryIndex = cursor.getColumnIndex(COLUMN_CATEGORY);
+            int toppingsIndex = cursor.getColumnIndex(COLUMN_TOPPINGS);
+            int imageUriIndex = cursor.getColumnIndex(COLUMN_IMAGE_URI);
+
+            if (idIndex == -1 || nameIndex == -1 || descriptionIndex == -1 ||
+                    priceIndex == -1 || categoryIndex == -1 || toppingsIndex == -1 ||
+                    imageUriIndex == -1) {
+                Log.w(TAG, "One or more column indices are invalid. Check column names.");
+                return menuItems;
+            }
 
             if (cursor.moveToFirst()) {
                 do {
-                    int idIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_ID);
-                    int nameIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_NAME);
-                    int descriptionIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_DESCRIPTION);
-                    int priceIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_PRICE);
-                    int categoryIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_CATEGORY);
-                    int toppingsIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_TOPPINGS);
-                    int imageUriIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_IMAGE_URI);
-
-                    MenuItem menuItem = new MenuItem(
-                            cursor.getInt(idIndex),
-                            cursor.getString(nameIndex),
-                            cursor.getString(descriptionIndex),
-                            cursor.getDouble(priceIndex),
-                            cursor.getString(categoryIndex),
-                            cursor.getString(toppingsIndex),
-                            cursor.getString(imageUriIndex)
-                    );
+                    MenuItem menuItem = new MenuItem();
+                    menuItem.setId(cursor.getInt(idIndex));
+                    menuItem.setName(cursor.getString(nameIndex));
+                    menuItem.setDescription(cursor.getString(descriptionIndex));
+                    menuItem.setPrice(cursor.getDouble(priceIndex));
+                    menuItem.setCategory(cursor.getString(categoryIndex));
+                    menuItem.setToppings(cursor.getString(toppingsIndex));
+                    menuItem.setImageUri(cursor.getString(imageUriIndex));
                     menuItems.add(menuItem);
                 } while (cursor.moveToNext());
-            }
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            if (db != null) {
-                db.close();
             }
         }
         return menuItems;
     }
 
-    public boolean updateMenuItem(MenuItem menuItem) {
-        SQLiteDatabase db = null;
-        boolean result = false;
-        try {
-            db = dbHelper.getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put(DatabaseHelper.COLUMN_NAME, menuItem.getName());
-            values.put(DatabaseHelper.COLUMN_DESCRIPTION, menuItem.getDescription());
-            values.put(DatabaseHelper.COLUMN_PRICE, menuItem.getPrice());
-            values.put(DatabaseHelper.COLUMN_CATEGORY, menuItem.getCategory());
-            values.put(DatabaseHelper.COLUMN_TOPPINGS, menuItem.getToppings());
-            values.put(DatabaseHelper.COLUMN_IMAGE_URI, menuItem.getImageUri());
+    // Retrieve menu item by ID
+    public MenuItem getMenuItemById(int id) {
+        MenuItem menuItem = null;
+        String query = "SELECT * FROM " + TABLE_MENU_ITEMS + " WHERE " + COLUMN_ID + " = ? AND " + COLUMN_IS_DELETED + " = 0";
+        try (SQLiteDatabase db = databaseHelper.getReadableDatabase();
+             Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(id)})) {
 
-            int rowsAffected = db.update(DatabaseHelper.TABLE_MENU_ITEMS, values,
-                    DatabaseHelper.COLUMN_ID + "=?", new String[]{String.valueOf(menuItem.getId())});
-            result = rowsAffected > 0;
-        } finally {
-            if (db != null) {
-                db.close();
+            int idIndex = cursor.getColumnIndex(COLUMN_ID);
+            int nameIndex = cursor.getColumnIndex(COLUMN_NAME);
+            int descriptionIndex = cursor.getColumnIndex(COLUMN_DESCRIPTION);
+            int priceIndex = cursor.getColumnIndex(COLUMN_PRICE);
+            int categoryIndex = cursor.getColumnIndex(COLUMN_CATEGORY);
+            int toppingsIndex = cursor.getColumnIndex(COLUMN_TOPPINGS);
+            int imageUriIndex = cursor.getColumnIndex(COLUMN_IMAGE_URI);
+
+            if (idIndex == -1 || nameIndex == -1 || descriptionIndex == -1 ||
+                    priceIndex == -1 || categoryIndex == -1 || toppingsIndex == -1 ||
+                    imageUriIndex == -1) {
+                Log.w(TAG, "One or more column indices are invalid. Check column names.");
+                return menuItem;
+            }
+
+            if (cursor.moveToFirst()) {
+                menuItem = new MenuItem();
+                menuItem.setId(cursor.getInt(idIndex));
+                menuItem.setName(cursor.getString(nameIndex));
+                menuItem.setDescription(cursor.getString(descriptionIndex));
+                menuItem.setPrice(cursor.getDouble(priceIndex));
+                menuItem.setCategory(cursor.getString(categoryIndex));
+                menuItem.setToppings(cursor.getString(toppingsIndex));
+                menuItem.setImageUri(cursor.getString(imageUriIndex));
             }
         }
-        return result;
+        return menuItem;
     }
 
+    // Retrieve all categories from the menu_item_category table
+    public List<String> getCategories() {
+        List<String> categories = new ArrayList<>();
+        String query = "SELECT " + COLUMN_CATEGORY_NAME + " FROM " + TABLE_MENU_ITEM_CATEGORY;
+        try (SQLiteDatabase db = databaseHelper.getReadableDatabase();
+             Cursor cursor = db.rawQuery(query, null)) {
 
+            int categoryNameIndex = cursor.getColumnIndex(COLUMN_CATEGORY_NAME);
+
+            if (categoryNameIndex == -1) {
+                Log.w(TAG, "Column index for categoryName is invalid. Check column name.");
+                return categories;
+            }
+
+            if (cursor.moveToFirst()) {
+                do {
+                    categories.add(cursor.getString(categoryNameIndex));
+                } while (cursor.moveToNext());
+            }
+        }
+        return categories;
+    }
 }

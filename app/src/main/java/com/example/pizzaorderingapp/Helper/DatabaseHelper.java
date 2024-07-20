@@ -1,18 +1,22 @@
 package com.example.pizzaorderingapp.Helper;
 
 import android.content.Context;
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "pizzaOrderingAppDB";
-    private static final int DATABASE_VERSION = 1; // Incremented the database version
+    private static final int DATABASE_VERSION = 1; // Increment this version if schema changes
 
+    // Table names
     public static final String TABLE_ORDERS = "orders";
     public static final String TABLE_USERS = "users";
     public static final String TABLE_MENU_ITEMS = "menu_items";
+    public static final String TABLE_MENU_ITEM_CATEGORY = "menu_item_category"; // New table
 
+    // Column names
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_USER_EMAIL_ORDERS = "user_email";
     public static final String COLUMN_ORDER_DETAILS = "order_details";
@@ -31,6 +35,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_CATEGORY = "category";
     public static final String COLUMN_TOPPINGS = "toppings";
     public static final String COLUMN_IMAGE_URI = "image_uri";
+
+    public static final String COLUMN_CATEGORY_NAME = "categoryName"; // New column
+    public static final String COLUMN_IMAGE_URL = "imageUrl"; // New column
 
     private static final String TABLE_ORDERS_CREATE =
             "CREATE TABLE " + TABLE_ORDERS + " (" +
@@ -63,6 +70,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "is_deleted INTEGER DEFAULT 0" + // New column for soft delete
                     ");";
 
+    private static final String TABLE_MENU_ITEM_CATEGORY_CREATE =
+            "CREATE TABLE " + TABLE_MENU_ITEM_CATEGORY + " (" +
+                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_CATEGORY_NAME + " TEXT, " +
+                    COLUMN_IMAGE_URL + " TEXT" +
+                    ");";
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -72,6 +86,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(TABLE_ORDERS_CREATE);
         db.execSQL(TABLE_USERS_CREATE);
         db.execSQL(TABLE_MENU_ITEMS_CREATE);
+        db.execSQL(TABLE_MENU_ITEM_CATEGORY_CREATE); // Create new table
+
+        // Insert default categories
+        insertDefaultCategories(db);
     }
 
     @Override
@@ -79,6 +97,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU_ITEMS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU_ITEM_CATEGORY); // Drop new table
         onCreate(db);
+    }
+
+    // Method to insert default categories
+    private void insertDefaultCategories(SQLiteDatabase db) {
+        insertCategory(db, "Veg", "https://www.indianhealthyrecipes.com/wp-content/uploads/2015/10/pizza-recipe-1.jpg");
+        insertCategory(db, "Cheese and Onion", "https://www.fuegowoodfiredovens.com/wp-content/uploads/2022/08/goats-cheese-caramelised-onions-and-fig-pizza.jpg");
+        insertCategory(db, "Chicken", "https://breadboozebacon.com/wp-content/uploads/2023/05/BBQ-Chicken-Pizza-SQUARE.jpg");
+        insertCategory(db, "Beef", "https://embed.widencdn.net/img/beef/pz4eba64j5/exact/beef-pepper-and-onion-pizza-horizontal.tif?keep=c&u=7fueml");
+    }
+
+    // Helper method to insert a category
+    private void insertCategory(SQLiteDatabase db, String categoryName, String imageUrl) {
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CATEGORY_NAME, categoryName);
+        values.put(COLUMN_IMAGE_URL, imageUrl);
+        db.insert(TABLE_MENU_ITEM_CATEGORY, null, values);
     }
 }
