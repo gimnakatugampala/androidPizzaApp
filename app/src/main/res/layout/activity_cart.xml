@@ -15,10 +15,10 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/scrollView"
-        app:layout_constraintEnd_toEndOf="@+id/scrollView"
-        app:layout_constraintStart_toStartOf="@+id/scrollView"
-        app:layout_constraintTop_toTopOf="@+id/scrollView" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -47,12 +47,12 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
@@ -64,7 +64,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:orientation="horizontal">
 
@@ -81,7 +81,6 @@
                         android:id="@+id/totalFeeTxt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:text="$0"
                         android:textAlignment="textEnd"
                         android:textColor="#373b54"
@@ -91,13 +90,13 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/textView16"
-                        android:layout_width="41dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Delivery Services:"
@@ -108,7 +107,6 @@
                         android:id="@+id/deliveryTxt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:text="$0"
                         android:textAlignment="textEnd"
                         android:textColor="#373b54"
@@ -118,7 +116,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:orientation="horizontal">
 
@@ -127,7 +125,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Tax :"
+                        android:text="Tax:"
                         android:textColor="#373b54"
                         android:textStyle="bold" />
 
@@ -135,7 +133,6 @@
                         android:id="@+id/TaxTxt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:text="$0"
                         android:textAlignment="textEnd"
                         android:textColor="#373b54"
@@ -146,18 +143,15 @@
 
                 <View
                     android:id="@+id/view3"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginStart="1dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginEnd="1dp"
                     android:layout_marginBottom="5dp"
-                    android:layout_weight="1"
                     android:background="#707070" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:orientation="horizontal">
 
@@ -175,7 +169,6 @@
                         android:id="@+id/totalTxt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:text="$0"
                         android:textAlignment="textEnd"
                         android:textColor="#373b54"
@@ -196,9 +189,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:onClick="onCheckout"
-        app:layout_constraintVertical_bias="0.7">
+        android:onClick="onCheckout">
 
         <TextView
             android:id="@+id/textView22"

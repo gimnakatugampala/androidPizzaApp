@@ -1,6 +1,8 @@
 package com.example.pizzaorderingapp.Adapter;
 
 import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,43 +12,73 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.pizzaorderingapp.Domain.FoodDomain;
 import com.example.pizzaorderingapp.Helper.ManagementCart;
 import com.example.pizzaorderingapp.Interface.ChangeNumberItemsListener;
 import com.example.pizzaorderingapp.R;
 
+import java.io.File;
 import java.util.ArrayList;
-
 
 public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.ViewHolder> {
 
-    ArrayList<FoodDomain> listFoodSelected;
+    private static final String TAG = "CartListAdapter";
+    private ArrayList<FoodDomain> listFoodSelected;
     private ManagementCart managementCart;
-    ChangeNumberItemsListener changeNumberItemsListener;
+    private ChangeNumberItemsListener changeNumberItemsListener;
+    private Context context;
 
-    public CartListAdapter(ArrayList<FoodDomain> FoodDomains, Context context, ChangeNumberItemsListener changeNumberItemsListener) {
-        this.listFoodSelected = FoodDomains; // Fix: Properly initialize listFoodSelected
-        managementCart = new ManagementCart(context);
+    public CartListAdapter(ArrayList<FoodDomain> listFoodSelected, Context context, ChangeNumberItemsListener changeNumberItemsListener) {
+        this.listFoodSelected = listFoodSelected;
+        this.managementCart = new ManagementCart(context);
         this.changeNumberItemsListener = changeNumberItemsListener;
+        this.context = context;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_cart, parent, false);
-        return new ViewHolder(inflate);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_cart, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.title.setText(listFoodSelected.get(position).getTitle());
-        holder.feeEachItem.setText("$" + listFoodSelected.get(position).getFee());
-        holder.totalEachItem.setText("$" + Math.round((listFoodSelected.get(position).getNumberInCart() * listFoodSelected.get(position).getFee())));
-        holder.num.setText(String.valueOf(listFoodSelected.get(position).getNumberInCart()));
+        FoodDomain food = listFoodSelected.get(position);
 
-        int drawableResourceId = holder.itemView.getContext().getResources().getIdentifier(listFoodSelected.get(position).getPic(), "drawable", holder.itemView.getContext().getPackageName());
-        Glide.with(holder.itemView.getContext()).load(drawableResourceId).into(holder.pic);
+        holder.title.setText(food.getTitle());
+        holder.feeEachItem.setText(String.format("$%.2f", food.getFee()));
+        holder.totalEachItem.setText(String.format("$%.2f", food.getNumberInCart() * food.getFee()));
+        holder.num.setText(String.valueOf(food.getNumberInCart()));
+
+        // Load image using the method from RecommendedAdapter
+        String imageUri = food.getPic();
+        Log.d(TAG, "Loading image from URI: " + imageUri);
+
+        if (imageUri != null && !imageUri.isEmpty()) {
+            Uri uri;
+            if (imageUri.startsWith("file://")) {
+                uri = Uri.parse(imageUri);
+            } else {
+                uri = Uri.fromFile(new File(imageUri));
+            }
+
+            if ("file".equals(uri.getScheme())) {
+                File imageFile = new File(uri.getPath());
+                if (imageFile.exists()) {
+                    holder.pic.setImageURI(uri); // Set image directly for local files
+                } else {
+                    Log.w(TAG, "Image file does not exist: " + uri.getPath());
+                    holder.pic.setImageResource(R.drawable.pizza_default); // Set error image
+                }
+            } else {
+                Log.e(TAG, "Unsupported URI scheme: " + uri.getScheme());
+                holder.pic.setImageResource(R.drawable.pizza_default); // Set error image
+            }
+        } else {
+            Log.w(TAG, "Image URI is null or empty, setting default image");
+            holder.pic.setImageResource(R.drawable.pizza_default); // Set default image
+        }
 
         holder.plusItem.setOnClickListener(v -> managementCart.plusNumberFood(listFoodSelected, position, () -> {
             notifyDataSetChanged();
@@ -57,6 +89,13 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.ViewHo
             notifyDataSetChanged();
             changeNumberItemsListener.changed();
         }));
+
+        holder.deleteItem.setOnClickListener(v -> {
+            managementCart.removeFoodFromCart(listFoodSelected, position, () -> {
+                notifyDataSetChanged();
+                changeNumberItemsListener.changed();
+            });
+        });
     }
 
     @Override
@@ -64,10 +103,10 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.ViewHo
         return listFoodSelected.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView title, feeEachItem, totalEachItem, num;
-        ImageView pic, plusItem, minusItem;
+        ImageView pic, plusItem, minusItem, deleteItem;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -79,6 +118,7 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.ViewHo
             plusItem = itemView.findViewById(R.id.plusCardBtn);
             minusItem = itemView.findViewById(R.id.minusCardBtn);
             num = itemView.findViewById(R.id.numberItemTxt);
+            deleteItem = itemView.findViewById(R.id.deleteCardBtn);
         }
     }
 }

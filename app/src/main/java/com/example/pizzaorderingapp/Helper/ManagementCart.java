@@ -11,67 +11,93 @@ import java.util.ArrayList;
 public class ManagementCart {
 
     private Context context;
-    private  TinyDB tinyDB;
-
+    private TinyDB tinyDB;
 
     public ManagementCart(Context context) {
         this.context = context;
         this.tinyDB = new TinyDB(context);
     }
 
-    public void  insertFood(FoodDomain item){
-        ArrayList<FoodDomain> listFood=getListCart();
-        boolean existAlready=false;
-        int n=0;
+    // Insert or update the food item in the cart
+    public void insertFood(FoodDomain item) {
+        ArrayList<FoodDomain> listFood = getListCart();
+        boolean existsAlready = false;
+        int index = 0;
+
         for (int i = 0; i < listFood.size(); i++) {
-            if (listFood.get(i).getTitle().equals(item.getTitle())){
-                existAlready=true;
-                n=i;
+            if (listFood.get(i).getTitle().equals(item.getTitle())) {
+                existsAlready = true;
+                index = i;
                 break;
             }
         }
 
-        if(existAlready){
-            listFood.get(n).setNumberInCart(item.getNumberInCart());
-        }else{
+        if (existsAlready) {
+            FoodDomain existingItem = listFood.get(index);
+            existingItem.setNumberInCart(existingItem.getNumberInCart() + item.getNumberInCart());
+        } else {
             listFood.add(item);
         }
 
-        tinyDB.putListObject("CardList",listFood);
+        tinyDB.putListObject("CardList", listFood);
         Toast.makeText(context, "Added to your cart", Toast.LENGTH_SHORT).show();
-
     }
 
+    // Get the list of items in the cart
     public ArrayList<FoodDomain> getListCart() {
         return tinyDB.getListObject("CardList");
     }
 
-    public void minusNumberFood(ArrayList<FoodDomain> listfood, int position, ChangeNumberItemsListener changeNumberItemsListener){
+    // Decrease the quantity of a food item in the cart
+    public void minusNumberFood(ArrayList<FoodDomain> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) {
+        FoodDomain item = listFood.get(position);
 
-        if(listfood.get(position).getNumberInCart() == 1){
-            listfood.remove(position);
-        }else{
-            listfood.get(position).setNumberInCart(listfood.get(position).getNumberInCart() - 1);
+        if (item.getNumberInCart() > 1) {
+            item.setNumberInCart(item.getNumberInCart() - 1);
+        } else {
+            listFood.remove(position);
         }
 
-        tinyDB.putListObject("CardList",listfood);
-        changeNumberItemsListener.changed();
-
-    }
-
-    public void plusNumberFood(ArrayList<FoodDomain> listfood, int position, ChangeNumberItemsListener changeNumberItemsListener){
-        listfood.get(position).setNumberInCart(listfood.get(position).getNumberInCart() + 1);
-        tinyDB.putListObject("CardList",listfood);
+        tinyDB.putListObject("CardList", listFood);
         changeNumberItemsListener.changed();
     }
 
-    public Double getTotalFee(){
-        ArrayList<FoodDomain>listfood2=getListCart();
-        double fee=0;
-        for (int i = 0; i < listfood2.size(); i++) {
-            fee=fee+(listfood2.get(i).getFee() * listfood2.get(i).getNumberInCart());
+    // Increase the quantity of a food item in the cart
+    public void plusNumberFood(ArrayList<FoodDomain> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) {
+        FoodDomain item = listFood.get(position);
+        item.setNumberInCart(item.getNumberInCart() + 1);
+
+        tinyDB.putListObject("CardList", listFood);
+        changeNumberItemsListener.changed();
+    }
+
+    // Remove a food item from the cart
+    public void removeFoodFromCart(ArrayList<FoodDomain> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) {
+        if (position >= 0 && position < listFood.size()) {
+            listFood.remove(position);
+            tinyDB.putListObject("CardList", listFood);
+            Toast.makeText(context, "Item removed from cart", Toast.LENGTH_SHORT).show();
+            changeNumberItemsListener.changed();
+        } else {
+            Toast.makeText(context, "Invalid item position", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // Get the total fee of all items in the cart
+    public Double getTotalFee() {
+        ArrayList<FoodDomain> listFood = getListCart();
+        double fee = 0;
+
+        for (FoodDomain item : listFood) {
+            fee += item.getFee() * item.getNumberInCart();
+        }
+
         return fee;
     }
 
+    // Clear all items from the cart
+    public void clearCart() {
+        tinyDB.putListObject("CardList", new ArrayList<FoodDomain>());
+        Toast.makeText(context, "Cart cleared", Toast.LENGTH_SHORT).show();
+    }
 }
