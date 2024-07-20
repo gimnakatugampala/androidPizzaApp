@@ -65,4 +65,9 @@ public class UserDashboardActivity extends AppCompatActivity {
         Intent intent = new Intent(UserDashboardActivity.this, MenuItemListActivity.class);
         startActivity(intent);
     }
+
+    public void  onClickProfile(View view){
+        Intent intent = new Intent(UserDashboardActivity.this, UpdateProfileActivity.class);
+        startActivity(intent);
+    }
 }

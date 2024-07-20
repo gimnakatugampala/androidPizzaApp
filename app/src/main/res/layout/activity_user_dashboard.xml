@@ -231,6 +231,7 @@
                     android:drawablePadding="16dp"
                     android:focusable="true"
                     android:textStyle="bold"
+                    android:onClick="onClickProfile"
                     android:gravity="start|center_vertical"
                     android:padding="16dp"
                     android:text="Profile"

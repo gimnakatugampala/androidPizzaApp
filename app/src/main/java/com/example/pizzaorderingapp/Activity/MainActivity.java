@@ -123,4 +123,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(dashboardIntent);
     }
 
+    public  void onClickProfile(View view){
+        Intent intent = new Intent(MainActivity.this, UpdateProfileActivity.class);
+        startActivity(intent);
+    }
+
 }

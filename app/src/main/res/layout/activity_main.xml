@@ -263,6 +263,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.2"
+                    android:onClick="onClickProfile"
                     android:orientation="vertical">
 
                     <ImageView
