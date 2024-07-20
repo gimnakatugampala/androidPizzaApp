@@ -16,7 +16,6 @@ import com.example.pizzaorderingapp.R;
 
 import java.util.ArrayList;
 
-
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
     ArrayList<CategoryDomain> categoryDomains;
@@ -34,34 +33,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.categoryName.setText(categoryDomains.get(position).getTitle());
-        String picUrl = "";
+        holder.categoryName.setText(categoryDomains.get(position).getCategoryName());
 
-        switch (position) {
-            case 0: {
-                picUrl = "cat_1";
-                break;
-            }
-            case 1: {
-                picUrl = "cat_2";
-                break;
-            }
-            case 2: {
-                picUrl = "cat_3";
-                break;
-            }
-            case 3: {
-                picUrl = "cat_4";
-                break;
-            }
-            case 4: {
-                picUrl = "cat_5";
-                break;
-            }
-        }
-
-        int drawableResourceId = holder.itemView.getContext().getResources().getIdentifier(picUrl, "drawable", holder.itemView.getContext().getPackageName());
-        Glide.with(holder.itemView.getContext()).load(drawableResourceId).into(holder.categoryPic);
+        // Load image from URL
+        Glide.with(holder.itemView.getContext()).load(categoryDomains.get(position).getImageUrl()).into(holder.categoryPic);
     }
 
     @Override
@@ -74,12 +49,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         TextView categoryName;
         ImageView categoryPic;
         ConstraintLayout mainLayout;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             categoryName = itemView.findViewById(R.id.categoryName);
-            categoryPic=itemView.findViewById(R.id.categoryPic);
-            mainLayout=itemView.findViewById(R.id.mainLayout);
+            categoryPic = itemView.findViewById(R.id.categoryPic);
+            mainLayout = itemView.findViewById(R.id.mainLayout);
         }
     }
 }

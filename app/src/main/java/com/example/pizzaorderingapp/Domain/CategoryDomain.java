@@ -1,27 +1,27 @@
 package com.example.pizzaorderingapp.Domain;
 
 public class CategoryDomain {
-    private String title;
-    private String pic;
+    private String categoryName;
+    private String imageUrl;
 
-    public CategoryDomain(String title, String pic) {
-        this.title = title;
-        this.pic = pic;
+    public CategoryDomain(String categoryName, String imageUrl) {
+        this.categoryName = categoryName;
+        this.imageUrl = imageUrl;
     }
 
-    public String getTitle() {
-        return title;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
-    public String getPic() {
-        return pic;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setPic(String pic) {
-        this.pic = pic;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
