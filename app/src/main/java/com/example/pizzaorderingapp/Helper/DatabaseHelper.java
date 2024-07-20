@@ -9,13 +9,13 @@ import android.util.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "pizzaOrderingAppDB";
-    private static final int DATABASE_VERSION = 1; // Increment this version if schema changes
+    private static final int DATABASE_VERSION = 2; // Incremented version to handle schema changes
 
     // Table names
     public static final String TABLE_ORDERS = "orders";
     public static final String TABLE_USERS = "users";
     public static final String TABLE_MENU_ITEMS = "menu_items";
-    public static final String TABLE_MENU_ITEM_CATEGORY = "menu_item_category"; // New table
+    public static final String TABLE_MENU_ITEM_CATEGORY = "menu_item_category";
 
     // Column names
     public static final String COLUMN_ID = "_id";
@@ -29,6 +29,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_USER_EMAIL = "user_email";
     public static final String COLUMN_PASSWORD = "password";
     public static final String COLUMN_ROLE = "role";
+    public static final String COLUMN_DELIVERY_ADDRESS = "delivery_address"; // New column for delivery address
+    public static final String COLUMN_PHONE = "phone"; // New column for phone number
 
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_DESCRIPTION = "description";
@@ -37,8 +39,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_TOPPINGS = "toppings";
     public static final String COLUMN_IMAGE_URI = "image_uri";
 
-    public static final String COLUMN_CATEGORY_NAME = "categoryName"; // New column
-    public static final String COLUMN_IMAGE_URL = "imageUrl"; // New column
+    public static final String COLUMN_CATEGORY_NAME = "categoryName";
+    public static final String COLUMN_IMAGE_URL = "imageUrl";
 
     private static final String TABLE_ORDERS_CREATE =
             "CREATE TABLE " + TABLE_ORDERS + " (" +
@@ -56,7 +58,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_LAST_NAME + " TEXT, " +
                     COLUMN_USER_EMAIL + " TEXT, " +
                     COLUMN_PASSWORD + " TEXT, " +
-                    COLUMN_ROLE + " TEXT" +
+                    COLUMN_ROLE + " TEXT, " +
+                    COLUMN_DELIVERY_ADDRESS + " TEXT, " + // New column for delivery address
+                    COLUMN_PHONE + " TEXT" + // New column for phone number
                     ");";
 
     private static final String TABLE_MENU_ITEMS_CREATE =
@@ -68,7 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_CATEGORY + " TEXT, " +
                     COLUMN_TOPPINGS + " TEXT, " +
                     COLUMN_IMAGE_URI + " TEXT, " +
-                    "is_deleted INTEGER DEFAULT 0" + // New column for soft delete
+                    "is_deleted INTEGER DEFAULT 0" +
                     ");";
 
     private static final String TABLE_MENU_ITEM_CATEGORY_CREATE =
@@ -95,11 +99,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU_ITEMS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU_ITEM_CATEGORY);
-        onCreate(db);
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_DELIVERY_ADDRESS + " TEXT;");
+            db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_PHONE + " TEXT;");
+        }
+        // Handle future upgrades if necessary
     }
 
     private void insertDefaultCategories(SQLiteDatabase db) {

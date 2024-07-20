@@ -55,6 +55,12 @@
 
         <activity android:name=".Activity.EditMenuItemActivity" android:exported="false"  />
 
+        <activity android:name=".Activity.UpdateProfileActivity" android:exported="false"  />
+
+
+
+
+
 
 
         <activity
