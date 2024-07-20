@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 managementCart.insertFood(foodDomain);
                 Toast.makeText(MainActivity.this, "Added to cart", Toast.LENGTH_SHORT).show();
             }
-        });
+        }, MainActivity.this); // Pass the context here
         recyclerViewPopularList.setAdapter(recommendedAdapter);
     }
 

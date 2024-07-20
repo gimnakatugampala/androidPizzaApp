@@ -1,5 +1,7 @@
 package com.example.pizzaorderingapp.Adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pizzaorderingapp.Activity.ShowDetailActivity;
 import com.example.pizzaorderingapp.Domain.FoodDomain;
 import com.example.pizzaorderingapp.R;
 
@@ -22,10 +25,12 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
     private static final String TAG = "RecommendedAdapter"; // Tag for logging
     private ArrayList<FoodDomain> foodList;
     private OnItemClickListener onItemClickListener;
+    private Context context; // Add context
 
-    public RecommendedAdapter(ArrayList<FoodDomain> foodList, OnItemClickListener onItemClickListener) {
+    public RecommendedAdapter(ArrayList<FoodDomain> foodList, OnItemClickListener onItemClickListener, Context context) {
         this.foodList = foodList;
         this.onItemClickListener = onItemClickListener;
+        this.context = context; // Initialize context
     }
 
     @NonNull
@@ -76,6 +81,12 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
                 onItemClickListener.onAddToCartClick(foodDomain);
             }
         });
+
+        holder.menuItemContainer.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ShowDetailActivity.class);
+            intent.putExtra("object", foodDomain);
+            context.startActivity(intent);
+        });
     }
 
     @Override
@@ -94,6 +105,7 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
         private ImageView pic;
         private TextView title, fee;
         private ImageView addBtn;
+        private View menuItemContainer; // Reference to the container
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -101,6 +113,7 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
             title = itemView.findViewById(R.id.title);
             fee = itemView.findViewById(R.id.fee);
             addBtn = itemView.findViewById(R.id.addBtn);
+            menuItemContainer = itemView.findViewById(R.id.menuItemContainer); // Initialize container
         }
     }
 }
