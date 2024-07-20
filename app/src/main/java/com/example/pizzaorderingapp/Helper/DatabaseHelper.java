@@ -103,7 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(TABLE_MENU_ITEM_CATEGORY_CREATE);
 
         // Insert default categories
-        insertDefaultCategories(db);
+//        insertDefaultCategories(db);
     }
 
     @Override

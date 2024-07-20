@@ -17,7 +17,6 @@ import com.example.pizzaorderingapp.R;
 
 import java.util.ArrayList;
 
-
 public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.ViewHolder> {
 
     ArrayList<FoodDomain> FoodDomains;
@@ -41,8 +40,8 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
         int drawableResourceId = holder.itemView.getContext().getResources().getIdentifier(FoodDomains.get(position).getPic(), "drawable", holder.itemView.getContext().getPackageName());
         Glide.with(holder.itemView.getContext()).load(drawableResourceId).into(holder.pic);
 
-        holder.addBtn.setOnClickListener(v -> {
-            Intent intent=new Intent(holder.itemView.getContext(), ShowDetailActivity.class);
+        holder.menuItemContainer.setOnClickListener(v -> {
+            Intent intent = new Intent(holder.itemView.getContext(), ShowDetailActivity.class);
             intent.putExtra("object", FoodDomains.get(position));
             holder.itemView.getContext().startActivity(intent);
         });
@@ -55,19 +54,18 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title,fee;
-        ImageView pic;
-
-        ImageView addBtn;
+        TextView title, fee;
+        ImageView pic, addBtn;
+        View menuItemContainer;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             title = itemView.findViewById(R.id.title);
-            pic=itemView.findViewById(R.id.pic);
-            fee=itemView.findViewById(R.id.fee);
-            addBtn=itemView.findViewById(R.id.addBtn);
-
+            pic = itemView.findViewById(R.id.pic);
+            fee = itemView.findViewById(R.id.fee);
+            addBtn = itemView.findViewById(R.id.addBtn);
+            menuItemContainer = itemView.findViewById(R.id.menuItemContainer);
         }
     }
 }
