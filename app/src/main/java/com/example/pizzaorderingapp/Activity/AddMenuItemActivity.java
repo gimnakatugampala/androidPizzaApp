@@ -1,5 +1,6 @@
 package com.example.pizzaorderingapp.Activity;
 
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +22,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.pizzaorderingapp.Repository.MenuItemRepository;
 import com.example.pizzaorderingapp.Model.MenuItem;
 import com.example.pizzaorderingapp.R;
+import com.example.pizzaorderingapp.Utils.ImageUtils;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class AddMenuItemActivity extends AppCompatActivity {
 
@@ -103,6 +108,19 @@ public class AddMenuItemActivity extends AppCompatActivity {
         if (topping3) toppings += "Topping 3,";
         if (!toppings.isEmpty()) toppings = toppings.substring(0, toppings.length() - 1); // Remove trailing comma
 
+        // Convert URI to Bitmap
+        Bitmap bitmap;
+        try {
+            InputStream imageStream = getContentResolver().openInputStream(imageUri);
+            bitmap = BitmapFactory.decodeStream(imageStream);
+        } catch (FileNotFoundException e) {
+            Toast.makeText(this, "Error loading image", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Save the image to internal storage
+        String savedImagePath = ImageUtils.saveImageToInternalStorage(this, bitmap, name);
+
         // Create a MenuItem object
         MenuItem menuItem = new MenuItem(
                 1, // Assuming ID is auto-generated
@@ -111,7 +129,7 @@ public class AddMenuItemActivity extends AppCompatActivity {
                 price,
                 category,
                 toppings,
-                imageUri.toString()
+                savedImagePath
         );
 
         // Use the repository to add the menu item

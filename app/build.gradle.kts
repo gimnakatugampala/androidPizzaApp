@@ -41,5 +41,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.sun.mail:android-mail:1.6.5")
     implementation("com.sun.mail:android-activation:1.6.5")
+    implementation("com.github.bumptech.glide:glide:4.11.0")
+    implementation("com.github.bumptech.glide:compiler:4.11.0")
+    implementation("com.squareup.picasso:picasso:2.71828")
 
 }
