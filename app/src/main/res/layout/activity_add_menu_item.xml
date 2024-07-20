@@ -26,6 +26,7 @@
         android:id="@+id/edit_text_menu_item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:hint="Menu Item Name"
         android:inputType="text" />
 
@@ -44,12 +45,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Menu Item Price"
+        android:padding="10dp"
         android:inputType="numberDecimal" />
 
     <!-- Menu Item Category -->
     <Spinner
         android:id="@+id/spinner_category"
         android:layout_width="match_parent"
+        android:padding="8dp"
         android:layout_height="wrap_content" />
 
     <!-- Menu Item Toppings -->

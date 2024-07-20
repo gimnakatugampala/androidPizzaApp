@@ -1,9 +1,10 @@
 package com.example.pizzaorderingapp.Helper;
 
-import android.content.Context;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -86,10 +87,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(TABLE_ORDERS_CREATE);
         db.execSQL(TABLE_USERS_CREATE);
         db.execSQL(TABLE_MENU_ITEMS_CREATE);
-        db.execSQL(TABLE_MENU_ITEM_CATEGORY_CREATE); // Create new table
+        db.execSQL(TABLE_MENU_ITEM_CATEGORY_CREATE);
 
         // Insert default categories
-        insertDefaultCategories(db);
+//        insertDefaultCategories(db);
     }
 
     @Override
@@ -97,23 +98,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU_ITEMS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU_ITEM_CATEGORY); // Drop new table
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU_ITEM_CATEGORY);
         onCreate(db);
     }
 
-    // Method to insert default categories
     private void insertDefaultCategories(SQLiteDatabase db) {
+        Log.d("DatabaseHelper", "Inserting default categories...");
         insertCategory(db, "Veg", "https://www.indianhealthyrecipes.com/wp-content/uploads/2015/10/pizza-recipe-1.jpg");
         insertCategory(db, "Cheese and Onion", "https://www.fuegowoodfiredovens.com/wp-content/uploads/2022/08/goats-cheese-caramelised-onions-and-fig-pizza.jpg");
         insertCategory(db, "Chicken", "https://breadboozebacon.com/wp-content/uploads/2023/05/BBQ-Chicken-Pizza-SQUARE.jpg");
         insertCategory(db, "Beef", "https://embed.widencdn.net/img/beef/pz4eba64j5/exact/beef-pepper-and-onion-pizza-horizontal.tif?keep=c&u=7fueml");
     }
 
-    // Helper method to insert a category
     private void insertCategory(SQLiteDatabase db, String categoryName, String imageUrl) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_CATEGORY_NAME, categoryName);
         values.put(COLUMN_IMAGE_URL, imageUrl);
-        db.insert(TABLE_MENU_ITEM_CATEGORY, null, values);
+        long result = db.insert(TABLE_MENU_ITEM_CATEGORY, null, values);
+        Log.d("DatabaseHelper", "Inserted category: " + categoryName + ", Result: " + result);
     }
 }

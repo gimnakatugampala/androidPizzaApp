@@ -176,4 +176,20 @@ public class MenuItemRepository {
         }
         return categories;
     }
+
+    public void insertDefaultCategories() {
+        try (SQLiteDatabase db = databaseHelper.getWritableDatabase()) {
+            insertCategory(db, "Veg", "https://www.indianhealthyrecipes.com/wp-content/uploads/2015/10/pizza-recipe-1.jpg");
+            insertCategory(db, "Cheese and Onion", "https://www.fuegowoodfiredovens.com/wp-content/uploads/2022/08/goats-cheese-caramelised-onions-and-fig-pizza.jpg");
+            insertCategory(db, "Chicken", "https://breadboozebacon.com/wp-content/uploads/2023/05/BBQ-Chicken-Pizza-SQUARE.jpg");
+            insertCategory(db, "Beef", "https://embed.widencdn.net/img/beef/pz4eba64j5/exact/beef-pepper-and-onion-pizza-horizontal.tif?keep=c&u=7fueml");
+        }
+    }
+
+    private void insertCategory(SQLiteDatabase db, String categoryName, String imageUrl) {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.COLUMN_CATEGORY_NAME, categoryName);
+        values.put(DatabaseHelper.COLUMN_IMAGE_URL, imageUrl);
+        db.insert(DatabaseHelper.TABLE_MENU_ITEM_CATEGORY, null, values);
+    }
 }
