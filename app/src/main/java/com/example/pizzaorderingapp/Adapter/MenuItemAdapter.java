@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.pizzaorderingapp.Activity.EditMenuItemActivity;
+import com.example.pizzaorderingapp.Activity.MenuItemListActivity;
 import com.example.pizzaorderingapp.Model.MenuItem;
 import com.example.pizzaorderingapp.R;
 import com.example.pizzaorderingapp.Repository.MenuItemRepository;
@@ -69,7 +70,8 @@ public class MenuItemAdapter extends BaseAdapter {
         // Load image
         String imageUri = menuItem.getImageUri();
         if (imageUri != null && !imageUri.isEmpty()) {
-            File imgFile = new File(Uri.parse(imageUri).getPath());
+            Uri uri = Uri.parse(imageUri);
+            File imgFile = new File(uri.getPath());
             if (imgFile.exists()) {
                 Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                 imageView.setImageBitmap(bitmap);
@@ -81,13 +83,17 @@ public class MenuItemAdapter extends BaseAdapter {
         }
 
         textViewName.setText(menuItem.getName());
-        textViewPrice.setText(String.valueOf(menuItem.getPrice()));
+        textViewPrice.setText(String.format("$%.2f", menuItem.getPrice())); // Formatting price
         textViewDescription.setText(menuItem.getDescription());
 
         buttonEdit.setOnClickListener(v -> {
             Intent intent = new Intent(context, EditMenuItemActivity.class);
-            intent.putExtra("menuItem", menuItem); // Pass the menu item to the edit activity
-            context.startActivity(intent);
+            intent.putExtra("MENU_ITEM_ID", menuItem.getId()); // Pass the menu item ID to the edit activity
+            if (context instanceof MenuItemListActivity) {
+                ((MenuItemListActivity) context).startActivityForResult(intent, 1); // Update request code as needed
+            } else {
+                Toast.makeText(context, "Context is not MenuItemListActivity", Toast.LENGTH_SHORT).show();
+            }
         });
 
         buttonDelete.setOnClickListener(v -> {
@@ -109,5 +115,12 @@ public class MenuItemAdapter extends BaseAdapter {
         });
 
         return convertView;
+    }
+
+    // Method to update the list of menu items
+    public void updateMenuItems(List<MenuItem> newMenuItems) {
+        this.menuItems.clear();
+        this.menuItems.addAll(newMenuItems);
+        notifyDataSetChanged();
     }
 }

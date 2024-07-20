@@ -1,5 +1,6 @@
 package com.example.pizzaorderingapp.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -43,6 +44,14 @@ public class MenuItemListActivity extends AppCompatActivity {
             textViewNoMenuItems.setVisibility(View.GONE);
             menuItemAdapter = new MenuItemAdapter(this, menuItemList);
             listViewMenuItems.setAdapter(menuItemAdapter);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            refreshMenuItems(); // Refresh the list if an item was updated
         }
     }
 }

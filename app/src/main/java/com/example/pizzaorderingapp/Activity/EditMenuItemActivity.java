@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -11,7 +12,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -48,6 +48,7 @@ public class EditMenuItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_menu_item);
 
+        // Initialize UI elements
         imageViewMenuItem = findViewById(R.id.menu_item_image);
         buttonChooseImage = findViewById(R.id.button_choose_image);
         editTextName = findViewById(R.id.edit_text_menu_item_name);
@@ -85,39 +86,29 @@ public class EditMenuItemActivity extends AppCompatActivity {
         }
 
         // Populate fields with menu item details
+        populateFields(menuItem);
+
+        // Set up button click listeners
+        buttonChooseImage.setOnClickListener(v -> openImageChooser());
+        buttonSubmit.setOnClickListener(v -> updateMenuItem());
+    }
+
+    private void populateFields(MenuItem menuItem) {
         editTextName.setText(menuItem.getName());
         editTextDescription.setText(menuItem.getDescription());
         editTextPrice.setText(String.valueOf(menuItem.getPrice()));
         spinnerCategory.setSelection(categoryAdapter.getPosition(menuItem.getCategory()));
+
         // Set toppings
-        if (menuItem.getToppings().contains("Topping 1")) {
-            checkBoxTopping1.setChecked(true);
-        }
-        if (menuItem.getToppings().contains("Topping 2")) {
-            checkBoxTopping2.setChecked(true);
-        }
-        if (menuItem.getToppings().contains("Topping 3")) {
-            checkBoxTopping3.setChecked(true);
-        }
+        checkBoxTopping1.setChecked(menuItem.getToppings().contains("Topping 1"));
+        checkBoxTopping2.setChecked(menuItem.getToppings().contains("Topping 2"));
+        checkBoxTopping3.setChecked(menuItem.getToppings().contains("Topping 3"));
+
         // Set image URI
         if (menuItem.getImageUri() != null) {
             imageUri = Uri.parse(menuItem.getImageUri());
             imageViewMenuItem.setImageURI(imageUri);
         }
-
-        buttonChooseImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openImageChooser();
-            }
-        });
-
-        buttonSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateMenuItem();
-            }
-        });
     }
 
     private void openImageChooser() {
@@ -135,9 +126,26 @@ public class EditMenuItemActivity extends AppCompatActivity {
     }
 
     private void updateMenuItem() {
-        menuItem.setName(editTextName.getText().toString());
-        menuItem.setDescription(editTextDescription.getText().toString());
-        menuItem.setPrice(Double.parseDouble(editTextPrice.getText().toString()));
+        String name = editTextName.getText().toString().trim();
+        String description = editTextDescription.getText().toString().trim();
+        String priceStr = editTextPrice.getText().toString().trim();
+
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(description) || TextUtils.isEmpty(priceStr)) {
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        double price;
+        try {
+            price = Double.parseDouble(priceStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Invalid price format", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        menuItem.setName(name);
+        menuItem.setDescription(description);
+        menuItem.setPrice(price);
         menuItem.setCategory(spinnerCategory.getSelectedItem().toString());
 
         // Set toppings
