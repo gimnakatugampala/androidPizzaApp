@@ -1,8 +1,8 @@
 package com.example.pizzaorderingapp.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,6 +11,8 @@ import com.bumptech.glide.Glide;
 import com.example.pizzaorderingapp.Domain.FoodDomain;
 import com.example.pizzaorderingapp.Helper.ManagementCart;
 import com.example.pizzaorderingapp.R;
+
+import java.io.File;
 
 public class ShowDetailActivity extends AppCompatActivity {
 
@@ -35,49 +37,70 @@ public class ShowDetailActivity extends AppCompatActivity {
     private void getBundle() {
         object = (FoodDomain) getIntent().getSerializableExtra("object");
 
-        int drawableResourceId = this.getResources().getIdentifier(object.getPic(), "drawable", this.getPackageName());
-        Glide.with(this)
-                .load(drawableResourceId)
-                .into(picFood);
+        if (object != null) {
+            String imageUri = object.getPic();
+            Log.d("ShowDetailActivity", "Loading image from URI: " + imageUri);
 
-        titleTxt.setText(object.getTitle());
-        feeTxt.setText("$" + object.getFee());
-        descriptionTxt.setText(object.getDescription());
-        numberOrderTxt.setText(String.valueOf(numberObject));
-        totalPriceTxt.setText("$" + numberObject * object.getFee());
-
-        // Set star, calories, and time
-        starTxt.setText(object.getStar() + " stars");
-        caloriesTxt.setText(object.getCalories() + " calories");
-        timeTxt.setText(object.getTime() + " mins");
-
-        plusBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                numberObject = numberObject + 1;
-                numberOrderTxt.setText(String.valueOf(numberObject));
-                totalPriceTxt.setText("$" + numberObject * object.getFee());
-            }
-        });
-
-        minusBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (numberObject > 1) {
-                    numberObject = numberObject - 1;
+            if (imageUri != null && !imageUri.isEmpty()) {
+                if (imageUri.startsWith("file://")) {
+                    File imageFile = new File(imageUri.substring(7)); // Remove "file://" from the path
+                    if (imageFile.exists()) {
+                        picFood.setImageURI(android.net.Uri.fromFile(imageFile)); // Directly set URI for local files
+                    } else {
+                        Log.w("ShowDetailActivity", "Image file does not exist: " + imageUri);
+                        picFood.setImageResource(R.drawable.pizza_default); // Set default image
+                    }
+                } else {
+                    Glide.with(this)
+                            .load(imageUri) // Assume it's a URL
+                            .placeholder(R.drawable.pizza_default) // Placeholder image while loading
+                            .error(R.drawable.pizza_default) // Image to show if loading fails
+                            .into(picFood);
                 }
-                numberOrderTxt.setText(String.valueOf(numberObject));
-                totalPriceTxt.setText("$" + numberObject * object.getFee());
+            } else {
+                Log.w("ShowDetailActivity", "Image URI is null or empty, setting default image");
+                picFood.setImageResource(R.drawable.pizza_default); // Set default image
             }
-        });
 
-        addToCartBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                object.setNumberInCart(numberObject);
-                managementCart.insertFood(object);
-            }
-        });
+            titleTxt.setText(object.getTitle());
+            feeTxt.setText("$" + object.getFee());
+            descriptionTxt.setText(object.getDescription());
+            numberOrderTxt.setText(String.valueOf(numberObject));
+            totalPriceTxt.setText("$" + numberObject * object.getFee());
+
+            // Set star, calories, and time
+            starTxt.setText(object.getStar() + " stars");
+            caloriesTxt.setText(object.getCalories() + " calories");
+            timeTxt.setText(object.getTime() + " mins");
+
+            plusBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    numberObject++;
+                    updateUI();
+                }
+            });
+
+            minusBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (numberObject > 1) {
+                        numberObject--;
+                    }
+                    updateUI();
+                }
+            });
+
+            addToCartBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    object.setNumberInCart(numberObject);
+                    managementCart.insertFood(object);
+                }
+            });
+        } else {
+            Log.e("ShowDetailActivity", "FoodDomain object is null.");
+        }
     }
 
     private void initView() {
@@ -94,5 +117,10 @@ public class ShowDetailActivity extends AppCompatActivity {
         starTxt = findViewById(R.id.starTxt);
         caloriesTxt = findViewById(R.id.caloriesTxt);
         timeTxt = findViewById(R.id.TimeTxt);
+    }
+
+    private void updateUI() {
+        numberOrderTxt.setText(String.valueOf(numberObject));
+        totalPriceTxt.setText("$" + numberObject * object.getFee());
     }
 }
