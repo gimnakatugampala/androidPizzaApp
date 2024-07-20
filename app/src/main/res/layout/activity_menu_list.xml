@@ -2,8 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
+    <!-- No Menu Items Message -->
+    <TextView
+        android:id="@+id/text_view_no_menu_items"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No Menu Items"
+        android:textSize="18sp"
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center"
+        android:visibility="gone" />
+
+    <!-- ListView for Menu Items -->
     <ListView
         android:id="@+id/menu_item_list"
         android:layout_width="match_parent"

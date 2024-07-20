@@ -43,6 +43,25 @@ public class MenuItemRepository {
         return result;
     }
 
+    public boolean softDeleteMenuItem(int id) {
+        SQLiteDatabase db = null;
+        boolean result = false;
+        try {
+            db = dbHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("is_deleted", 1); // Mark as deleted
+
+            int rowsAffected = db.update(DatabaseHelper.TABLE_MENU_ITEMS, values,
+                    DatabaseHelper.COLUMN_ID + "=?", new String[]{String.valueOf(id)});
+            result = rowsAffected > 0;
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return result;
+    }
+
     public List<MenuItem> getAllMenuItems() {
         List<MenuItem> menuItems = new ArrayList<>();
         SQLiteDatabase db = null;
@@ -59,7 +78,9 @@ public class MenuItemRepository {
                     DatabaseHelper.COLUMN_IMAGE_URI
             };
 
-            cursor = db.query(DatabaseHelper.TABLE_MENU_ITEMS, columns, null, null, null, null, null);
+            cursor = db.query(DatabaseHelper.TABLE_MENU_ITEMS, columns,
+                    "is_deleted = ?", new String[]{"0"}, null, null, null); // Exclude deleted items
+
             if (cursor.moveToFirst()) {
                 do {
                     int idIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_ID);
@@ -70,22 +91,16 @@ public class MenuItemRepository {
                     int toppingsIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_TOPPINGS);
                     int imageUriIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_IMAGE_URI);
 
-                    // Check if column indexes are valid
-                    if (idIndex != -1 && nameIndex != -1 && descriptionIndex != -1 &&
-                            priceIndex != -1 && categoryIndex != -1 && toppingsIndex != -1 &&
-                            imageUriIndex != -1) {
-
-                        MenuItem menuItem = new MenuItem(
-                                cursor.getInt(idIndex),
-                                cursor.getString(nameIndex),
-                                cursor.getString(descriptionIndex),
-                                cursor.getDouble(priceIndex),
-                                cursor.getString(categoryIndex),
-                                cursor.getString(toppingsIndex),
-                                cursor.getString(imageUriIndex)
-                        );
-                        menuItems.add(menuItem);
-                    }
+                    MenuItem menuItem = new MenuItem(
+                            cursor.getInt(idIndex),
+                            cursor.getString(nameIndex),
+                            cursor.getString(descriptionIndex),
+                            cursor.getDouble(priceIndex),
+                            cursor.getString(categoryIndex),
+                            cursor.getString(toppingsIndex),
+                            cursor.getString(imageUriIndex)
+                    );
+                    menuItems.add(menuItem);
                 } while (cursor.moveToNext());
             }
         } finally {

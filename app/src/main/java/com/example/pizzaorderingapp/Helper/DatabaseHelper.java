@@ -59,7 +59,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_PRICE + " REAL, " +
                     COLUMN_CATEGORY + " TEXT, " +
                     COLUMN_TOPPINGS + " TEXT, " +
-                    COLUMN_IMAGE_URI + " TEXT" +
+                    COLUMN_IMAGE_URI + " TEXT, " +
+                    "is_deleted INTEGER DEFAULT 0" + // New column for soft delete
                     ");";
 
     public DatabaseHelper(Context context) {
