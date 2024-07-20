@@ -30,7 +30,6 @@ public class MenuItemListActivity extends AppCompatActivity {
         listViewMenuItems = findViewById(R.id.menu_item_list);
         textViewNoMenuItems = findViewById(R.id.text_view_no_menu_items);
         menuItemRepository = new MenuItemRepository(this);
-
         refreshMenuItems();
     }
 
