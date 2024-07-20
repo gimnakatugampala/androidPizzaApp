@@ -2,6 +2,7 @@ package com.example.pizzaorderingapp.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -73,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
             int star = random.nextInt(5) + 1;          // Random star rating between 1 and 5
             int time = random.nextInt(60) + 10;        // Random preparation time between 10 and 70 minutes
             int calories = random.nextInt(500) + 100;  // Random calories between 100 and 600
+            Log.e("err" , menuItem.getImageUri());
+
 
             FoodDomain foodDomain = new FoodDomain(
                     menuItem.getName(),

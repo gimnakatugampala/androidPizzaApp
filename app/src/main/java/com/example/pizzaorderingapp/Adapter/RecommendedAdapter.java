@@ -1,5 +1,7 @@
 package com.example.pizzaorderingapp.Adapter;
 
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pizzaorderingapp.Domain.FoodDomain;
 import com.example.pizzaorderingapp.R;
-import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.ViewHolder> {
 
+    private static final String TAG = "RecommendedAdapter"; // Tag for logging
     private ArrayList<FoodDomain> foodList;
     private OnItemClickListener onItemClickListener;
 
@@ -39,25 +42,38 @@ public class RecommendedAdapter extends RecyclerView.Adapter<RecommendedAdapter.
         holder.title.setText(foodDomain.getTitle());
         holder.fee.setText(String.format("$%.2f", foodDomain.getFee()));
 
-        // Load image using Picasso
         String imageUri = foodDomain.getPic();
+        Log.d(TAG, "Loading image from URI: " + imageUri);
+
         if (imageUri != null && !imageUri.isEmpty()) {
-            Picasso.get()
-                    .load(imageUri)
-                    .placeholder(R.drawable.burger) // Placeholder while loading
-                    .error(R.drawable.pizza_default) // Error image if loading fails
-                    .into(holder.pic);
+            Uri uri;
+            if (imageUri.startsWith("file://")) {
+                uri = Uri.parse(imageUri);
+            } else {
+                uri = Uri.fromFile(new File(imageUri));
+            }
+
+            // Check if the URI is a local file
+            if ("file".equals(uri.getScheme())) {
+                File imageFile = new File(uri.getPath());
+                if (imageFile.exists()) {
+                    holder.pic.setImageURI(uri); // Set image directly for local files
+                } else {
+                    Log.w(TAG, "Image file does not exist: " + uri.getPath());
+                    holder.pic.setImageResource(R.drawable.pizza_default); // Set error image
+                }
+            } else {
+                Log.e(TAG, "Unsupported URI scheme: " + uri.getScheme());
+                holder.pic.setImageResource(R.drawable.pizza_default); // Set error image
+            }
         } else {
-            holder.pic.setImageResource(R.drawable.burger); // Default image if URI is empty or null
+            Log.w(TAG, "Image URI is null or empty, setting default image");
+            holder.pic.setImageResource(R.drawable.burger); // Set default image
         }
 
-        // Set onClickListener for the add button
-        holder.addBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onItemClickListener != null) {
-                    onItemClickListener.onAddToCartClick(foodDomain);
-                }
+        holder.addBtn.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onAddToCartClick(foodDomain);
             }
         });
     }
