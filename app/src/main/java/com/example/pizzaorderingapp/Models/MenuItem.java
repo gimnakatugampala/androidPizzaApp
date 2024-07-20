@@ -1,6 +1,8 @@
 package com.example.pizzaorderingapp.Model;
 
-public class MenuItem {
+import java.io.Serializable;
+
+public class MenuItem implements Serializable {
 
     private int id;
     private String name;

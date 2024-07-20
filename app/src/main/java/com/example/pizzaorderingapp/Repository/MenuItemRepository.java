@@ -113,4 +113,30 @@ public class MenuItemRepository {
         }
         return menuItems;
     }
+
+    public boolean updateMenuItem(MenuItem menuItem) {
+        SQLiteDatabase db = null;
+        boolean result = false;
+        try {
+            db = dbHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(DatabaseHelper.COLUMN_NAME, menuItem.getName());
+            values.put(DatabaseHelper.COLUMN_DESCRIPTION, menuItem.getDescription());
+            values.put(DatabaseHelper.COLUMN_PRICE, menuItem.getPrice());
+            values.put(DatabaseHelper.COLUMN_CATEGORY, menuItem.getCategory());
+            values.put(DatabaseHelper.COLUMN_TOPPINGS, menuItem.getToppings());
+            values.put(DatabaseHelper.COLUMN_IMAGE_URI, menuItem.getImageUri());
+
+            int rowsAffected = db.update(DatabaseHelper.TABLE_MENU_ITEMS, values,
+                    DatabaseHelper.COLUMN_ID + "=?", new String[]{String.valueOf(menuItem.getId())});
+            result = rowsAffected > 0;
+        } finally {
+            if (db != null) {
+                db.close();
+            }
+        }
+        return result;
+    }
+
+
 }
