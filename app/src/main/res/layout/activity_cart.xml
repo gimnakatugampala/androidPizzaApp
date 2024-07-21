@@ -81,6 +81,19 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
+            <!-- Display applied promo code -->
+            <TextView
+                android:id="@+id/appliedPromoCodeTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:text="Applied Promo Code: None"
+                android:textColor="#373b54"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

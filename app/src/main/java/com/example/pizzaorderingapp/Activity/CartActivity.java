@@ -16,19 +16,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.pizzaorderingapp.Adapter.CartListAdapter;
 import com.example.pizzaorderingapp.Helper.ManagementCart;
 import com.example.pizzaorderingapp.Interface.ChangeNumberItemsListener;
+import com.example.pizzaorderingapp.Model.PromoCode;
+import com.example.pizzaorderingapp.Repository.PromoCodeRepository;
 import com.example.pizzaorderingapp.R;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class CartActivity extends AppCompatActivity {
 
     private RecyclerView.Adapter adapter;
     private RecyclerView recyclerViewList;
     private ManagementCart managementCart;
-    private TextView totalFeeTxt, taxTxt, deliveryTxt, totalTxt, emptyTxt;
+    private TextView totalFeeTxt, taxTxt, deliveryTxt, totalTxt, emptyTxt, appliedPromoCodeTxt;
     private EditText editTextPromoCode;
     private Button buttonApplyPromoCode;
     private double tax;
     private double discountPercentage = 0.0;
     private ScrollView scrollView;
+    private PromoCodeRepository promoCodeRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +44,7 @@ public class CartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cart);
 
         managementCart = new ManagementCart(this);
+        promoCodeRepository = new PromoCodeRepository(this);
 
         initView();
         initList();
@@ -52,6 +61,7 @@ public class CartActivity extends AppCompatActivity {
         emptyTxt = findViewById(R.id.emptyTxt);
         editTextPromoCode = findViewById(R.id.editTextPromoCode);
         buttonApplyPromoCode = findViewById(R.id.buttonApplyPromoCode);
+        appliedPromoCodeTxt = findViewById(R.id.appliedPromoCodeTxt);  // New TextView for applied promo code
 
         buttonApplyPromoCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,16 +109,15 @@ public class CartActivity extends AppCompatActivity {
         totalFeeTxt.setText(String.format("$%.2f", discountedTotal));
         taxTxt.setText(String.format("$%.2f", tax));
         deliveryTxt.setText(String.format("$%.2f", delivery));
-        totalTxt.setText(String.format("$%.2f", total));
+        updateTotalAmount(total); // Update the total amount in the UI
     }
 
     private void applyPromoCode() {
-        String promoCode = editTextPromoCode.getText().toString().trim();
+        String promoCodeInput = editTextPromoCode.getText().toString().trim();
 
-        // Logic to validate promo code and get discount percentage
-        // For example, this could be a call to a repository or API
-        if (isValidPromoCode(promoCode)) {
-            discountPercentage = getDiscountPercentage(promoCode);
+        if (isValidPromoCode(promoCodeInput)) {
+            discountPercentage = getDiscountPercentage(promoCodeInput);
+            appliedPromoCodeTxt.setText(String.format("Applied Promo Code: %s (%.2f%% off)", promoCodeInput, discountPercentage));
             calculateCart();
             Toast.makeText(this, "Promo code applied!", Toast.LENGTH_SHORT).show();
         } else {
@@ -116,14 +125,33 @@ public class CartActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isValidPromoCode(String promoCode) {
-        // Implement your promo code validation logic here
-        return true;
+    private boolean isValidPromoCode(String promoCodeInput) {
+        PromoCode promoCode = promoCodeRepository.getPromoCodeByCode(promoCodeInput);
+        if (promoCode != null) {
+            // Check if promo code is expired
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            try {
+                Date expiryDate = sdf.parse(promoCode.getExpiryDate());
+                return expiryDate != null && !expiryDate.before(new Date());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
-    private double getDiscountPercentage(String promoCode) {
-        // Implement your logic to retrieve the discount percentage for the promo code
-        return 10.0; // Example discount percentage
+    private double getDiscountPercentage(String promoCodeInput) {
+        PromoCode promo = promoCodeRepository.getPromoCodeByCode(promoCodeInput);
+        return (promo != null) ? promo.getDiscountPercentage() : 0.0;
+    }
+
+    private void updateTotalAmount(double amount) {
+        totalTxt.setText(String.format("$%.2f", amount));
+    }
+
+    private double getCurrentTotalAmount() {
+        // Implement your logic to retrieve the current total amount
+        return managementCart.getTotalFee() - (managementCart.getTotalFee() * discountPercentage / 100) + tax + 10.0;
     }
 
     public void onCheckout(View view) {
