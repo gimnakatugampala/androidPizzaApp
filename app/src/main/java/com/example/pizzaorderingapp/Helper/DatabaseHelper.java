@@ -50,6 +50,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_CATEGORY_NAME = "categoryName";
     public static final String COLUMN_IMAGE_URL = "imageUrl";
 
+    public static final String TABLE_PROMO_CODES = "promo_codes";
+    public static final String COLUMN_PROMO_ID = "promo_id";
+    public static final String COLUMN_PROMO_CODE = "promo_code";
+    public static final String COLUMN_PROMO_DISCOUNT_PERCENT = "promo_discount_percent";
+    public static final String COLUMN_PROMO_EXPIRY_DATE = "promo_expiry_date";
+
+
+
     private static final String TABLE_ORDERS_CREATE =
             "CREATE TABLE " + TABLE_ORDERS + " (" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -91,6 +99,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_IMAGE_URL + " TEXT" +
                     ");";
 
+
+    private static final String CREATE_TABLE_PROMO_CODES = "CREATE TABLE " + TABLE_PROMO_CODES + " ("
+            + COLUMN_PROMO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + COLUMN_PROMO_CODE + " TEXT, "
+            + COLUMN_PROMO_DISCOUNT_PERCENT + " REAL, "
+            + COLUMN_PROMO_EXPIRY_DATE + " TEXT)";
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -101,6 +116,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(TABLE_USERS_CREATE);
         db.execSQL(TABLE_MENU_ITEMS_CREATE);
         db.execSQL(TABLE_MENU_ITEM_CATEGORY_CREATE);
+        db.execSQL(CREATE_TABLE_PROMO_CODES);
+
 
         // Insert default categories
 //        insertDefaultCategories(db);
@@ -112,6 +129,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_DELIVERY_ADDRESS + " TEXT;");
             db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_PHONE + " TEXT;");
             db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_IMAGE_URI + " TEXT;");
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROMO_CODES);
         }
     }
 
