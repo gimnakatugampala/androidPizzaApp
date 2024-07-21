@@ -26,6 +26,7 @@ public class SignUp_Screen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_screen);
 
+        // Ensure IDs match with those defined in the XML
         firstName = findViewById(R.id.fristName);
         lastName = findViewById(R.id.lastName);
         email = findViewById(R.id.email);
@@ -36,33 +37,30 @@ public class SignUp_Screen extends AppCompatActivity {
         userRepository = new UserRepository(this);
         sessionManager = new SessionManager(this);
 
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String fName = firstName.getText().toString();
-                String lName = lastName.getText().toString();
-                String emailStr = email.getText().toString();
-                String pass = password.getText().toString();
-                String confirmPass = confirmPassword.getText().toString();
+        signUpButton.setOnClickListener(v -> {
+            String fName = firstName.getText().toString().trim();
+            String lName = lastName.getText().toString().trim();
+            String emailStr = email.getText().toString().trim();
+            String pass = password.getText().toString();
+            String confirmPass = confirmPassword.getText().toString();
 
-                if (validateInputs(fName, lName, emailStr, pass, confirmPass)) {
-                    String role = "Member"; // or "Admin" based on your logic
-                    if (!userRepository.isUserExists(emailStr)) {
-                        boolean isRegistered = userRepository.registerUser(fName, lName, emailStr, pass, role);
+            if (validateInputs(fName, lName, emailStr, pass, confirmPass)) {
+                String role = "Member"; // or "Admin" based on your logic
+                if (!userRepository.isUserExists(emailStr)) {
+                    boolean isRegistered = userRepository.registerUser(fName, lName, emailStr, pass, role);
 
-                        if (isRegistered) {
-                            sessionManager.createLoginSession(emailStr, role);
-                            Toast.makeText(SignUp_Screen.this, "Sign Up Successful", Toast.LENGTH_SHORT).show();
-                            // Navigate to MainActivity
-                            Intent intent = new Intent(SignUp_Screen.this, MainActivity.class);
-                            startActivity(intent);
-                            finish(); // Finish current activity
-                        } else {
-                            Toast.makeText(SignUp_Screen.this, "Sign Up Failed", Toast.LENGTH_SHORT).show();
-                        }
+                    if (isRegistered) {
+                        sessionManager.createLoginSession(emailStr, role, fName, lName); // Store names in session
+                        Toast.makeText(SignUp_Screen.this, "Sign Up Successful", Toast.LENGTH_SHORT).show();
+                        // Navigate to MainActivity
+                        Intent intent = new Intent(SignUp_Screen.this, MainActivity.class);
+                        startActivity(intent);
+                        finish(); // Finish current activity
                     } else {
-                        Toast.makeText(SignUp_Screen.this, "User already exists with this email", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignUp_Screen.this, "Sign Up Failed", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(SignUp_Screen.this, "User already exists with this email", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -82,7 +80,8 @@ public class SignUp_Screen extends AppCompatActivity {
         }
 
         if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(SignUp_Screen.this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
+            this.email.setError("Please enter a valid email address"); // Use 'this.email' to refer to the EditText
+            this.email.requestFocus();
             return false;
         }
 

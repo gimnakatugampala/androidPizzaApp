@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.example.pizzaorderingapp.Domain.CategoryDomain;
 
@@ -14,10 +13,12 @@ import java.util.ArrayList;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "pizzaOrderingAppDB";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 1; // Updated version
 
     // Table names
     public static final String TABLE_ORDERS = "orders";
+    public static final String TABLE_ORDER_ITEMS = "order_items";
+    public static final String TABLE_CUSTOMERS = "customers";
     public static final String TABLE_USERS = "users";
     public static final String TABLE_MENU_ITEMS = "menu_items";
     public static final String TABLE_MENU_ITEM_CATEGORY = "menu_item_category";
@@ -26,9 +27,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Column names for orders table
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_USER_EMAIL_ORDERS = "user_email";
-    public static final String COLUMN_ORDER_DETAILS = "order_details";
+    public static final String COLUMN_ORDER_STATUS = "order_status";
     public static final String COLUMN_TOTAL_AMOUNT = "total_amount";
     public static final String COLUMN_DATE = "order_date";
+    public static final String COLUMN_COMPLETED = "completed";
+
+    // Column names for order items table
+    public static final String COLUMN_ORDER_ID = "order_id";
+    public static final String COLUMN_MENU_ITEM_ID = "menu_item_id";
+    public static final String COLUMN_QUANTITY = "quantity";
+
+    // Column names for customers table
+    public static final String COLUMN_CUSTOMER_EMAIL = "customer_email";
+    public static final String COLUMN_CUSTOMER_NAME = "customer_name";
+    public static final String COLUMN_CUSTOMER_PHONE = "customer_phone";
+    public static final String COLUMN_CUSTOMER_ADDRESS = "customer_address";
 
     // Column names for users table
     public static final String COLUMN_FIRST_NAME = "first_name";
@@ -60,9 +73,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + TABLE_ORDERS + " (" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_USER_EMAIL_ORDERS + " TEXT, " +
-                    COLUMN_ORDER_DETAILS + " TEXT, " +
-                    COLUMN_TOTAL_AMOUNT + " TEXT, " +
-                    COLUMN_DATE + " TEXT" +
+                    COLUMN_ORDER_STATUS + " TEXT, " +
+                    COLUMN_TOTAL_AMOUNT + " REAL, " +
+                    COLUMN_DATE + " TEXT, " +
+                    COLUMN_COMPLETED + " INTEGER DEFAULT 0" +
+                    ");";
+
+    private static final String CREATE_TABLE_ORDER_ITEMS =
+            "CREATE TABLE " + TABLE_ORDER_ITEMS + " (" +
+                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_ORDER_ID + " INTEGER, " +
+                    COLUMN_MENU_ITEM_ID + " INTEGER, " +
+                    COLUMN_QUANTITY + " INTEGER, " +
+                    "FOREIGN KEY(" + COLUMN_ORDER_ID + ") REFERENCES " + TABLE_ORDERS + "(" + COLUMN_ID + "), " +
+                    "FOREIGN KEY(" + COLUMN_MENU_ITEM_ID + ") REFERENCES " + TABLE_MENU_ITEMS + "(" + COLUMN_ID + ")" +
+                    ");";
+
+    private static final String CREATE_TABLE_CUSTOMERS =
+            "CREATE TABLE " + TABLE_CUSTOMERS + " (" +
+                    COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_CUSTOMER_EMAIL + " TEXT UNIQUE, " +
+                    COLUMN_CUSTOMER_NAME + " TEXT, " +
+                    COLUMN_CUSTOMER_PHONE + " TEXT, " +
+                    COLUMN_CUSTOMER_ADDRESS + " TEXT" +
                     ");";
 
     private static final String TABLE_USERS_CREATE =
@@ -110,23 +143,64 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(TABLE_ORDERS_CREATE);
+        db.execSQL(CREATE_TABLE_ORDER_ITEMS);
+        db.execSQL(CREATE_TABLE_CUSTOMERS);
         db.execSQL(TABLE_USERS_CREATE);
         db.execSQL(TABLE_MENU_ITEMS_CREATE);
         db.execSQL(TABLE_MENU_ITEM_CATEGORY_CREATE);
         db.execSQL(CREATE_TABLE_PROMO_CODES);
 
         // Insert default categories
-        // insertDefaultCategories(db);
+         insertDefaultCategories(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
         if (oldVersion < 2) {
-            db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_DELIVERY_ADDRESS + " TEXT;");
-            db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_PHONE + " TEXT;");
-            db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_IMAGE_URI + " TEXT;");
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROMO_CODES);
+            // Upgrade logic for version 2
+            Cursor cursor = db.rawQuery("PRAGMA table_info(" + TABLE_USERS + ")", null);
+            boolean hasDeliveryAddress = false;
+            boolean hasPhone = false;
+            boolean hasImageUri = false;
+
+            while (cursor.moveToNext()) {
+                String columnName = cursor.getString(cursor.getColumnIndex("name"));
+                if (COLUMN_DELIVERY_ADDRESS.equals(columnName)) {
+                    hasDeliveryAddress = true;
+                } else if (COLUMN_PHONE.equals(columnName)) {
+                    hasPhone = true;
+                } else if (COLUMN_IMAGE_URI.equals(columnName)) {
+                    hasImageUri = true;
+                }
+            }
+            cursor.close();
+
+            if (!hasDeliveryAddress) {
+                db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_DELIVERY_ADDRESS + " TEXT;");
+            }
+            if (!hasPhone) {
+                db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_PHONE + " TEXT;");
+            }
+            if (!hasImageUri) {
+                db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_IMAGE_URI + " TEXT;");
+            }
         }
+
+        if (oldVersion < 3) {
+            // Drop tables if needed for version 3
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROMO_CODES);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU_ITEM_CATEGORY);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_MENU_ITEMS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_CUSTOMERS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDER_ITEMS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
+
+            // Recreate tables
+            onCreate(db);
+        }
+
     }
 
     private void insertDefaultCategories(SQLiteDatabase db) {

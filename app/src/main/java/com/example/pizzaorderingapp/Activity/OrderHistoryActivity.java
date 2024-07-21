@@ -25,14 +25,14 @@ public class OrderHistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_order_history);
 
         lvOrderHistory = findViewById(R.id.lvOrderHistory);
-        orderRepository = new OrderRepository(this);
+//        orderRepository = new OrderRepository(this);
 
         // Assume userEmail is retrieved from the logged-in user's information
-        Intent intent = getIntent();
-        userEmail = intent.getStringExtra("gimnakatugampala1@gmail.com");
-
-        List<Order> orderList = orderRepository.getOrdersByEmail(userEmail);
-        OrderAdapter adapter = new OrderAdapter(this, orderList);
-        lvOrderHistory.setAdapter(adapter);
+//        Intent intent = getIntent();
+//        userEmail = intent.getStringExtra("gimnakatugampala1@gmail.com");
+//
+//        List<Order> orderList = orderRepository.getOrdersByEmail(userEmail);
+//        OrderAdapter adapter = new OrderAdapter(this, orderList);
+//        lvOrderHistory.setAdapter(adapter);
     }
 }

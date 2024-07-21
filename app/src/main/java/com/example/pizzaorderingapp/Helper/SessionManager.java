@@ -9,6 +9,8 @@ public class SessionManager {
     private static final String KEY_IS_LOGGEDIN = "isLoggedIn";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_ROLE = "role";
+    private static final String KEY_FIRST_NAME = "firstName"; // Add this line
+    private static final String KEY_LAST_NAME = "lastName";   // Add this line
     private static final String KEY_FIRST_TIME_LAUNCH = "isFirstTimeLaunch";
 
     SharedPreferences pref;
@@ -23,10 +25,12 @@ public class SessionManager {
         editor = pref.edit();
     }
 
-    public void createLoginSession(String email, String role) {
+    public void createLoginSession(String email, String role, String firstName, String lastName) {
         editor.putBoolean(KEY_IS_LOGGEDIN, true);
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_ROLE, role);
+        editor.putString(KEY_FIRST_NAME, firstName); // Store first name
+        editor.putString(KEY_LAST_NAME, lastName);   // Store last name
         editor.commit();
     }
 
@@ -45,6 +49,14 @@ public class SessionManager {
 
     public String getRole() {
         return pref.getString(KEY_ROLE, null);
+    }
+
+    public String getFirstName() {
+        return pref.getString(KEY_FIRST_NAME, null); // Retrieve first name
+    }
+
+    public String getLastName() {
+        return pref.getString(KEY_LAST_NAME, null);  // Retrieve last name
     }
 
     public boolean isFirstTimeLaunch() {

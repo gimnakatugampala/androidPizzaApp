@@ -53,27 +53,35 @@ public class ManagementCart {
 
     // Decrease the quantity of a food item in the cart
     public void minusNumberFood(ArrayList<FoodDomain> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) {
-        FoodDomain item = listFood.get(position);
+        if (position >= 0 && position < listFood.size()) {
+            FoodDomain item = listFood.get(position);
 
-        if (item.getNumberInCart() > 1) {
-            item.setNumberInCart(item.getNumberInCart() - 1);
+            if (item.getNumberInCart() > 1) {
+                item.setNumberInCart(item.getNumberInCart() - 1);
+            } else {
+                listFood.remove(position);
+            }
+
+            // Save updated list to TinyDB
+            tinyDB.putListObject("CartList", listFood);
+            changeNumberItemsListener.changed();
         } else {
-            listFood.remove(position);
+            Toast.makeText(context, "Invalid item position", Toast.LENGTH_SHORT).show();
         }
-
-        // Save updated list to TinyDB
-        tinyDB.putListObject("CartList", listFood);
-        changeNumberItemsListener.changed();
     }
 
     // Increase the quantity of a food item in the cart
     public void plusNumberFood(ArrayList<FoodDomain> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) {
-        FoodDomain item = listFood.get(position);
-        item.setNumberInCart(item.getNumberInCart() + 1);
+        if (position >= 0 && position < listFood.size()) {
+            FoodDomain item = listFood.get(position);
+            item.setNumberInCart(item.getNumberInCart() + 1);
 
-        // Save updated list to TinyDB
-        tinyDB.putListObject("CartList", listFood);
-        changeNumberItemsListener.changed();
+            // Save updated list to TinyDB
+            tinyDB.putListObject("CartList", listFood);
+            changeNumberItemsListener.changed();
+        } else {
+            Toast.makeText(context, "Invalid item position", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // Remove a food item from the cart

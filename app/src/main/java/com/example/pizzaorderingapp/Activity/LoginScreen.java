@@ -44,8 +44,11 @@ public class LoginScreen extends AppCompatActivity {
 
         if(validateEmail(email) && validatePassword(password)) {
             String role = userRepository.getUserRole(email, password);
+            String firstName = userRepository.getUserFirstName(email); // Retrieve first name
+            String lastName = userRepository.getUserLastName(email);   // Retrieve last name
+
             if (role != null) {
-                sessionManager.createLoginSession(email, role);
+                sessionManager.createLoginSession(email, role, firstName, lastName);
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 finish();

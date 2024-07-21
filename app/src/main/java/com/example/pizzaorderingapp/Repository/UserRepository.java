@@ -100,4 +100,72 @@ public class UserRepository {
             }
         }
     }
+
+    // Get user first name based on email
+    public String getUserFirstName(String email) {
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        try {
+            db = dbHelper.getReadableDatabase();
+            String[] columns = { DatabaseHelper.COLUMN_FIRST_NAME };
+            String selection = DatabaseHelper.COLUMN_USER_EMAIL + " = ?";
+            String[] selectionArgs = { email };
+
+            cursor = db.query(DatabaseHelper.TABLE_USERS, columns, selection, selectionArgs, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int firstNameColumnIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_FIRST_NAME);
+                if (firstNameColumnIndex != -1) {
+                    return cursor.getString(firstNameColumnIndex);
+                } else {
+                    Log.w(TAG, "Column index for first name is -1");
+                    return null;
+                }
+            }
+            return null;
+        } catch (SQLException e) {
+            Log.e(TAG, "Error getting user first name", e);
+            return null;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
+        }
+    }
+
+    // Get user last name based on email
+    public String getUserLastName(String email) {
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        try {
+            db = dbHelper.getReadableDatabase();
+            String[] columns = { DatabaseHelper.COLUMN_LAST_NAME };
+            String selection = DatabaseHelper.COLUMN_USER_EMAIL + " = ?";
+            String[] selectionArgs = { email };
+
+            cursor = db.query(DatabaseHelper.TABLE_USERS, columns, selection, selectionArgs, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int lastNameColumnIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_LAST_NAME);
+                if (lastNameColumnIndex != -1) {
+                    return cursor.getString(lastNameColumnIndex);
+                } else {
+                    Log.w(TAG, "Column index for last name is -1");
+                    return null;
+                }
+            }
+            return null;
+        } catch (SQLException e) {
+            Log.e(TAG, "Error getting user last name", e);
+            return null;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
+        }
+    }
 }
