@@ -46,10 +46,10 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         FoodDomain food = listFoodSelected.get(position);
 
-        holder.title.setText(food.getTitle());
+        holder.titleTxt.setText(food.getTitle());
         holder.feeEachItem.setText(String.format("$%.2f", food.getFee()));
         holder.totalEachItem.setText(String.format("$%.2f", food.getNumberInCart() * food.getFee()));
-        holder.num.setText(String.valueOf(food.getNumberInCart()));
+        holder.numberItemTxt.setText(String.valueOf(food.getNumberInCart()));
 
         // Load image using the method from RecommendedAdapter
         String imageUri = food.getPic();
@@ -80,17 +80,17 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.ViewHo
             holder.pic.setImageResource(R.drawable.pizza_default); // Set default image
         }
 
-        holder.plusItem.setOnClickListener(v -> managementCart.plusNumberFood(listFoodSelected, position, () -> {
+        holder.plusCardBtn.setOnClickListener(v -> managementCart.plusNumberFood(listFoodSelected, position, () -> {
             notifyDataSetChanged();
             changeNumberItemsListener.changed();
         }));
 
-        holder.minusItem.setOnClickListener(v -> managementCart.minusNumberFood(listFoodSelected, position, () -> {
+        holder.minusCardBtn.setOnClickListener(v -> managementCart.minusNumberFood(listFoodSelected, position, () -> {
             notifyDataSetChanged();
             changeNumberItemsListener.changed();
         }));
 
-        holder.deleteItem.setOnClickListener(v -> {
+        holder.deleteCardBtn.setOnClickListener(v -> {
             managementCart.removeFoodFromCart(listFoodSelected, position, () -> {
                 notifyDataSetChanged();
                 changeNumberItemsListener.changed();
@@ -105,20 +105,20 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title, feeEachItem, totalEachItem, num;
-        ImageView pic, plusItem, minusItem, deleteItem;
+        TextView titleTxt, feeEachItem, totalEachItem, numberItemTxt;
+        ImageView pic, plusCardBtn, minusCardBtn, deleteCardBtn;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            title = itemView.findViewById(R.id.titleTxt);
+            titleTxt = itemView.findViewById(R.id.titleTxt);
             pic = itemView.findViewById(R.id.pic);
             feeEachItem = itemView.findViewById(R.id.feeEachItem);
             totalEachItem = itemView.findViewById(R.id.totalEachItem);
-            plusItem = itemView.findViewById(R.id.plusCardBtn);
-            minusItem = itemView.findViewById(R.id.minusCardBtn);
-            num = itemView.findViewById(R.id.numberItemTxt);
-            deleteItem = itemView.findViewById(R.id.deleteCardBtn);
+            plusCardBtn = itemView.findViewById(R.id.plusCardBtn);
+            minusCardBtn = itemView.findViewById(R.id.minusCardBtn);
+            numberItemTxt = itemView.findViewById(R.id.numberItemTxt);
+            deleteCardBtn = itemView.findViewById(R.id.deleteCardBtn);
         }
     }
 }

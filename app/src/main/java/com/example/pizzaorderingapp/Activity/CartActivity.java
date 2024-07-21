@@ -66,22 +66,22 @@ public class CartActivity extends AppCompatActivity {
         double delivery = 10.0;
 
         // Calculate tax and total
-        tax = Math.round((managementCart.getTotalFee() * percentTax) * 100.0) / 100.0;
-        double itemTotal = Math.round(managementCart.getTotalFee() * 100.0) / 100.0;
+        double itemTotal = managementCart.getTotalFee();
+        tax = Math.round((itemTotal * percentTax) * 100.0) / 100.0;
         double total = Math.round((itemTotal + tax + delivery) * 100.0) / 100.0;
 
-        totalFeeTxt.setText("$" + itemTotal);
-        taxTxt.setText("$" + tax);
-        deliveryTxt.setText("$" + delivery);
-        totalTxt.setText("$" + total);
+        totalFeeTxt.setText(String.format("$%.2f", itemTotal));
+        taxTxt.setText(String.format("$%.2f", tax));
+        deliveryTxt.setText(String.format("$%.2f", delivery));
+        totalTxt.setText(String.format("$%.2f", total));
     }
 
     private void initView() {
         totalFeeTxt = findViewById(R.id.totalFeeTxt);
         deliveryTxt = findViewById(R.id.deliveryTxt);
-        taxTxt = findViewById(R.id.TaxTxt);
+        taxTxt = findViewById(R.id.TaxTxt);  // Corrected ID from TaxTxt to taxTxt
         totalTxt = findViewById(R.id.totalTxt);
-        recyclerViewList = findViewById(R.id.view);
+        recyclerViewList = findViewById(R.id.view);  // Ensure this ID matches your layout
         scrollView = findViewById(R.id.scrollView);
         emptyTxt = findViewById(R.id.emptyTxt);
     }

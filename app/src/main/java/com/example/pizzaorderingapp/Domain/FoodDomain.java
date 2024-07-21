@@ -69,7 +69,9 @@ public class FoodDomain implements Serializable {
 
         // Add price for each selected topping
         if (selectedToppings != null && !selectedToppings.isEmpty()) {
-            totalPrice += TOPPING_PRICE;
+            // Count the number of selected toppings
+            String[] selectedToppingArray = selectedToppings.split(",");
+            totalPrice += TOPPING_PRICE * selectedToppingArray.length;
         }
 
         return totalPrice * numberInCart;
