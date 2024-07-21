@@ -151,7 +151,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_PROMO_CODES);
 
         // Insert default categories
-         insertDefaultCategories(db);
+//         insertDefaultCategories(db);
     }
 
     @Override

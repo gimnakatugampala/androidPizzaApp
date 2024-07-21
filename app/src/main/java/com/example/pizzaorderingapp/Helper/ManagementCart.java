@@ -109,8 +109,10 @@ public class ManagementCart {
     }
 
     // Clear all items from the cart
-    public void clearCart() {
+    public void clearCart(ChangeNumberItemsListener changeNumberItemsListener) {
         tinyDB.putListObject("CartList", new ArrayList<FoodDomain>());
-        Toast.makeText(context, "Cart cleared", Toast.LENGTH_SHORT).show();
+        if (changeNumberItemsListener != null) {
+            changeNumberItemsListener.changed();
+        }
     }
 }

@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.pizzaorderingapp.Domain.FoodDomain;
 import com.example.pizzaorderingapp.Helper.DatabaseHelper;
 import com.example.pizzaorderingapp.Helper.ManagementCart;
+import com.example.pizzaorderingapp.Interface.ChangeNumberItemsListener;
 import com.example.pizzaorderingapp.R;
 import com.example.pizzaorderingapp.Utils.MailSender;
 import com.example.pizzaorderingapp.Util.SessionManager;
@@ -147,20 +148,30 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void storeOrderItems(int orderId) {
-        // Assuming you have a method to get cart items
-        ArrayList<FoodDomain> cartItems = getCartItems(); // Implement this method
+        // Retrieve cart items from ManagementCart
+        ManagementCart managementCart = new ManagementCart(this);
+        ArrayList<FoodDomain> cartItems = managementCart.getListCart();
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         for (FoodDomain item : cartItems) {
             ContentValues values = new ContentValues();
             values.put(DatabaseHelper.COLUMN_ORDER_ID, orderId);
-            values.put(DatabaseHelper.COLUMN_MENU_ITEM_ID, item.getTitle()); // Assume title as MenuItemID
+            values.put(DatabaseHelper.COLUMN_MENU_ITEM_ID, item.getTitle()); // Use appropriate MenuItemID if needed
             values.put(DatabaseHelper.COLUMN_QUANTITY, item.getNumberInCart());
             values.put(DatabaseHelper.COLUMN_PRICE, item.getFee()); // Base price
 
             db.insert(DatabaseHelper.TABLE_ORDER_ITEMS, null, values);
         }
         db.close();
+
+        // Clear the cart after processing
+        managementCart.clearCart(new ChangeNumberItemsListener() {
+            @Override
+            public void changed() {
+                // Cart has been cleared
+                // You can add any additional logic here if needed
+            }
+        });
     }
 
     private void storeCustomerDetails() {
@@ -195,12 +206,5 @@ public class PaymentActivity extends AppCompatActivity {
         String message = "Your payment of $" + totalAmount + " was successful. Thank you for your order!";
         MailSender mailSender = new MailSender(email, subject, message);
         mailSender.execute();
-    }
-
-    private ArrayList<FoodDomain> getCartItems() {
-        // Implement this method to retrieve cart items from TinyDB or any other storage
-        // Example:
-        ManagementCart managementCart = new ManagementCart(this);
-        return managementCart.getListCart();
     }
 }
