@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 
 public class FoodDomain implements Serializable {
+
+    private int id; // ID of the food item
     private String title;
     private String pic;
     private String description;
@@ -18,7 +20,8 @@ public class FoodDomain implements Serializable {
     private static final double TOPPING_PRICE = 1.0; // Additional price for each topping
 
     // Constructor with selectedToppings
-    public FoodDomain(String title, String pic, String description, double fee, String star, int calories, int time, List<String> toppings, String selectedToppings) {
+    public FoodDomain(int id, String title, String pic, String description, double fee, String star, int calories, int time, List<String> toppings, String selectedToppings) {
+        this.id = id;
         this.title = title;
         this.pic = pic;
         this.description = description;
@@ -31,7 +34,9 @@ public class FoodDomain implements Serializable {
         this.numberInCart = 1; // Default value
     }
 
-    // Getters and Setters...
+    // Getters and Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
@@ -69,7 +74,6 @@ public class FoodDomain implements Serializable {
 
         // Add price for each selected topping
         if (selectedToppings != null && !selectedToppings.isEmpty()) {
-            // Count the number of selected toppings
             String[] selectedToppingArray = selectedToppings.split(",");
             totalPrice += TOPPING_PRICE * selectedToppingArray.length;
         }
@@ -80,7 +84,8 @@ public class FoodDomain implements Serializable {
     @Override
     public String toString() {
         return "FoodDomain{" +
-                "title='" + title + '\'' +
+                "id=" + id +
+                ", title='" + title + '\'' +
                 ", pic='" + pic + '\'' +
                 ", description='" + description + '\'' +
                 ", fee=" + fee +

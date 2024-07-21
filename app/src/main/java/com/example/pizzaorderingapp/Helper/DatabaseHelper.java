@@ -69,6 +69,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_PROMO_DISCOUNT_PERCENT = "promo_discount_percent";
     public static final String COLUMN_PROMO_EXPIRY_DATE = "promo_expiry_date";
 
+//    Order items
+public static final String COLUMN_ORDERITEM_ORDER_ID = "order_id";
+    public static final String COLUMN_ORDERITEM_MENU_ITEM_ID = "menu_item_id";
+    public static final String COLUMN_ORDERITEM_QUANTITY = "quantity";
+    public static final String COLUMN_ORDERITEM_PRICE = "price"; // Add the price column here
+
     private static final String TABLE_ORDERS_CREATE =
             "CREATE TABLE " + TABLE_ORDERS + " (" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -79,14 +85,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_COMPLETED + " INTEGER DEFAULT 0" +
                     ");";
 
+
     private static final String CREATE_TABLE_ORDER_ITEMS =
             "CREATE TABLE " + TABLE_ORDER_ITEMS + " (" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_ORDER_ID + " INTEGER, " +
-                    COLUMN_MENU_ITEM_ID + " INTEGER, " +
-                    COLUMN_QUANTITY + " INTEGER, " +
-                    "FOREIGN KEY(" + COLUMN_ORDER_ID + ") REFERENCES " + TABLE_ORDERS + "(" + COLUMN_ID + "), " +
-                    "FOREIGN KEY(" + COLUMN_MENU_ITEM_ID + ") REFERENCES " + TABLE_MENU_ITEMS + "(" + COLUMN_ID + ")" +
+                    COLUMN_ORDERITEM_ORDER_ID + " INTEGER, " +
+                    COLUMN_ORDERITEM_MENU_ITEM_ID + " INTEGER, " +
+                    COLUMN_ORDERITEM_QUANTITY + " INTEGER, " +
+                    COLUMN_ORDERITEM_PRICE + " REAL" + // Include the price column here
                     ");";
 
     private static final String CREATE_TABLE_CUSTOMERS =

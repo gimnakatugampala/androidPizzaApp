@@ -117,20 +117,24 @@ public class PaymentActivity extends AppCompatActivity {
     private void processPayment(String totalAmount) {
         // Generate order details and store in database
         int orderId = createOrder(totalAmount);
-        storeOrderItems(orderId);
-        storeCustomerDetails();
+        if (orderId != -1) {
+            storeOrderItems(orderId);
+            storeCustomerDetails();
 
-        // Implement payment processing logic here
-        // For now, we'll just display a success message
-        Toast.makeText(PaymentActivity.this, "Payment Successful", Toast.LENGTH_SHORT).show();
+            // Implement payment processing logic here
+            // For now, we'll just display a success message
+            Toast.makeText(PaymentActivity.this, "Payment Successful", Toast.LENGTH_SHORT).show();
 
-        // Send confirmation email
-        sendConfirmationEmail(loggedInUserEmail, totalAmount);
+            // Send confirmation email
+            sendConfirmationEmail(loggedInUserEmail, totalAmount);
 
-        // Navigate to order confirmation screen
-        Intent confirmationIntent = new Intent(PaymentActivity.this, OrderConfirmationActivity.class);
-        startActivity(confirmationIntent);
-        finish();
+            // Navigate to order confirmation screen
+            Intent confirmationIntent = new Intent(PaymentActivity.this, OrderConfirmationActivity.class);
+            startActivity(confirmationIntent);
+            finish();
+        } else {
+            Toast.makeText(PaymentActivity.this, "Failed to create order", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private int createOrder(String totalAmount) {
@@ -155,12 +159,15 @@ public class PaymentActivity extends AppCompatActivity {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         for (FoodDomain item : cartItems) {
             ContentValues values = new ContentValues();
-            values.put(DatabaseHelper.COLUMN_ORDER_ID, orderId);
-            values.put(DatabaseHelper.COLUMN_MENU_ITEM_ID, item.getTitle()); // Use appropriate MenuItemID if needed
-            values.put(DatabaseHelper.COLUMN_QUANTITY, item.getNumberInCart());
-            values.put(DatabaseHelper.COLUMN_PRICE, item.getFee()); // Base price
+            values.put(DatabaseHelper.COLUMN_ORDERITEM_ORDER_ID, orderId);
+            values.put(DatabaseHelper.COLUMN_ORDERITEM_MENU_ITEM_ID, item.getId()); // Use MenuItemID
+            values.put(DatabaseHelper.COLUMN_ORDERITEM_QUANTITY, item.getNumberInCart());
+            values.put(DatabaseHelper.COLUMN_ORDERITEM_PRICE, item.getFee()); // Base price
 
-            db.insert(DatabaseHelper.TABLE_ORDER_ITEMS, null, values);
+            long result = db.insert(DatabaseHelper.TABLE_ORDER_ITEMS, null, values);
+            if (result == -1) {
+                Toast.makeText(PaymentActivity.this, "Failed to save order item: " + item.getTitle(), Toast.LENGTH_SHORT).show();
+            }
         }
         db.close();
 

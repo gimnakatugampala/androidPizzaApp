@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                     : new ArrayList<>();
 
             FoodDomain foodDomain = new FoodDomain(
+                    menuItem.getId(),
                     menuItem.getName(),
                     menuItem.getImageUri(),
                     menuItem.getDescription(),
