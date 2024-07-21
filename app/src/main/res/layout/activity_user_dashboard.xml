@@ -225,6 +225,7 @@
                         android:focusable="true"
                         android:gravity="start|center_vertical"
                         android:padding="16dp"
+                        android:onClick="onClickAllPromos"
                         android:text="All Promos"
                         android:textSize="16sp" />
 

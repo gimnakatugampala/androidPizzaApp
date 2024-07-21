@@ -75,4 +75,9 @@ public class UserDashboardActivity extends AppCompatActivity {
         Intent intent = new Intent(UserDashboardActivity.this, AddPromoCodeActivity.class);
         startActivity(intent);
     }
+
+    public  void  onClickAllPromos(View view){
+        Intent intent = new Intent(UserDashboardActivity.this, PromoCodeListActivity.class);
+        startActivity(intent);
+    }
 }

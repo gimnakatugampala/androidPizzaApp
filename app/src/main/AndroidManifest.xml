@@ -38,6 +38,7 @@
         <activity android:name=".Activity.EditMenuItemActivity" android:exported="false" />
         <activity android:name=".Activity.UpdateProfileActivity" android:exported="false" />
         <activity android:name=".Activity.AddPromoCodeActivity" android:exported="false" />
+        <activity android:name=".Activity.PromoCodeListActivity" android:exported="false" />
         <activity android:name=".Activity.SplashActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

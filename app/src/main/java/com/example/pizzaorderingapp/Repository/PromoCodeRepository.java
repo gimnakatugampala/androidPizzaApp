@@ -23,9 +23,7 @@ public class PromoCodeRepository {
     }
 
     public boolean addPromoCode(PromoCode promoCode) {
-        SQLiteDatabase db = null;
-        try {
-            db = dbHelper.getWritableDatabase();
+        try (SQLiteDatabase db = dbHelper.getWritableDatabase()) {
             ContentValues values = new ContentValues();
             values.put(DatabaseHelper.COLUMN_PROMO_CODE, promoCode.getPromoCode());
             values.put(DatabaseHelper.COLUMN_PROMO_DISCOUNT_PERCENT, promoCode.getDiscountPercentage());
@@ -36,21 +34,14 @@ public class PromoCodeRepository {
         } catch (SQLException e) {
             Log.e(TAG, "Error adding promo code", e);
             return false;
-        } finally {
-            if (db != null && db.isOpen()) {
-                db.close();
-            }
         }
     }
 
     public List<PromoCode> getAllPromoCodes() {
         List<PromoCode> promoCodes = new ArrayList<>();
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
 
-        try {
-            db = dbHelper.getReadableDatabase();
-            cursor = db.query(DatabaseHelper.TABLE_PROMO_CODES, null, null, null, null, null, null);
+        try (SQLiteDatabase db = dbHelper.getReadableDatabase();
+             Cursor cursor = db.query(DatabaseHelper.TABLE_PROMO_CODES, null, null, null, null, null, null)) {
 
             if (cursor.moveToFirst()) {
                 int promoCodeIdIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_PROMO_ID);
@@ -75,30 +66,17 @@ public class PromoCodeRepository {
             }
         } catch (SQLException e) {
             Log.e(TAG, "Error retrieving promo codes", e);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            if (db != null && db.isOpen()) {
-                db.close();
-            }
         }
         return promoCodes;
     }
 
     public boolean deletePromoCode(int id) {
-        SQLiteDatabase db = null;
-        try {
-            db = dbHelper.getWritableDatabase();
+        try (SQLiteDatabase db = dbHelper.getWritableDatabase()) {
             int result = db.delete(DatabaseHelper.TABLE_PROMO_CODES, DatabaseHelper.COLUMN_PROMO_ID + "=?", new String[]{String.valueOf(id)});
             return result > 0;
         } catch (SQLException e) {
             Log.e(TAG, "Error deleting promo code", e);
             return false;
-        } finally {
-            if (db != null && db.isOpen()) {
-                db.close();
-            }
         }
     }
 }
