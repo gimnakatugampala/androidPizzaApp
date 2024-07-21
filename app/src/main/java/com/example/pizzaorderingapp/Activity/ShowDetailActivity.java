@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,14 +14,15 @@ import com.example.pizzaorderingapp.Helper.ManagementCart;
 import com.example.pizzaorderingapp.R;
 
 import java.io.File;
+import java.util.List;
 
 public class ShowDetailActivity extends AppCompatActivity {
 
-    private TextView addToCartBtn;
-    private TextView titleTxt, feeTxt, descriptionTxt, numberOrderTxt, totalPriceTxt, starTxt, caloriesTxt, timeTxt;
+    private TextView addToCartBtn, titleTxt, feeTxt, descriptionTxt, numberOrderTxt, totalPriceTxt, starTxt, caloriesTxt, timeTxt;
     private ImageView plusBtn, minusBtn, picFood;
-    private FoodDomain object;
-    private int numberObject = 1;
+    private CheckBox[] toppingsCheckBoxes; // Array to hold CheckBox references
+    private FoodDomain foodDomain;
+    private int quantity = 1;
     private ManagementCart managementCart;
 
     @Override
@@ -29,78 +31,8 @@ public class ShowDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_show_detail);
 
         managementCart = new ManagementCart(this);
-
         initView();
-        getBundle();
-    }
-
-    private void getBundle() {
-        object = (FoodDomain) getIntent().getSerializableExtra("object");
-
-        if (object != null) {
-            String imageUri = object.getPic();
-            Log.d("ShowDetailActivity", "Loading image from URI: " + imageUri);
-
-            if (imageUri != null && !imageUri.isEmpty()) {
-                if (imageUri.startsWith("file://")) {
-                    File imageFile = new File(imageUri.substring(7)); // Remove "file://" from the path
-                    if (imageFile.exists()) {
-                        picFood.setImageURI(android.net.Uri.fromFile(imageFile)); // Directly set URI for local files
-                    } else {
-                        Log.w("ShowDetailActivity", "Image file does not exist: " + imageUri);
-                        picFood.setImageResource(R.drawable.pizza_default); // Set default image
-                    }
-                } else {
-                    Glide.with(this)
-                            .load(imageUri) // Assume it's a URL
-                            .placeholder(R.drawable.pizza_default) // Placeholder image while loading
-                            .error(R.drawable.pizza_default) // Image to show if loading fails
-                            .into(picFood);
-                }
-            } else {
-                Log.w("ShowDetailActivity", "Image URI is null or empty, setting default image");
-                picFood.setImageResource(R.drawable.pizza_default); // Set default image
-            }
-
-            titleTxt.setText(object.getTitle());
-            feeTxt.setText("$" + object.getFee());
-            descriptionTxt.setText(object.getDescription());
-            numberOrderTxt.setText(String.valueOf(numberObject));
-            totalPriceTxt.setText("$" + numberObject * object.getFee());
-
-            // Set star, calories, and time
-            starTxt.setText(object.getStar() + " stars");
-            caloriesTxt.setText(object.getCalories() + " calories");
-            timeTxt.setText(object.getTime() + " mins");
-
-            plusBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    numberObject++;
-                    updateUI();
-                }
-            });
-
-            minusBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (numberObject > 1) {
-                        numberObject--;
-                    }
-                    updateUI();
-                }
-            });
-
-            addToCartBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    object.setNumberInCart(numberObject);
-                    managementCart.insertFood(object);
-                }
-            });
-        } else {
-            Log.e("ShowDetailActivity", "FoodDomain object is null.");
-        }
+        getFoodDetailsFromIntent();
     }
 
     private void initView() {
@@ -112,15 +44,112 @@ public class ShowDetailActivity extends AppCompatActivity {
         plusBtn = findViewById(R.id.plusCardBtn);
         minusBtn = findViewById(R.id.minusCardBtn);
         picFood = findViewById(R.id.foodPic);
-
         totalPriceTxt = findViewById(R.id.totalPriceTxt);
         starTxt = findViewById(R.id.starTxt);
         caloriesTxt = findViewById(R.id.caloriesTxt);
         timeTxt = findViewById(R.id.TimeTxt);
+
+        // Initialize CheckBox references
+        toppingsCheckBoxes = new CheckBox[]{
+                findViewById(R.id.topping1),
+                findViewById(R.id.topping2),
+                findViewById(R.id.topping3)
+                // Add more CheckBox IDs as needed
+        };
+    }
+
+    private void getFoodDetailsFromIntent() {
+        foodDomain = (FoodDomain) getIntent().getSerializableExtra("object");
+
+        if (foodDomain == null) {
+            Log.e("ShowDetailActivity", "FoodDomain object is null.");
+            return;
+        }
+
+        loadFoodImage();
+        populateFoodDetails();
+        setupButtonListeners();
+    }
+
+    private void loadFoodImage() {
+        String imageUri = foodDomain.getPic();
+        if (imageUri == null || imageUri.isEmpty()) {
+            picFood.setImageResource(R.drawable.pizza_default);
+            return;
+        }
+
+        if (imageUri.startsWith("file://")) {
+            File imageFile = new File(imageUri.substring(7)); // Remove "file://" from the path
+            if (imageFile.exists()) {
+                picFood.setImageURI(android.net.Uri.fromFile(imageFile)); // Directly set URI for local files
+            } else {
+                Log.w("ShowDetailActivity", "Image file does not exist: " + imageUri);
+                picFood.setImageResource(R.drawable.pizza_default); // Set default image
+            }
+        } else {
+            Glide.with(this)
+                    .load(imageUri)
+                    .placeholder(R.drawable.pizza_default) // Placeholder image while loading
+                    .error(R.drawable.pizza_default) // Image to show if loading fails
+                    .into(picFood);
+        }
+    }
+
+    private void populateFoodDetails() {
+        titleTxt.setText(foodDomain.getTitle());
+        feeTxt.setText("$" + foodDomain.getFee());
+        descriptionTxt.setText(foodDomain.getDescription());
+        numberOrderTxt.setText(String.valueOf(quantity));
+        totalPriceTxt.setText("$" + quantity * foodDomain.getFee());
+        starTxt.setText(foodDomain.getStar() + " stars");
+        caloriesTxt.setText(foodDomain.getCalories() + " calories");
+        timeTxt.setText(foodDomain.getTime() + " mins");
+
+        // Set CheckBox states based on available toppings
+        List<String> toppings = foodDomain.getToppings();
+        for (int i = 0; i < toppingsCheckBoxes.length; i++) {
+            if (i < toppings.size()) {
+                toppingsCheckBoxes[i].setText(toppings.get(i));
+                toppingsCheckBoxes[i].setChecked(false); // Default to unchecked
+                toppingsCheckBoxes[i].setVisibility(View.VISIBLE); // Ensure CheckBox is visible
+            } else {
+                toppingsCheckBoxes[i].setVisibility(View.GONE); // Hide CheckBox if not needed
+            }
+        }
+    }
+
+    private void setupButtonListeners() {
+        plusBtn.setOnClickListener(v -> {
+            quantity++;
+            updateUI();
+        });
+
+        minusBtn.setOnClickListener(v -> {
+            if (quantity > 1) {
+                quantity--;
+            }
+            updateUI();
+        });
+
+        addToCartBtn.setOnClickListener(v -> {
+            foodDomain.setNumberInCart(quantity);
+            // Get selected toppings
+            StringBuilder selectedToppings = new StringBuilder();
+            for (CheckBox checkBox : toppingsCheckBoxes) {
+                if (checkBox.getVisibility() == View.VISIBLE && checkBox.isChecked()) {
+                    if (selectedToppings.length() > 0) {
+                        selectedToppings.append(", ");
+                    }
+                    selectedToppings.append(checkBox.getText().toString());
+                }
+            }
+            foodDomain.setSelectedToppings(selectedToppings.toString());
+            managementCart.insertFood(foodDomain);
+        });
     }
 
     private void updateUI() {
-        numberOrderTxt.setText(String.valueOf(numberObject));
-        totalPriceTxt.setText("$" + numberObject * object.getFee());
+        numberOrderTxt.setText(String.valueOf(quantity));
+        totalPriceTxt.setText("$" + quantity * foodDomain.getFee());
     }
 }

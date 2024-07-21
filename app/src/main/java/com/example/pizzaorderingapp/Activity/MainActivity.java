@@ -23,8 +23,10 @@ import com.example.pizzaorderingapp.Repository.MenuItemRepository;
 import com.example.pizzaorderingapp.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -74,17 +76,22 @@ public class MainActivity extends AppCompatActivity {
             int star = random.nextInt(5) + 1;          // Random star rating between 1 and 5
             int time = random.nextInt(60) + 10;        // Random preparation time between 10 and 70 minutes
             int calories = random.nextInt(500) + 100;  // Random calories between 100 and 600
-            Log.e("err" , menuItem.getImageUri());
 
+            // Convert toppings from String to List<String>
+            String toppingsString = menuItem.getToppings(); // Assuming this returns a comma-separated string
+            List<String> toppings = toppingsString != null && !toppingsString.isEmpty()
+                    ? Arrays.asList(toppingsString.split("\\s*,\\s*"))
+                    : new ArrayList<>();
 
             FoodDomain foodDomain = new FoodDomain(
                     menuItem.getName(),
                     menuItem.getImageUri(),
                     menuItem.getDescription(),
                     menuItem.getPrice(),
-                    star,
+                    String.valueOf(star), // Convert star to String
+                    calories,
                     time,
-                    calories
+                    toppings // Pass toppings list to FoodDomain
             );
             foodList.add(foodDomain);
         }
