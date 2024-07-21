@@ -79,4 +79,38 @@ public class PromoCodeRepository {
             return false;
         }
     }
+
+    // New method to get PromoCode by code
+    public PromoCode getPromoCodeByCode(String code) {
+        PromoCode promoCode = null;
+
+        String selection = DatabaseHelper.COLUMN_PROMO_CODE + " = ?";
+        String[] selectionArgs = { code };
+
+        try (SQLiteDatabase db = dbHelper.getReadableDatabase();
+             Cursor cursor = db.query(DatabaseHelper.TABLE_PROMO_CODES, null, selection, selectionArgs, null, null, null)) {
+
+            if (cursor.moveToFirst()) {
+                int promoCodeIdIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_PROMO_ID);
+                int promoCodeIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_PROMO_CODE);
+                int discountPercentIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_PROMO_DISCOUNT_PERCENT);
+                int expiryDateIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_PROMO_EXPIRY_DATE);
+
+                // Check if indices are valid
+                if (promoCodeIdIndex != -1 && promoCodeIndex != -1 && discountPercentIndex != -1 && expiryDateIndex != -1) {
+                    promoCode = new PromoCode();
+                    promoCode.setId(cursor.getInt(promoCodeIdIndex));
+                    promoCode.setPromoCode(cursor.getString(promoCodeIndex));
+                    promoCode.setDiscountPercentage(cursor.getDouble(discountPercentIndex));
+                    promoCode.setExpiryDate(cursor.getString(expiryDateIndex));
+                } else {
+                    Log.e(TAG, "One or more columns not found in cursor.");
+                }
+            }
+        } catch (SQLException e) {
+            Log.e(TAG, "Error retrieving promo code by code", e);
+        }
+
+        return promoCode;
+    }
 }

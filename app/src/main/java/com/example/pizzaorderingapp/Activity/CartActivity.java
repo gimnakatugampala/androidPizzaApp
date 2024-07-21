@@ -3,8 +3,11 @@ package com.example.pizzaorderingapp.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,7 +24,10 @@ public class CartActivity extends AppCompatActivity {
     private RecyclerView recyclerViewList;
     private ManagementCart managementCart;
     private TextView totalFeeTxt, taxTxt, deliveryTxt, totalTxt, emptyTxt;
+    private EditText editTextPromoCode;
+    private Button buttonApplyPromoCode;
     private double tax;
+    private double discountPercentage = 0.0;
     private ScrollView scrollView;
 
     @Override
@@ -34,6 +40,25 @@ public class CartActivity extends AppCompatActivity {
         initView();
         initList();
         calculateCart();
+    }
+
+    private void initView() {
+        totalFeeTxt = findViewById(R.id.totalFeeTxt);
+        deliveryTxt = findViewById(R.id.deliveryTxt);
+        taxTxt = findViewById(R.id.TaxTxt);  // Corrected ID from TaxTxt to taxTxt
+        totalTxt = findViewById(R.id.totalTxt);
+        recyclerViewList = findViewById(R.id.view);  // Ensure this ID matches your layout
+        scrollView = findViewById(R.id.scrollView);
+        emptyTxt = findViewById(R.id.emptyTxt);
+        editTextPromoCode = findViewById(R.id.editTextPromoCode);
+        buttonApplyPromoCode = findViewById(R.id.buttonApplyPromoCode);
+
+        buttonApplyPromoCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                applyPromoCode();
+            }
+        });
     }
 
     private void initList() {
@@ -68,22 +93,37 @@ public class CartActivity extends AppCompatActivity {
         // Calculate tax and total
         double itemTotal = managementCart.getTotalFee();
         tax = Math.round((itemTotal * percentTax) * 100.0) / 100.0;
-        double total = Math.round((itemTotal + tax + delivery) * 100.0) / 100.0;
+        double discountedTotal = itemTotal - (itemTotal * discountPercentage / 100);
+        double total = Math.round((discountedTotal + tax + delivery) * 100.0) / 100.0;
 
-        totalFeeTxt.setText(String.format("$%.2f", itemTotal));
+        totalFeeTxt.setText(String.format("$%.2f", discountedTotal));
         taxTxt.setText(String.format("$%.2f", tax));
         deliveryTxt.setText(String.format("$%.2f", delivery));
         totalTxt.setText(String.format("$%.2f", total));
     }
 
-    private void initView() {
-        totalFeeTxt = findViewById(R.id.totalFeeTxt);
-        deliveryTxt = findViewById(R.id.deliveryTxt);
-        taxTxt = findViewById(R.id.TaxTxt);  // Corrected ID from TaxTxt to taxTxt
-        totalTxt = findViewById(R.id.totalTxt);
-        recyclerViewList = findViewById(R.id.view);  // Ensure this ID matches your layout
-        scrollView = findViewById(R.id.scrollView);
-        emptyTxt = findViewById(R.id.emptyTxt);
+    private void applyPromoCode() {
+        String promoCode = editTextPromoCode.getText().toString().trim();
+
+        // Logic to validate promo code and get discount percentage
+        // For example, this could be a call to a repository or API
+        if (isValidPromoCode(promoCode)) {
+            discountPercentage = getDiscountPercentage(promoCode);
+            calculateCart();
+            Toast.makeText(this, "Promo code applied!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Invalid promo code", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean isValidPromoCode(String promoCode) {
+        // Implement your promo code validation logic here
+        return true;
+    }
+
+    private double getDiscountPercentage(String promoCode) {
+        // Implement your logic to retrieve the discount percentage for the promo code
+        return 10.0; // Example discount percentage
     }
 
     public void onCheckout(View view) {

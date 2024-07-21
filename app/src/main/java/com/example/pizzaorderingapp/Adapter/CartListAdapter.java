@@ -51,44 +51,41 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.ViewHo
         holder.totalEachItem.setText(String.format("$%.2f", food.getNumberInCart() * food.getFee()));
         holder.numberItemTxt.setText(String.valueOf(food.getNumberInCart()));
 
-        // Load image using the method from RecommendedAdapter
+        // Load image
         String imageUri = food.getPic();
-        Log.d(TAG, "Loading image from URI: " + imageUri);
-
         if (imageUri != null && !imageUri.isEmpty()) {
-            Uri uri;
-            if (imageUri.startsWith("file://")) {
-                uri = Uri.parse(imageUri);
-            } else {
-                uri = Uri.fromFile(new File(imageUri));
-            }
-
+            Uri uri = Uri.parse(imageUri);
             if ("file".equals(uri.getScheme())) {
                 File imageFile = new File(uri.getPath());
                 if (imageFile.exists()) {
-                    holder.pic.setImageURI(uri); // Set image directly for local files
+                    holder.pic.setImageURI(uri);
                 } else {
                     Log.w(TAG, "Image file does not exist: " + uri.getPath());
-                    holder.pic.setImageResource(R.drawable.pizza_default); // Set error image
+                    holder.pic.setImageResource(R.drawable.pizza_default);
                 }
             } else {
                 Log.e(TAG, "Unsupported URI scheme: " + uri.getScheme());
-                holder.pic.setImageResource(R.drawable.pizza_default); // Set error image
+                holder.pic.setImageResource(R.drawable.pizza_default);
             }
         } else {
             Log.w(TAG, "Image URI is null or empty, setting default image");
-            holder.pic.setImageResource(R.drawable.pizza_default); // Set default image
+            holder.pic.setImageResource(R.drawable.pizza_default);
         }
 
-        holder.plusCardBtn.setOnClickListener(v -> managementCart.plusNumberFood(listFoodSelected, position, () -> {
-            notifyDataSetChanged();
-            changeNumberItemsListener.changed();
-        }));
+        // Set button listeners
+        holder.plusCardBtn.setOnClickListener(v -> {
+            managementCart.plusNumberFood(listFoodSelected, position, () -> {
+                notifyDataSetChanged();
+                changeNumberItemsListener.changed();
+            });
+        });
 
-        holder.minusCardBtn.setOnClickListener(v -> managementCart.minusNumberFood(listFoodSelected, position, () -> {
-            notifyDataSetChanged();
-            changeNumberItemsListener.changed();
-        }));
+        holder.minusCardBtn.setOnClickListener(v -> {
+            managementCart.minusNumberFood(listFoodSelected, position, () -> {
+                notifyDataSetChanged();
+                changeNumberItemsListener.changed();
+            });
+        });
 
         holder.deleteCardBtn.setOnClickListener(v -> {
             managementCart.removeFoodFromCart(listFoodSelected, position, () -> {
