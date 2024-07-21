@@ -7,13 +7,15 @@ public class FoodDomain implements Serializable {
     private String title;
     private String pic;
     private String description;
-    private double fee;
+    private double fee; // Base price of the food item
     private int numberInCart;
     private String star;
     private int calories;
     private int time;
-    private List<String> toppings; // List to hold toppings
+    private List<String> toppings; // List to hold available toppings
     private String selectedToppings; // String to hold selected toppings
+
+    private static final double TOPPING_PRICE = 1.0; // Additional price for each topping
 
     // Constructor with selectedToppings
     public FoodDomain(String title, String pic, String description, double fee, String star, int calories, int time, List<String> toppings, String selectedToppings) {
@@ -29,9 +31,7 @@ public class FoodDomain implements Serializable {
         this.numberInCart = 1; // Default value
     }
 
-    // Other existing constructors, getters, and setters...
-
-    // Getters and Setters
+    // Getters and Setters...
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
@@ -63,9 +63,16 @@ public class FoodDomain implements Serializable {
     public String getSelectedToppings() { return selectedToppings; }
     public void setSelectedToppings(String selectedToppings) { this.selectedToppings = selectedToppings; }
 
-    // Calculate total price for the item based on quantity
+    // Calculate total price for the item based on quantity and selected toppings
     public double getTotalPrice() {
-        return fee * numberInCart;
+        double totalPrice = fee;
+
+        // Add price for each selected topping
+        if (selectedToppings != null && !selectedToppings.isEmpty()) {
+            totalPrice += TOPPING_PRICE;
+        }
+
+        return totalPrice * numberInCart;
     }
 
     @Override
