@@ -24,6 +24,7 @@ public class ManagementCart {
         boolean existsAlready = false;
         int index = 0;
 
+        // Check if the item already exists in the cart
         for (int i = 0; i < listFood.size(); i++) {
             if (listFood.get(i).getTitle().equals(item.getTitle())) {
                 existsAlready = true;
@@ -32,6 +33,7 @@ public class ManagementCart {
             }
         }
 
+        // Update quantity if item exists, else add new item
         if (existsAlready) {
             FoodDomain existingItem = listFood.get(index);
             existingItem.setNumberInCart(existingItem.getNumberInCart() + item.getNumberInCart());
@@ -39,13 +41,14 @@ public class ManagementCart {
             listFood.add(item);
         }
 
-        tinyDB.putListObject("CardList", listFood);
+        // Save updated list to TinyDB
+        tinyDB.putListObject("CartList", listFood);
         Toast.makeText(context, "Added to your cart", Toast.LENGTH_SHORT).show();
     }
 
     // Get the list of items in the cart
     public ArrayList<FoodDomain> getListCart() {
-        return tinyDB.getListObject("CardList");
+        return tinyDB.getListObject("CartList");
     }
 
     // Decrease the quantity of a food item in the cart
@@ -58,7 +61,8 @@ public class ManagementCart {
             listFood.remove(position);
         }
 
-        tinyDB.putListObject("CardList", listFood);
+        // Save updated list to TinyDB
+        tinyDB.putListObject("CartList", listFood);
         changeNumberItemsListener.changed();
     }
 
@@ -67,7 +71,8 @@ public class ManagementCart {
         FoodDomain item = listFood.get(position);
         item.setNumberInCart(item.getNumberInCart() + 1);
 
-        tinyDB.putListObject("CardList", listFood);
+        // Save updated list to TinyDB
+        tinyDB.putListObject("CartList", listFood);
         changeNumberItemsListener.changed();
     }
 
@@ -75,7 +80,7 @@ public class ManagementCart {
     public void removeFoodFromCart(ArrayList<FoodDomain> listFood, int position, ChangeNumberItemsListener changeNumberItemsListener) {
         if (position >= 0 && position < listFood.size()) {
             listFood.remove(position);
-            tinyDB.putListObject("CardList", listFood);
+            tinyDB.putListObject("CartList", listFood);
             Toast.makeText(context, "Item removed from cart", Toast.LENGTH_SHORT).show();
             changeNumberItemsListener.changed();
         } else {
@@ -89,7 +94,7 @@ public class ManagementCart {
         double fee = 0;
 
         for (FoodDomain item : listFood) {
-            fee += item.getFee() * item.getNumberInCart();
+            fee += item.getTotalPrice(); // Use the updated getTotalPrice method
         }
 
         return fee;
@@ -97,7 +102,7 @@ public class ManagementCart {
 
     // Clear all items from the cart
     public void clearCart() {
-        tinyDB.putListObject("CardList", new ArrayList<FoodDomain>());
+        tinyDB.putListObject("CartList", new ArrayList<FoodDomain>());
         Toast.makeText(context, "Cart cleared", Toast.LENGTH_SHORT).show();
     }
 }

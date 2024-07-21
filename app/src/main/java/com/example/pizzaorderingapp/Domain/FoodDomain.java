@@ -15,7 +15,8 @@ public class FoodDomain implements Serializable {
     private List<String> toppings; // List to hold toppings
     private String selectedToppings; // String to hold selected toppings
 
-    public FoodDomain(String title, String pic, String description, double fee, String star, int calories, int time, List<String> toppings) {
+    // Constructor with selectedToppings
+    public FoodDomain(String title, String pic, String description, double fee, String star, int calories, int time, List<String> toppings, String selectedToppings) {
         this.title = title;
         this.pic = pic;
         this.description = description;
@@ -24,9 +25,11 @@ public class FoodDomain implements Serializable {
         this.calories = calories;
         this.time = time;
         this.toppings = toppings;
+        this.selectedToppings = selectedToppings;
         this.numberInCart = 1; // Default value
-        this.selectedToppings = ""; // Default empty string
     }
+
+    // Other existing constructors, getters, and setters...
 
     // Getters and Setters
 
@@ -59,6 +62,11 @@ public class FoodDomain implements Serializable {
 
     public String getSelectedToppings() { return selectedToppings; }
     public void setSelectedToppings(String selectedToppings) { this.selectedToppings = selectedToppings; }
+
+    // Calculate total price for the item based on quantity
+    public double getTotalPrice() {
+        return fee * numberInCart;
+    }
 
     @Override
     public String toString() {

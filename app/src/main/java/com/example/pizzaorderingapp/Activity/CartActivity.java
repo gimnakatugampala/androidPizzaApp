@@ -20,7 +20,7 @@ public class CartActivity extends AppCompatActivity {
     private RecyclerView.Adapter adapter;
     private RecyclerView recyclerViewList;
     private ManagementCart managementCart;
-    private TextView totalFeeTxt, TaxTxt, deliveryTxt, totalTxt, emptyTxt;
+    private TextView totalFeeTxt, taxTxt, deliveryTxt, totalTxt, emptyTxt;
     private double tax;
     private ScrollView scrollView;
 
@@ -33,7 +33,7 @@ public class CartActivity extends AppCompatActivity {
 
         initView();
         initList();
-        calculateCard();
+        calculateCart();
     }
 
     private void initList() {
@@ -42,12 +42,16 @@ public class CartActivity extends AppCompatActivity {
         adapter = new CartListAdapter(managementCart.getListCart(), this, new ChangeNumberItemsListener() {
             @Override
             public void changed() {
-                calculateCard();
+                calculateCart();
+                updateVisibility();
             }
         });
 
         recyclerViewList.setAdapter(adapter);
+        updateVisibility();
+    }
 
+    private void updateVisibility() {
         if (managementCart.getListCart().isEmpty()) {
             emptyTxt.setVisibility(View.VISIBLE);
             scrollView.setVisibility(View.GONE);
@@ -57,16 +61,17 @@ public class CartActivity extends AppCompatActivity {
         }
     }
 
-    private void calculateCard() {
+    private void calculateCart() {
         double percentTax = 0.02;
-        double delivery = 10;
+        double delivery = 10.0;
 
+        // Calculate tax and total
         tax = Math.round((managementCart.getTotalFee() * percentTax) * 100.0) / 100.0;
-        double total = Math.round((managementCart.getTotalFee() + tax + delivery) * 100.0) / 100.0;
         double itemTotal = Math.round(managementCart.getTotalFee() * 100.0) / 100.0;
+        double total = Math.round((itemTotal + tax + delivery) * 100.0) / 100.0;
 
         totalFeeTxt.setText("$" + itemTotal);
-        TaxTxt.setText("$" + tax);
+        taxTxt.setText("$" + tax);
         deliveryTxt.setText("$" + delivery);
         totalTxt.setText("$" + total);
     }
@@ -74,7 +79,7 @@ public class CartActivity extends AppCompatActivity {
     private void initView() {
         totalFeeTxt = findViewById(R.id.totalFeeTxt);
         deliveryTxt = findViewById(R.id.deliveryTxt);
-        TaxTxt = findViewById(R.id.TaxTxt);
+        taxTxt = findViewById(R.id.TaxTxt);
         totalTxt = findViewById(R.id.totalTxt);
         recyclerViewList = findViewById(R.id.view);
         scrollView = findViewById(R.id.scrollView);

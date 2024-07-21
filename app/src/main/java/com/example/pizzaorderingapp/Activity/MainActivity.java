@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -91,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
                     String.valueOf(star), // Convert star to String
                     calories,
                     time,
-                    toppings // Pass toppings list to FoodDomain
+                    toppings, // Pass toppings list to FoodDomain
+                    "" // Default value for selectedToppings
             );
             foodList.add(foodDomain);
         }
