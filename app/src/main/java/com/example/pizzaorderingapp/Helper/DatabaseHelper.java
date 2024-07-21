@@ -160,30 +160,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (oldVersion < 2) {
             // Upgrade logic for version 2
             Cursor cursor = db.rawQuery("PRAGMA table_info(" + TABLE_USERS + ")", null);
-            boolean hasDeliveryAddress = false;
-            boolean hasPhone = false;
-            boolean hasImageUri = false;
 
-            while (cursor.moveToNext()) {
-                String columnName = cursor.getString(cursor.getColumnIndex("name"));
-                if (COLUMN_DELIVERY_ADDRESS.equals(columnName)) {
-                    hasDeliveryAddress = true;
-                } else if (COLUMN_PHONE.equals(columnName)) {
-                    hasPhone = true;
-                } else if (COLUMN_IMAGE_URI.equals(columnName)) {
-                    hasImageUri = true;
+            if (cursor != null) {
+                boolean hasDeliveryAddress = false;
+                boolean hasPhone = false;
+                boolean hasImageUri = false;
+
+                try {
+                    int nameIndex = cursor.getColumnIndex("name");
+                    if (nameIndex == -1) {
+                        // Log or handle the error
+                        return;
+                    }
+
+                    while (cursor.moveToNext()) {
+                        String columnName = cursor.getString(nameIndex);
+                        if (COLUMN_DELIVERY_ADDRESS.equals(columnName)) {
+                            hasDeliveryAddress = true;
+                        } else if (COLUMN_PHONE.equals(columnName)) {
+                            hasPhone = true;
+                        } else if (COLUMN_IMAGE_URI.equals(columnName)) {
+                            hasImageUri = true;
+                        }
+                    }
+
+                    if (!hasDeliveryAddress) {
+                        db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_DELIVERY_ADDRESS + " TEXT;");
+                    }
+                    if (!hasPhone) {
+                        db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_PHONE + " TEXT;");
+                    }
+                    if (!hasImageUri) {
+                        db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_IMAGE_URI + " TEXT;");
+                    }
+                } finally {
+                    cursor.close();
                 }
-            }
-            cursor.close();
-
-            if (!hasDeliveryAddress) {
-                db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_DELIVERY_ADDRESS + " TEXT;");
-            }
-            if (!hasPhone) {
-                db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_PHONE + " TEXT;");
-            }
-            if (!hasImageUri) {
-                db.execSQL("ALTER TABLE " + TABLE_USERS + " ADD COLUMN " + COLUMN_IMAGE_URI + " TEXT;");
             }
         }
 
@@ -200,7 +212,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // Recreate tables
             onCreate(db);
         }
-
     }
 
     private void insertDefaultCategories(SQLiteDatabase db) {
