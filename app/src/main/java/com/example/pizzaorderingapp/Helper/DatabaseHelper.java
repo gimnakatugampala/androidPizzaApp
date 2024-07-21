@@ -21,6 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_USERS = "users";
     public static final String TABLE_MENU_ITEMS = "menu_items";
     public static final String TABLE_MENU_ITEM_CATEGORY = "menu_item_category";
+    public static final String TABLE_PROMO_CODES = "promo_codes";
 
     // Column names for orders table
     public static final String COLUMN_ID = "_id";
@@ -50,13 +51,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_CATEGORY_NAME = "categoryName";
     public static final String COLUMN_IMAGE_URL = "imageUrl";
 
-    public static final String TABLE_PROMO_CODES = "promo_codes";
     public static final String COLUMN_PROMO_ID = "promo_id";
     public static final String COLUMN_PROMO_CODE = "promo_code";
     public static final String COLUMN_PROMO_DISCOUNT_PERCENT = "promo_discount_percent";
     public static final String COLUMN_PROMO_EXPIRY_DATE = "promo_expiry_date";
-
-
 
     private static final String TABLE_ORDERS_CREATE =
             "CREATE TABLE " + TABLE_ORDERS + " (" +
@@ -99,7 +97,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_IMAGE_URL + " TEXT" +
                     ");";
 
-
     private static final String CREATE_TABLE_PROMO_CODES = "CREATE TABLE " + TABLE_PROMO_CODES + " ("
             + COLUMN_PROMO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + COLUMN_PROMO_CODE + " TEXT, "
@@ -118,9 +115,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(TABLE_MENU_ITEM_CATEGORY_CREATE);
         db.execSQL(CREATE_TABLE_PROMO_CODES);
 
-
         // Insert default categories
-//        insertDefaultCategories(db);
+        // insertDefaultCategories(db);
     }
 
     @Override
@@ -174,5 +170,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return categoryList;
+    }
+
+    // New method to get delivery address by user email
+    public String getDeliveryAddress(String userEmail) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String address = null;
+
+        String query = "SELECT " + COLUMN_DELIVERY_ADDRESS + " FROM " + TABLE_USERS +
+                " WHERE " + COLUMN_USER_EMAIL + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{userEmail});
+
+        if (cursor.moveToFirst()) {
+            int addressIndex = cursor.getColumnIndex(COLUMN_DELIVERY_ADDRESS);
+            if (addressIndex >= 0) {
+                address = cursor.getString(addressIndex);
+            }
+        }
+
+        cursor.close();
+        db.close();
+        return address;
+    }
+
+    // New method to update delivery address
+    public boolean updateDeliveryAddress(String userEmail, String newAddress) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_DELIVERY_ADDRESS, newAddress);
+
+        int rowsUpdated = db.update(TABLE_USERS, values,
+                COLUMN_USER_EMAIL + " = ?", new String[]{userEmail});
+
+        db.close();
+        return rowsUpdated > 0;
     }
 }
