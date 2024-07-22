@@ -44,6 +44,9 @@
         <activity android:name=".Activity.DeliveringOrdersActivity" android:exported="false" />
         <activity android:name=".Activity.CompletedOrdersActivity" android:exported="false" />
         <activity android:name=".Activity.CanceledOrdersActivity" android:exported="false" />
+        <activity android:name=".Activity.CustomerListActivity" android:exported="false" />
+
+
 
 
 

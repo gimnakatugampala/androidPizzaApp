@@ -275,6 +275,7 @@
                     android:focusable="true"
                     android:gravity="start|center_vertical"
                     android:padding="16dp"
+                    android:onClick="onClickManageCustomers"
                     android:textStyle="bold"
                     android:text="Manage Customers"
                     android:textSize="17sp" />

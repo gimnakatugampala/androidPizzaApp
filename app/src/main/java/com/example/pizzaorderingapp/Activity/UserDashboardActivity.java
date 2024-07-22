@@ -111,4 +111,10 @@ public class UserDashboardActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    public void onClickManageCustomers(View view){
+        Intent intent = new Intent(UserDashboardActivity.this, CustomerListActivity.class);
+        startActivity(intent);
+    }
+
 }

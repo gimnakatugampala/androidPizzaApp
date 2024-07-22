@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.example.pizzaorderingapp.Model.Order;
+import com.example.pizzaorderingapp.Model.Customer;
 
 
 import com.example.pizzaorderingapp.Domain.CategoryDomain;
@@ -374,6 +375,56 @@ public static final String COLUMN_ORDERITEM_ORDER_ID = "order_id";
         return rowsUpdated > 0;
     }
 
+
+    public ArrayList<Customer> getAllCustomers() {
+        ArrayList<Customer> customers = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT c.*, u.image_uri FROM " + TABLE_CUSTOMERS + " c LEFT JOIN " + TABLE_USERS + " u ON c." + COLUMN_CUSTOMER_EMAIL + " = u." + COLUMN_USER_EMAIL;
+
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                String email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CUSTOMER_EMAIL));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CUSTOMER_NAME));
+                String phone = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CUSTOMER_PHONE));
+                String address = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CUSTOMER_ADDRESS));
+                String imageUrl = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_IMAGE_URI));
+
+                customers.add(new Customer(email, name, phone, address, imageUrl));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return customers;
+    }
+
+
+
+    public ArrayList<Order> getOrdersByCustomerEmail(String userEmail) {
+        ArrayList<Order> orders = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_ORDERS + " WHERE " + COLUMN_USER_EMAIL + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{userEmail});
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
+                String email = cursor.getString(cursor.getColumnIndexOrThrow("user_email"));
+                String status = cursor.getString(cursor.getColumnIndexOrThrow("order_status"));
+                String totalAmount = cursor.getString(cursor.getColumnIndexOrThrow("total_amount"));
+                String date = cursor.getString(cursor.getColumnIndexOrThrow("order_date"));
+                boolean completed = cursor.getInt(cursor.getColumnIndexOrThrow("completed")) > 0;
+
+                orders.add(new Order(id, email, status, totalAmount, date, completed));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return orders;
+    }
 
 
 
