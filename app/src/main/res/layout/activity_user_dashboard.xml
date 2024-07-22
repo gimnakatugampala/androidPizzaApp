@@ -279,6 +279,38 @@
                     android:text="Manage Customers"
                     android:textSize="17sp" />
 
+                <TextView
+                    android:id="@+id/nav_item_31"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:drawableLeft="@drawable/baseline_breakfast_dining_24"
+                    android:drawablePadding="16dp"
+                    android:focusable="true"
+                    android:gravity="start|center_vertical"
+                    android:padding="16dp"
+                    android:textStyle="bold"
+                    android:onClick="onClickMyOrders"
+                    android:text="My Orders"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/nav_item_32"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:drawableLeft="@drawable/baseline_storefront_24"
+                    android:drawablePadding="16dp"
+                    android:focusable="true"
+                    android:onClick="onClickAllStores"
+                    android:gravity="start|center_vertical"
+                    android:padding="16dp"
+                    android:text="All Stores"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
 
 
                 <TextView

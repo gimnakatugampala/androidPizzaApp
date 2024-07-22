@@ -101,4 +101,14 @@ public class UserDashboardActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void onClickMyOrders(View view){
+        Intent intent = new Intent(UserDashboardActivity.this, MyOrdersActivity.class);
+        startActivity(intent);
+    }
+
+    public void onClickAllStores(View view){
+        Intent intent = new Intent(UserDashboardActivity.this, AllStores.class);
+        startActivity(intent);
+    }
+
 }
