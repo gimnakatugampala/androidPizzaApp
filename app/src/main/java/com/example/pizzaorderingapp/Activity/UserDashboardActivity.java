@@ -85,4 +85,11 @@ public class UserDashboardActivity extends AppCompatActivity {
         Intent intent = new Intent(UserDashboardActivity.this, PendingOrdersActivity.class);
         startActivity(intent);
     }
+
+    public void onClickDeliveryOrders(View view){
+        Intent intent = new Intent(UserDashboardActivity.this, DeliveringOrdersActivity.class);
+        startActivity(intent);
+    }
+
+
 }

@@ -1,7 +1,6 @@
 package com.example.pizzaorderingapp.Adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +19,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class AdminOrderAdapter extends RecyclerView.Adapter<AdminOrderAdapter.OrderViewHolder> {
+public class AdminDeliveryOrderAdapter extends RecyclerView.Adapter<AdminDeliveryOrderAdapter.OrderViewHolder> {
 
     private Context context;
     private ArrayList<Order> orders;
     private OrderActionListener listener;
 
-    public AdminOrderAdapter(Context context, ArrayList<Order> orders, OrderActionListener listener) {
+    public AdminDeliveryOrderAdapter(Context context, ArrayList<Order> orders, OrderActionListener listener) {
         this.context = context;
         this.orders = orders;
         this.listener = listener;
@@ -50,20 +49,15 @@ public class AdminOrderAdapter extends RecyclerView.Adapter<AdminOrderAdapter.Or
         return orders.size();
     }
 
-    public void updateOrders(ArrayList<Order> newOrders) {
-        this.orders = newOrders;
-        notifyDataSetChanged();
-    }
-
     public interface OrderActionListener {
+        void onCompleteClick(int orderId);
         void onCancelClick(int orderId);
-        void onConfirmClick(int orderId);
     }
 
     class OrderViewHolder extends RecyclerView.ViewHolder {
 
         TextView textOrderId, textOrderStatus, textTotalAmount, textOrderDate;
-        Button buttonCancel, buttonConfirm;
+        Button buttonCancel, buttonComplete;
         LinearLayout linearLayoutButtons;
 
         public OrderViewHolder(@NonNull View itemView) {
@@ -74,7 +68,7 @@ public class AdminOrderAdapter extends RecyclerView.Adapter<AdminOrderAdapter.Or
             textTotalAmount = itemView.findViewById(R.id.text_total_amount);
             textOrderDate = itemView.findViewById(R.id.text_order_date);
             buttonCancel = itemView.findViewById(R.id.buttonCancel);
-            buttonConfirm = itemView.findViewById(R.id.buttonConfirm);
+            buttonComplete = itemView.findViewById(R.id.buttonConfirm);
             linearLayoutButtons = itemView.findViewById(R.id.buttonContainer);
         }
 
@@ -91,31 +85,38 @@ public class AdminOrderAdapter extends RecyclerView.Adapter<AdminOrderAdapter.Or
             textOrderDate.setText("Order Date: " + dateString);
 
             // Set button visibility based on order status
-            if (order.getStatus().equals("Pending")) {
+            if (order.getStatus().equals("Delivering")) {
                 buttonCancel.setVisibility(View.VISIBLE);
-                buttonConfirm.setVisibility(View.VISIBLE);
-            } else if (order.getStatus().equals("Delivering")) {
-                buttonCancel.setVisibility(View.VISIBLE);
-                buttonConfirm.setVisibility(View.GONE);
-            } else if (order.getStatus().equals("Canceled") || order.getStatus().equals("Completed")) {
+                buttonComplete.setVisibility(View.VISIBLE);
+            } else {
                 buttonCancel.setVisibility(View.GONE);
-                buttonConfirm.setVisibility(View.GONE);
+                buttonComplete.setVisibility(View.GONE);
             }
 
-            // Set up button click listeners
+            // Set up button click listeners with null check
             buttonCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onCancelClick(order.getId());
+                    if (listener != null) {
+                        listener.onCancelClick(order.getId());
+                    }
                 }
             });
 
-            buttonConfirm.setOnClickListener(new View.OnClickListener() {
+            buttonComplete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onConfirmClick(order.getId());
+                    if (listener != null) {
+                        listener.onCompleteClick(order.getId());
+                    }
                 }
             });
         }
+    }
+
+    // Method to update orders and notify the adapter
+    public void updateOrders(ArrayList<Order> newOrders) {
+        this.orders = newOrders;
+        notifyDataSetChanged(); // Notify the adapter of data changes
     }
 }

@@ -8,17 +8,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.app.AlertDialog;
 
-import com.example.pizzaorderingapp.Adapters.AdminOrderAdapter;
 import com.example.pizzaorderingapp.Helper.DatabaseHelper;
 import com.example.pizzaorderingapp.Model.Order;
 import com.example.pizzaorderingapp.R;
 
 import java.util.ArrayList;
 
-public class PendingOrdersActivity extends AppCompatActivity implements AdminOrderAdapter.OrderActionListener {
+public class PendingOrdersActivity extends AppCompatActivity implements com.example.pizzaorderingapp.Adapters.AdminPendingOrderAdapter.OrderActionListener {
 
     private RecyclerView recyclerView;
-    private AdminOrderAdapter orderAdapter;
+    private com.example.pizzaorderingapp.Adapters.AdminPendingOrderAdapter orderAdapter;
     private ArrayList<Order> orderList;
     private DatabaseHelper dbHelper;
 
@@ -36,7 +35,7 @@ public class PendingOrdersActivity extends AppCompatActivity implements AdminOrd
         loadOrders();
 
         // Initialize the adapter
-        orderAdapter = new AdminOrderAdapter(this, orderList, this);
+        orderAdapter = new com.example.pizzaorderingapp.Adapters.AdminPendingOrderAdapter(this, orderList, this);
         recyclerView.setAdapter(orderAdapter);
     }
 
