@@ -13,13 +13,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.pizzaorderingapp.Model.PromoCode;
 import com.example.pizzaorderingapp.R;
 import com.example.pizzaorderingapp.Repository.PromoCodeRepository;
+import com.example.pizzaorderingapp.Helper.DatabaseHelper;
+import com.example.pizzaorderingapp.Utils.MailSender;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class AddPromoCodeActivity extends AppCompatActivity {
 
@@ -31,6 +37,8 @@ public class AddPromoCodeActivity extends AppCompatActivity {
     private TextInputLayout textInputLayoutExpiryDate;
     private Button buttonSavePromoCode;
     private PromoCodeRepository promoCodeRepository;
+    private DatabaseHelper databaseHelper;
+    private ExecutorService executorService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +50,10 @@ public class AddPromoCodeActivity extends AppCompatActivity {
 
         // Initialize repository
         promoCodeRepository = new PromoCodeRepository(this);
+        databaseHelper = new DatabaseHelper(this);
+
+        // Initialize ExecutorService
+        executorService = Executors.newFixedThreadPool(2); // Adjust pool size as needed
 
         // Set up DatePicker for Expiry Date
         setupDatePicker();
@@ -118,6 +130,7 @@ public class AddPromoCodeActivity extends AppCompatActivity {
         // Save to database
         if (promoCodeRepository.addPromoCode(promoCodeObj)) {
             Toast.makeText(this, "Promo code added successfully", Toast.LENGTH_SHORT).show();
+            notifyCustomers(promoCode, discountPercentage, expiryDate); // Notify customers
             finish(); // Close activity and return to previous screen
         } else {
             Toast.makeText(this, "Failed to add promo code", Toast.LENGTH_SHORT).show();
@@ -170,6 +183,34 @@ public class AddPromoCodeActivity extends AppCompatActivity {
             return true;
         } catch (ParseException e) {
             return false;
+        }
+    }
+
+    private void notifyCustomers(String promoCode, double discountPercentage, String expiryDate) {
+        // Construct the message to be sent
+        String message = String.format("Dear Customer,\n\nWe are excited to announce a new promo code just for you!\n\n" +
+                "Promo Code: %s\n" +
+                "Discount: %.2f%%\n" +
+                "Expiry Date: %s\n\n" +
+                "Don't miss out on this great opportunity to save on your next order.\n\n" +
+                "Best Regards,\n" +
+                "Pizza Ordering App Team", promoCode, discountPercentage, expiryDate);
+
+        // Retrieve customer emails
+        ArrayList<String> customerEmails = databaseHelper.getAllCustomerEmails();
+
+        // Submit email sending tasks to ExecutorService
+        for (String email : customerEmails) {
+            executorService.submit(() -> new MailSender(email, "New Promo Code Available!", message).execute());
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Shutdown the ExecutorService to free resources
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdown();
         }
     }
 }

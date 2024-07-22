@@ -427,6 +427,28 @@ public static final String COLUMN_ORDERITEM_ORDER_ID = "order_id";
     }
 
 
+    public ArrayList<String> getAllCustomerEmails() {
+        ArrayList<String> emails = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_CUSTOMERS,
+                new String[]{COLUMN_CUSTOMER_EMAIL},
+                null, null, null, null, null);
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CUSTOMER_EMAIL));
+                emails.add(email);
+            }
+            cursor.close();
+        }
+
+        db.close();
+        return emails;
+    }
+
+
+
 
 
 
