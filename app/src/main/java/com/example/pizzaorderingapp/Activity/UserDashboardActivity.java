@@ -91,5 +91,9 @@ public class UserDashboardActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void onClickCancelOrders(View view){
+        Intent intent = new Intent(UserDashboardActivity.this, CanceledOrdersActivity.class);
+        startActivity(intent);
+    }
 
 }
