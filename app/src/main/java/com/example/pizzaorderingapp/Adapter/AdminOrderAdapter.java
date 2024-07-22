@@ -50,10 +50,14 @@ public class AdminOrderAdapter extends RecyclerView.Adapter<AdminOrderAdapter.Or
         return orders.size();
     }
 
+    public void updateOrders(ArrayList<Order> newOrders) {
+        this.orders = newOrders;
+        notifyDataSetChanged();
+    }
+
     public interface OrderActionListener {
         void onCancelClick(int orderId);
         void onConfirmClick(int orderId);
-        void onCompleteClick(int orderId);
     }
 
     class OrderViewHolder extends RecyclerView.ViewHolder {
@@ -79,26 +83,21 @@ public class AdminOrderAdapter extends RecyclerView.Adapter<AdminOrderAdapter.Or
             textOrderStatus.setText("Status: " + order.getStatus());
             textTotalAmount.setText("Total Amount: $" + order.getTotalAmount());
 
-            // Format the date from timestamp
-            try {
-                long timestamp = Long.parseLong(order.getDate());
-                Date date = new Date(timestamp);
-                SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-                String dateString = outputFormat.format(date);
-                textOrderDate.setText("Order Date: " + dateString);
-            } catch (NumberFormatException e) {
-                textOrderDate.setText("Order Date: Invalid date");
-                Log.e("AdminOrderAdapter", "Invalid date format: " + order.getDate(), e);
-            }
+            long timestamp = Long.parseLong(order.getDate());
+            Date date = new Date(timestamp);
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            String dateString = outputFormat.format(date);
+
+            textOrderDate.setText("Order Date: " + dateString);
 
             // Set button visibility based on order status
-            if ("Pending".equals(order.getStatus())) {
+            if (order.getStatus().equals("Pending")) {
                 buttonCancel.setVisibility(View.VISIBLE);
                 buttonConfirm.setVisibility(View.VISIBLE);
-            } else if ("Delivering".equals(order.getStatus())) {
+            } else if (order.getStatus().equals("Delivering")) {
                 buttonCancel.setVisibility(View.VISIBLE);
                 buttonConfirm.setVisibility(View.GONE);
-            } else {
+            } else if (order.getStatus().equals("Canceled") || order.getStatus().equals("Completed")) {
                 buttonCancel.setVisibility(View.GONE);
                 buttonConfirm.setVisibility(View.GONE);
             }
