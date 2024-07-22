@@ -92,7 +92,9 @@ public static final String COLUMN_ORDERITEM_ORDER_ID = "order_id";
                     COLUMN_ORDERITEM_ORDER_ID + " INTEGER, " +
                     COLUMN_ORDERITEM_MENU_ITEM_ID + " INTEGER, " +
                     COLUMN_ORDERITEM_QUANTITY + " INTEGER, " +
-                    COLUMN_ORDERITEM_PRICE + " REAL" + // Include the price column here
+                    COLUMN_ORDERITEM_PRICE + " REAL, " + // Include the price column here
+                    "FOREIGN KEY(" + COLUMN_ORDERITEM_ORDER_ID + ") REFERENCES " + TABLE_ORDERS + "(" + COLUMN_ID + "), " +
+                    "FOREIGN KEY(" + COLUMN_ORDERITEM_MENU_ITEM_ID + ") REFERENCES " + TABLE_MENU_ITEMS + "(" + COLUMN_ID + ")" +
                     ");";
 
     private static final String CREATE_TABLE_CUSTOMERS =
@@ -157,7 +159,7 @@ public static final String COLUMN_ORDERITEM_ORDER_ID = "order_id";
         db.execSQL(CREATE_TABLE_PROMO_CODES);
 
         // Insert default categories
-//         insertDefaultCategories(db);
+         insertDefaultCategories(db);
     }
 
     @Override
