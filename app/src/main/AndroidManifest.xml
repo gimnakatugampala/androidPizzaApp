@@ -40,6 +40,11 @@
         <activity android:name=".Activity.PromoCodeListActivity" android:exported="false" />
         <activity android:name=".Activity.MyOrdersActivity" android:exported="false" />
 
+        <activity android:name=".Activity.PendingOrdersActivity" android:exported="false" />
+        <activity android:name=".Activity.DeliveringOrdersActivity" android:exported="false" />
+        <activity android:name=".Activity.CompletedOrdersActivity" android:exported="false" />
+        <activity android:name=".Activity.CanceledOrdersActivity" android:exported="false" />
+
 
 
 

@@ -80,4 +80,9 @@ public class UserDashboardActivity extends AppCompatActivity {
         Intent intent = new Intent(UserDashboardActivity.this, PromoCodeListActivity.class);
         startActivity(intent);
     }
+
+    public void onClickPendingOrders(View view){
+        Intent intent = new Intent(UserDashboardActivity.this, PendingOrdersActivity.class);
+        startActivity(intent);
+    }
 }

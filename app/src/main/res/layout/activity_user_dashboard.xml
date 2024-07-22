@@ -159,6 +159,7 @@
                         android:focusable="true"
                         android:gravity="start|center_vertical"
                         android:padding="16dp"
+                        android:onClick="onClickPendingOrders"
                         android:text="Pending Orders"
                         android:textSize="16sp" />
 
