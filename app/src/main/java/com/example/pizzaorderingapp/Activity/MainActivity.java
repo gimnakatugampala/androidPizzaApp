@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         storeBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, AllStores.class)));
 
-        myOrdersBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, OrderHistoryActivity.class)));
+//        myOrdersBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, OrderHistoryActivity.class)));
     }
 
     public void onGoToUserDashboard(View view) {
@@ -128,5 +128,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickProfile(View view) {
         startActivity(new Intent(MainActivity.this, UpdateProfileActivity.class));
+    }
+
+    public  void onClickMyStore(View view){
+        startActivity(new Intent(MainActivity.this, MyOrdersActivity.class));
     }
 }

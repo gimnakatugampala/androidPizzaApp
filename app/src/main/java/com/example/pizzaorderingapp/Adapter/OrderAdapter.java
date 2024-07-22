@@ -1,57 +1,79 @@
-package com.example.pizzaorderingapp.Adapters;
+package com.example.pizzaorderingapp.Adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.pizzaorderingapp.Models.Order;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.pizzaorderingapp.Model.Order;
 import com.example.pizzaorderingapp.R;
 
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Locale;
 
-public class OrderAdapter extends BaseAdapter {
+public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
 
-    private Context context;
-    private List<Order> orderList;
+    private ArrayList<Order> orderList;
 
-    public OrderAdapter(Context context, List<Order> orderList) {
-        this.context = context;
+    public OrderAdapter(ArrayList<Order> orderList) {
         this.orderList = orderList;
+        sortOrdersByDateDescending();
+    }
+
+    private void sortOrdersByDateDescending() {
+        Collections.sort(orderList, new Comparator<Order>() {
+            @Override
+            public int compare(Order o1, Order o2) {
+                long timestamp1 = Long.parseLong(o1.getDate());
+                long timestamp2 = Long.parseLong(o2.getDate());
+                return Long.compare(timestamp2, timestamp1); // Descending order
+            }
+        });
+    }
+
+    @NonNull
+    @Override
+    public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order, parent, false);
+        return new OrderViewHolder(view);
     }
 
     @Override
-    public int getCount() {
+    public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
+        Order order = orderList.get(position);
+        holder.tvOrderId.setText("Order Code: " + order.getId());
+        holder.tvOrderStatus.setText("Status: " + order.getStatus());
+        holder.tvTotalAmount.setText("Total: " + order.getTotalAmount());
+
+        // Convert the timestamp to a Date object and format it
+        long timestamp = Long.parseLong(order.getDate());
+        Date date = new Date(timestamp);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        String dateString = outputFormat.format(date);
+        holder.tvOrderDate.setText("Date: " + dateString);
+    }
+
+    @Override
+    public int getItemCount() {
         return orderList.size();
     }
 
-    @Override
-    public Object getItem(int position) {
-        return orderList.get(position);
-    }
+    static class OrderViewHolder extends RecyclerView.ViewHolder {
+        TextView tvOrderId, tvOrderStatus, tvTotalAmount, tvOrderDate;
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_order, parent, false);
+        public OrderViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvOrderId = itemView.findViewById(R.id.tvOrderId);
+            tvOrderStatus = itemView.findViewById(R.id.tvOrderStatus);
+            tvTotalAmount = itemView.findViewById(R.id.tvTotalAmount);
+            tvOrderDate = itemView.findViewById(R.id.tvOrderDate);
         }
-
-        TextView tvOrderDetails = convertView.findViewById(R.id.tvOrderDetails);
-        TextView tvTotalAmount = convertView.findViewById(R.id.tvTotalAmount);
-        TextView tvOrderDate = convertView.findViewById(R.id.tvOrderDate);
-
-        Order order = orderList.get(position);
-        tvOrderDetails.setText(order.getOrderDetails());
-        tvTotalAmount.setText(order.getTotalAmount());
-        tvOrderDate.setText(order.getOrderDate());
-
-        return convertView;
     }
 }

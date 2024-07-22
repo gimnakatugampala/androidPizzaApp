@@ -9,8 +9,8 @@ public class SessionManager {
     private static final String KEY_IS_LOGGEDIN = "isLoggedIn";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_ROLE = "role";
-    private static final String KEY_FIRST_NAME = "firstName"; // Add this line
-    private static final String KEY_LAST_NAME = "lastName";   // Add this line
+    private static final String KEY_FIRST_NAME = "firstName";
+    private static final String KEY_LAST_NAME = "lastName";
     private static final String KEY_FIRST_TIME_LAUNCH = "isFirstTimeLaunch";
 
     SharedPreferences pref;
@@ -25,46 +25,74 @@ public class SessionManager {
         editor = pref.edit();
     }
 
+    // Create login session
     public void createLoginSession(String email, String role, String firstName, String lastName) {
         editor.putBoolean(KEY_IS_LOGGEDIN, true);
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_ROLE, role);
-        editor.putString(KEY_FIRST_NAME, firstName); // Store first name
-        editor.putString(KEY_LAST_NAME, lastName);   // Store last name
-        editor.commit();
+        editor.putString(KEY_FIRST_NAME, firstName);
+        editor.putString(KEY_LAST_NAME, lastName);
+        editor.apply(); // Use apply for asynchronous operation
     }
 
+    // Check if user is logged in
     public boolean isLoggedIn() {
         return pref.getBoolean(KEY_IS_LOGGEDIN, false);
     }
 
+    // Logout user
     public void logoutUser() {
         editor.clear();
-        editor.commit();
+        editor.apply(); // Use apply for asynchronous operation
     }
 
+    // Get email
     public String getEmail() {
         return pref.getString(KEY_EMAIL, null);
     }
 
+    // Get role
     public String getRole() {
         return pref.getString(KEY_ROLE, null);
     }
 
+    // Get first name
     public String getFirstName() {
-        return pref.getString(KEY_FIRST_NAME, null); // Retrieve first name
+        return pref.getString(KEY_FIRST_NAME, null);
     }
 
+    // Get last name
     public String getLastName() {
-        return pref.getString(KEY_LAST_NAME, null);  // Retrieve last name
+        return pref.getString(KEY_LAST_NAME, null);
     }
 
+    // Check if it's the first time launch
     public boolean isFirstTimeLaunch() {
         return pref.getBoolean(KEY_FIRST_TIME_LAUNCH, true);
     }
 
+    // Set first time launch status
     public void setFirstTimeLaunch(boolean isFirstTime) {
         editor.putBoolean(KEY_FIRST_TIME_LAUNCH, isFirstTime);
-        editor.commit();
+        editor.apply(); // Use apply for asynchronous operation
+    }
+
+    // Update session details
+    public void updateSession(String email, String role, String firstName, String lastName) {
+        editor.putString(KEY_EMAIL, email);
+        editor.putString(KEY_ROLE, role);
+        editor.putString(KEY_FIRST_NAME, firstName);
+        editor.putString(KEY_LAST_NAME, lastName);
+        editor.apply(); // Use apply for asynchronous operation
+    }
+
+    // Check if the user is an admin
+    public boolean isAdmin() {
+        return "admin".equalsIgnoreCase(pref.getString(KEY_ROLE, ""));
+    }
+
+    // Check if the user is a customer
+    public boolean isCustomer() {
+        return "customer".equalsIgnoreCase(pref.getString(KEY_ROLE, ""));
     }
 }

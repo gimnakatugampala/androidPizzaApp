@@ -17,5 +17,10 @@
         <item>Onion</item>
         <!-- Add more categories as needed -->
     </string-array>
+    <string name="order_id">Order ID: %d</string>
+    <string name="order_status">Status: %s</string>
+    <string name="order_amount">Amount: %s</string>
+    <string name="order_date">Date: %s</string>
+
 
 </resources>

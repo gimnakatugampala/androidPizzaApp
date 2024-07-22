@@ -30,7 +30,6 @@
         <activity android:name=".Activity.SignUp_Screen" android:exported="false" />
         <activity android:name=".Activity.PaymentActivity" android:exported="false" />
         <activity android:name=".Activity.OrderConfirmationActivity" android:exported="false" />
-        <activity android:name=".Activity.OrderHistoryActivity" android:exported="false" />
         <activity android:name=".Activity.UserDashboardActivity" android:exported="false" />
         <activity android:name=".Activity.IntroActivity" android:exported="false" />
         <activity android:name=".Activity.AddMenuItemActivity" android:exported="false" />
@@ -39,6 +38,12 @@
         <activity android:name=".Activity.UpdateProfileActivity" android:exported="false" />
         <activity android:name=".Activity.AddPromoCodeActivity" android:exported="false" />
         <activity android:name=".Activity.PromoCodeListActivity" android:exported="false" />
+        <activity android:name=".Activity.MyOrdersActivity" android:exported="false" />
+
+
+
+
+
         <activity android:name=".Activity.SplashActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

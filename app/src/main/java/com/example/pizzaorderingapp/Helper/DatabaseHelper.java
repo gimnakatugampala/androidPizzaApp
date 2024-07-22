@@ -1,10 +1,13 @@
 package com.example.pizzaorderingapp.Helper;
+import java.util.ArrayList;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import com.example.pizzaorderingapp.Model.Order;
+
 
 import com.example.pizzaorderingapp.Domain.CategoryDomain;
 
@@ -299,4 +302,37 @@ public static final String COLUMN_ORDERITEM_ORDER_ID = "order_id";
         db.close();
         return rowsUpdated > 0;
     }
+
+    // Method to get all orders for the logged-in user
+    public ArrayList<Order> getAllOrdersByUser(String userEmail) {
+        ArrayList<Order> orders = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_ORDERS,
+                new String[]{COLUMN_ID, COLUMN_USER_EMAIL_ORDERS, COLUMN_ORDER_STATUS, COLUMN_TOTAL_AMOUNT, COLUMN_DATE, COLUMN_COMPLETED},
+                COLUMN_USER_EMAIL_ORDERS + "=?",
+                new String[]{userEmail}, null, null, null);
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                int orderId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
+                String userEmailOrder = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_EMAIL_ORDERS));
+                String orderStatus = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ORDER_STATUS));
+                String totalAmount = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TOTAL_AMOUNT));
+                String orderDate = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DATE));
+                boolean completed = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_COMPLETED)) == 1;
+
+                Order order = new Order(orderId, userEmailOrder, orderStatus, totalAmount, orderDate, completed);
+                orders.add(order);
+            }
+            cursor.close();
+        }
+
+        return orders;
+    }
+
+
+
+
+
 }

@@ -4,43 +4,42 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@android:color/white"
-    android:layout_marginBottom="8dp"
-    android:elevation="2dp">
+    android:background="@drawable/order_item_background"
+    android:layout_marginBottom="8dp">
 
     <TextView
         android:id="@+id/tvOrderId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Order ID: 123"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"/>
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="4dp"/>
 
     <TextView
         android:id="@+id/tvOrderStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Status: Pending"
-        android:textSize="16sp"
-        android:layout_marginTop="4dp"
-        android:textColor="@android:color/darker_gray"/>
+        android:text="Status: Completed"
+        android:textSize="14sp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="4dp"/>
 
     <TextView
-        android:id="@+id/tvTotalAmount"
+        android:id="@+id/tvOrderAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Total: $0.00"
-        android:textSize="16sp"
-        android:layout_marginTop="4dp"
-        android:textColor="@android:color/black"/>
+        android:text="Amount: $25.00"
+        android:textSize="14sp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="4dp"/>
 
     <TextView
         android:id="@+id/tvOrderDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Date: 01-01-2022"
+        android:text="Date: 2024-07-22"
         android:textSize="14sp"
-        android:layout_marginTop="4dp"
-        android:textColor="@android:color/darker_gray"/>
+        android:textColor="@android:color/black" />
 </LinearLayout>

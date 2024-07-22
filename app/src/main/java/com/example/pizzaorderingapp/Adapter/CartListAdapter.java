@@ -1,6 +1,8 @@
 package com.example.pizzaorderingapp.Adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -55,16 +57,12 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.ViewHo
         String imageUri = food.getPic();
         if (imageUri != null && !imageUri.isEmpty()) {
             Uri uri = Uri.parse(imageUri);
-            if ("file".equals(uri.getScheme())) {
-                File imageFile = new File(uri.getPath());
-                if (imageFile.exists()) {
-                    holder.pic.setImageURI(uri);
-                } else {
-                    Log.w(TAG, "Image file does not exist: " + uri.getPath());
-                    holder.pic.setImageResource(R.drawable.pizza_default);
-                }
+            File imgFile = new File(uri.getPath());
+            if (imgFile.exists()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                holder.pic.setImageBitmap(bitmap);
             } else {
-                Log.e(TAG, "Unsupported URI scheme: " + uri.getScheme());
+                Log.w(TAG, "Image file does not exist: " + uri.getPath());
                 holder.pic.setImageResource(R.drawable.pizza_default);
             }
         } else {
