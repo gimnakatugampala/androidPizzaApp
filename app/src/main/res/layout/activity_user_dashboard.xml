@@ -163,6 +163,20 @@
                         android:textSize="16sp" />
 
                     <TextView
+                        android:id="@+id/nav_sub_item_30"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:drawableLeft="@drawable/baseline_delivery_dining_24"
+                        android:drawablePadding="16dp"
+                        android:focusable="true"
+                        android:gravity="start|center_vertical"
+                        android:padding="16dp"
+                        android:text="Delievering Orders"
+                        android:textSize="16sp" />
+
+                    <TextView
                         android:id="@+id/nav_sub_item_6"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
