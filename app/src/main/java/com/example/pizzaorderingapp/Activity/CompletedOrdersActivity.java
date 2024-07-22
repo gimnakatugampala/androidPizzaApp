@@ -5,8 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.pizzaorderingapp.Adapter.OrderAdapter;
-import com.example.pizzaorderingapp.Helper.DatabaseHelper; // Updated import
+import com.example.pizzaorderingapp.Adapters.AdminCompletedOrderAdapter;
+import com.example.pizzaorderingapp.Helper.DatabaseHelper;
 import com.example.pizzaorderingapp.Model.Order;
 import com.example.pizzaorderingapp.R;
 
@@ -15,9 +15,9 @@ import java.util.ArrayList;
 public class CompletedOrdersActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private OrderAdapter orderAdapter;
+    private AdminCompletedOrderAdapter orderAdapter;
     private ArrayList<Order> orderList;
-    private DatabaseHelper dbHelper; // Updated variable type
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,10 +27,20 @@ public class CompletedOrdersActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewCompletedOrders);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        dbHelper = new DatabaseHelper(this); // Updated initialization
-        orderList = dbHelper.getOrdersByStatus("Completed");
+        dbHelper = new DatabaseHelper(this);
 
-        orderAdapter = new OrderAdapter(orderList);
+        // Load orders with "Completed" status
+        loadOrders();
+
+        // Initialize the adapter
+        orderAdapter = new AdminCompletedOrderAdapter(this, orderList);
         recyclerView.setAdapter(orderAdapter);
+    }
+
+    private void loadOrders() {
+        orderList = dbHelper.getOrdersByStatus("Completed");
+        if (orderAdapter != null) {
+            orderAdapter.notifyDataSetChanged(); // Refresh the adapter with the new data
+        }
     }
 }

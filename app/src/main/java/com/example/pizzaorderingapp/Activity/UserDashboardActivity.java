@@ -96,4 +96,9 @@ public class UserDashboardActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void onClickCompletedOrders(View view){
+        Intent intent = new Intent(UserDashboardActivity.this, CompletedOrdersActivity.class);
+        startActivity(intent);
+    }
+
 }
