@@ -1,16 +1,18 @@
 package com.example.pizzaorderingapp.Adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.pizzaorderingapp.Model.Order;
 import com.example.pizzaorderingapp.R;
-
+import com.example.pizzaorderingapp.Helper.DatabaseHelper;
+import androidx.appcompat.app.AlertDialog;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,9 +23,13 @@ import java.util.Locale;
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
 
     private ArrayList<Order> orderList;
+    private DatabaseHelper dbHelper;
+    private Context context;
 
-    public OrderAdapter(ArrayList<Order> orderList) {
+    public OrderAdapter(ArrayList<Order> orderList, DatabaseHelper dbHelper, Context context) {
         this.orderList = orderList;
+        this.dbHelper = dbHelper;
+        this.context = context;
         sortOrdersByDateDescending();
     }
 
@@ -58,6 +64,22 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
         String dateString = outputFormat.format(date);
         holder.tvOrderDate.setText("Date: " + dateString);
+
+        // Show/Hide buttons based on order status
+        if ("Pending".equals(order.getStatus())) {
+            holder.buttonCancel.setVisibility(View.VISIBLE);
+            holder.buttonCancel.setOnClickListener(v -> {
+                // Show confirmation dialog before canceling the order
+                new AlertDialog.Builder(context)
+                        .setTitle("Cancel Order")
+                        .setMessage("Are you sure you want to cancel this order?")
+                        .setPositiveButton("Yes", (dialog, which) -> cancelOrder(order))
+                        .setNegativeButton("No", null)
+                        .show();
+            });
+        } else {
+            holder.buttonCancel.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -65,8 +87,21 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         return orderList.size();
     }
 
+    private void cancelOrder(Order order) {
+        // Update the order status in the database
+        dbHelper.updateOrderStatus(order.getId(), "Canceled");
+
+        // Remove the order from the list and notify the adapter
+        orderList.remove(order);
+        notifyDataSetChanged();
+
+        // Notify the user about the successful cancellation
+        Toast.makeText(context, "Order canceled successfully", Toast.LENGTH_SHORT).show();
+    }
+
     static class OrderViewHolder extends RecyclerView.ViewHolder {
         TextView tvOrderId, tvOrderStatus, tvTotalAmount, tvOrderDate;
+        Button buttonCancel;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -74,6 +109,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             tvOrderStatus = itemView.findViewById(R.id.tvOrderStatus);
             tvTotalAmount = itemView.findViewById(R.id.tvTotalAmount);
             tvOrderDate = itemView.findViewById(R.id.tvOrderDate);
+            buttonCancel = itemView.findViewById(R.id.buttonCancel);
         }
     }
 }

@@ -38,7 +38,8 @@ public class MyOrdersActivity extends AppCompatActivity {
         if (userEmail != null) {
             ArrayList<Order> orderList = dbHelper.getAllOrdersByUser(userEmail);
             if (!orderList.isEmpty()) {
-                orderAdapter = new OrderAdapter(orderList);
+                // Pass dbHelper and this (context) to the adapter
+                orderAdapter = new OrderAdapter(orderList, dbHelper, this);
                 rvMyOrders.setAdapter(orderAdapter);
             } else {
                 Toast.makeText(this, "No orders found", Toast.LENGTH_SHORT).show();
