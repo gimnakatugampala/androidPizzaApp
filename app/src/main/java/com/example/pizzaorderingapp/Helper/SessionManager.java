@@ -35,6 +35,15 @@ public class SessionManager {
         editor.apply(); // Use apply for asynchronous operation
     }
 
+    public void createGuestSession() {
+        editor.putBoolean(KEY_IS_LOGGEDIN, true);
+        editor.putString(KEY_EMAIL, "guest@example.com");
+        editor.putString(KEY_ROLE, "guest");
+        editor.putString(KEY_FIRST_NAME, "Guest");
+        editor.putString(KEY_LAST_NAME, "User");
+        editor.apply();
+    }
+
     // Check if user is logged in
     public boolean isLoggedIn() {
         return pref.getBoolean(KEY_IS_LOGGEDIN, false);

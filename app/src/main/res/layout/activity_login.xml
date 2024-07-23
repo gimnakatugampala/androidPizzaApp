@@ -134,6 +134,7 @@
         android:layout_marginTop="8dp"
         android:fontFamily="@font/poppins_light"
         android:text="Continue as Guest"
+        android:onClick="continueAsGuest"
         android:textColor="#0f5293"
         app:layout_constraintEnd_toEndOf="@+id/textView6"
         app:layout_constraintStart_toStartOf="@+id/textView6"

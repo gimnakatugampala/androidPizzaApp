@@ -80,4 +80,11 @@ public class LoginScreen extends AppCompatActivity {
         }
         return true;
     }
+
+    public void continueAsGuest(View view) {
+        sessionManager.createGuestSession();
+        Intent intent = new Intent(LoginScreen.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }
