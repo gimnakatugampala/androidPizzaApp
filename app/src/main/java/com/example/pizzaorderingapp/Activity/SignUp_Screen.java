@@ -27,7 +27,7 @@ public class SignUp_Screen extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up_screen);
 
         // Ensure IDs match with those defined in the XML
-        firstName = findViewById(R.id.fristName); // Fixed typo
+        firstName = findViewById(R.id.firstName); // Fixed typo
         lastName = findViewById(R.id.lastName);
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
