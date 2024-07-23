@@ -1,93 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".Activity.AddMenuItemActivity">
 
-    <!-- Menu Item Image -->
-    <ImageView
-        android:id="@+id/menu_item_image"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-
-        android:src="@drawable/pizza_default" />
-
-    <Button
-        android:id="@+id/button_choose_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Choose Image" />
-
-    <!-- Menu Item Name -->
-    <EditText
-        android:id="@+id/edit_text_menu_item_name"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:hint="Menu Item Name"
-        android:inputType="text" />
+        android:layout_margin="16dp">
 
-    <!-- Menu Item Description -->
-    <EditText
-        android:id="@+id/edit_text_menu_item_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Menu Item Description"
-        android:inputType="textMultiLine"
-        android:minLines="3" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <!-- Menu Item Price -->
-    <EditText
-        android:id="@+id/edit_text_menu_item_price"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Menu Item Price"
-        android:padding="10dp"
-        android:inputType="numberDecimal" />
+            <!-- Menu Item Image -->
+            <ImageView
+                android:id="@+id/menu_item_image"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:src="@drawable/pizza_default" />
 
-    <!-- Menu Item Category -->
-    <Spinner
-        android:id="@+id/spinner_category"
-        android:layout_width="match_parent"
-        android:padding="8dp"
-        android:layout_height="wrap_content" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_choose_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose Image"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#F8CB2E"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_marginTop="8dp"
+                android:layout_gravity="center_horizontal" />
 
-    <!-- Menu Item Toppings -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Toppings"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp" />
+            <!-- Menu Item Name -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
 
-    <CheckBox
-        android:id="@+id/check_box_topping1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Topping 1 (+$2)" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_text_menu_item_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Menu Item Name"
+                    android:textColorHint="#3D33A8"
+                    android:inputType="text"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <CheckBox
-        android:id="@+id/check_box_topping2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Topping 2 (+$3)" />
+            <!-- Menu Item Description -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
 
-    <CheckBox
-        android:id="@+id/check_box_topping3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Topping 3 (+$1)" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_text_menu_item_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Menu Item Description"
+                    android:inputType="textMultiLine"
+                    android:textColorHint="#3D33A8"
+                    android:minLines="3"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Submit Button -->
-    <Button
-        android:id="@+id/button_submit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Menu Item"
-        android:onClick="addMenuItem"
-        android:layout_marginTop="16dp" />
-</LinearLayout>
+            <!-- Menu Item Price -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edit_text_menu_item_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Menu Item Price"
+                    android:textColorHint="#3D33A8"
+                    android:inputType="numberDecimal"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Menu Item Category Label -->
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Menu Item Category"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:textColor="#3D33A8" />
+
+            <!-- Menu Item Category Spinner -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp">
+
+                <Spinner
+                    android:id="@+id/spinner_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Menu Item Toppings -->
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Toppings"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:textColor="#3D33A8" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/check_box_topping1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Topping 1 (+$2)"
+                android:textSize="16sp" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/check_box_topping2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Topping 2 (+$3)"
+                android:textSize="16sp" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/check_box_topping3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Topping 3 (+$1)"
+                android:textSize="16sp" />
+
+            <!-- Submit Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Menu Item"
+                android:onClick="addMenuItem"
+                android:padding="15dp"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#F8CB2E"
+                android:textSize="18dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</ScrollView>
