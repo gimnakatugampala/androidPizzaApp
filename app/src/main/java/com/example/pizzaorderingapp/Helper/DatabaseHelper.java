@@ -166,7 +166,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_PROMO_CODES);
 
         // Insert default categories
-        insertDefaultCategories(db);
+//        insertDefaultCategories(db);
+//        Add Admin
+//        insertDefaultAdmin(db);
     }
 
     @Override
@@ -228,6 +230,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             onCreate(db);
         }
     }
+
+    private void insertDefaultAdmin(SQLiteDatabase db) {
+        // Define default admin data
+        String adminEmail = "admin@gmail.com";
+        String adminPassword = "12345678"; // Ensure to hash the password in real applications
+        String adminRole = "Admin"; // or use whatever role designation is suitable
+        String adminFirstName = "Admin";
+        String adminLastName = "User";
+        String adminProfileImageUrl = ""; // Use a default profile image URL if available
+
+        // Insert admin data
+        insertAdmin(db, adminEmail, adminPassword, adminRole, adminFirstName, adminLastName, adminProfileImageUrl);
+    }
+
+    private void insertAdmin(SQLiteDatabase db, String email, String password, String role, String firstName, String lastName, String profileImageUrl) {
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USER_EMAIL, email);
+        values.put(COLUMN_PASSWORD, password); // Consider hashing the password before storing
+        values.put(COLUMN_ROLE, role);
+        values.put(COLUMN_FIRST_NAME, firstName);
+        values.put(COLUMN_LAST_NAME, lastName);
+        values.put(COLUMN_IMAGE_URI, profileImageUrl);
+        db.insert(TABLE_USERS, null, values); // Replace TABLE_USER with your actual table name
+    }
+
 
     private void insertDefaultCategories(SQLiteDatabase db) {
         insertCategory(db, "Margherita", "https://foodbyjonister.com/wp-content/uploads/2020/01/MargheritaPizza.jpg");

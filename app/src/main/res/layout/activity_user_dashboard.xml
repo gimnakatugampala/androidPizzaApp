@@ -88,6 +88,7 @@
                     android:visibility="gone"/> <!-- Initially hidden -->
 
                 <LinearLayout
+                    android:id="@+id/MenuItemsContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -143,6 +144,7 @@
                     android:visibility="gone"/> <!-- Initially hidden -->
 
                 <LinearLayout
+                    android:id="@+id/OrderContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -228,6 +230,7 @@
                     android:visibility="gone"/> <!-- Initially hidden -->
 
                 <LinearLayout
+                    android:id="@+id/PromosContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"

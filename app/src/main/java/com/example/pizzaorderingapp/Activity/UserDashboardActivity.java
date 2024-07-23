@@ -25,6 +25,11 @@ public class UserDashboardActivity extends AppCompatActivity {
     private TextView managePromotionsTextView;
     private TextView manageCustomersTextView;
 
+    // Declare variables for admin-specific containers
+    private LinearLayout menuItemsContainer;
+    private LinearLayout orderContainer;
+    private LinearLayout promosContainer;
+
     private SessionManager sessionManager;
 
     @Override
@@ -44,6 +49,11 @@ public class UserDashboardActivity extends AppCompatActivity {
         manageOrdersTextView = findViewById(R.id.nav_item_4);
         managePromotionsTextView = findViewById(R.id.nav_item_9);
         manageCustomersTextView = findViewById(R.id.nav_item_8);
+
+        // Initialize admin-specific containers using IDs from XML
+        menuItemsContainer = findViewById(R.id.MenuItemsContainer);
+        orderContainer = findViewById(R.id.OrderContainer);
+        promosContainer = findViewById(R.id.PromosContainer);
 
         // Set user details
         String firstName = sessionManager.getFirstName();
@@ -74,11 +84,17 @@ public class UserDashboardActivity extends AppCompatActivity {
             manageOrdersTextView.setVisibility(View.VISIBLE);
             managePromotionsTextView.setVisibility(View.VISIBLE);
             manageCustomersTextView.setVisibility(View.VISIBLE);
+            menuItemsContainer.setVisibility(View.VISIBLE);
+            orderContainer.setVisibility(View.VISIBLE);
+            promosContainer.setVisibility(View.VISIBLE);
         } else {
             menuManagementTextView.setVisibility(View.GONE);
             manageOrdersTextView.setVisibility(View.GONE);
             managePromotionsTextView.setVisibility(View.GONE);
             manageCustomersTextView.setVisibility(View.GONE);
+            menuItemsContainer.setVisibility(View.GONE);
+            orderContainer.setVisibility(View.GONE);
+            promosContainer.setVisibility(View.GONE);
         }
     }
 
