@@ -125,21 +125,21 @@
                 android:id="@+id/check_box_topping1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Topping 1 (+$2)"
+                android:text="Mushrooms (+$1)"
                 android:textSize="16sp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/check_box_topping2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Topping 2 (+$3)"
+                android:text="Olives (+$1)"
                 android:textSize="16sp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/check_box_topping3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Topping 3 (+$1)"
+                android:text="Extra Cheese (+$1)"
                 android:textSize="16sp" />
 
             <!-- Submit Button -->

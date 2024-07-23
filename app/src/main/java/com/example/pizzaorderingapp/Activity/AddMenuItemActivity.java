@@ -113,9 +113,9 @@ public class AddMenuItemActivity extends AppCompatActivity {
         }
 
         String toppings = "";
-        if (topping1) toppings += "Topping 1,";
-        if (topping2) toppings += "Topping 2,";
-        if (topping3) toppings += "Topping 3,";
+        if (topping1) toppings += "Mushrooms,";
+        if (topping2) toppings += "Olives,";
+        if (topping3) toppings += "Extra Cheese,";
         if (!toppings.isEmpty()) toppings = toppings.substring(0, toppings.length() - 1); // Remove trailing comma
 
         // Convert URI to Bitmap
