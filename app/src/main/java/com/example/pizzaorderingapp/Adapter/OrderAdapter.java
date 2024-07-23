@@ -1,6 +1,7 @@
 package com.example.pizzaorderingapp.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.pizzaorderingapp.Model.Order;
 import com.example.pizzaorderingapp.R;
 import com.example.pizzaorderingapp.Helper.DatabaseHelper;
+import com.example.pizzaorderingapp.Utils.MailSender;
+
 import androidx.appcompat.app.AlertDialog;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,6 +24,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
+
 
     private ArrayList<Order> orderList;
     private DatabaseHelper dbHelper;
@@ -95,9 +99,16 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         orderList.remove(order);
         notifyDataSetChanged();
 
+        // Send email notification
+        String subject = "Order Cancellation";
+        String message = "Dear Customer,\n\nYour order with Code " + order.getId() + " has been successfully canceled.\n\nThank you for using our service.";
+        new MailSender(order.getUserEmail(), subject, message).execute();
+
         // Notify the user about the successful cancellation
         Toast.makeText(context, "Order canceled successfully", Toast.LENGTH_SHORT).show();
     }
+
+
 
     static class OrderViewHolder extends RecyclerView.ViewHolder {
         TextView tvOrderId, tvOrderStatus, tvTotalAmount, tvOrderDate;
