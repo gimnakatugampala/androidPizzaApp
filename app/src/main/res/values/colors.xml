@@ -11,4 +11,7 @@
     <color name="colorAccent">#F8CB2E</color>
 
     <color name="colorText">#212121</color>
+
+    <color name="editButton">#3498DB</color>
+    <color name="deleteButton">#E74C3C</color>
 </resources>
