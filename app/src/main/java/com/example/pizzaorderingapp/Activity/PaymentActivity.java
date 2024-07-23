@@ -50,7 +50,7 @@ public class PaymentActivity extends AppCompatActivity {
         // Receive the total amount from the checkout screen
         Intent intent = getIntent();
         String totalAmount = intent.getStringExtra("TOTAL_AMOUNT");
-        tvTotalAmount.setText("Total Amount: $" + totalAmount);
+        tvTotalAmount.setText("Total Amount: " + totalAmount);
 
         // Retrieve logged-in user's email and names from SessionManager
         loggedInUserEmail = sessionManager.getEmail();

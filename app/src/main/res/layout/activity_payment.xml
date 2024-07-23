@@ -5,8 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center_vertical"
     android:padding="16dp"
-    tools:context=".PaymentActivity">
+    tools:context="Activity.PaymentActivity">
+
+    <!-- Title TextView -->
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pay Now"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textColor="#3D33A8"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        android:padding="16dp"
+        android:background="@drawable/rounded_background_title" />
 
     <!-- Total Amount TextView -->
     <TextView
@@ -23,6 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+
         app:hintEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -76,6 +92,6 @@
         android:backgroundTint="@color/colorAccent"
         android:layout_marginTop="16dp"
         android:padding="12dp"
-        android:textSize="16sp" />
+        android:textSize="21sp" />
 
 </LinearLayout>
