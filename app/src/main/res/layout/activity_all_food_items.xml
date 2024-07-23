@@ -11,7 +11,7 @@
         android:id="@+id/titleTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="All Menu Items"
+        android:text="Pizza Market"
         android:textAlignment="center"
         android:textSize="24sp"
         android:textColor="#3D33A8"
