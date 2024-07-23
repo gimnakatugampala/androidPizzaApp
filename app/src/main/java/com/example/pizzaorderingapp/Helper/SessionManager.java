@@ -55,6 +55,17 @@ public class SessionManager {
         editor.apply(); // Use apply for asynchronous operation
     }
 
+    // Check if user is a guest
+    public boolean isGuest() {
+        return "guest".equalsIgnoreCase(pref.getString(KEY_ROLE, ""));
+    }
+
+
+    // Check if the user is a member
+    public boolean isMember() {
+        return "member".equalsIgnoreCase(pref.getString(KEY_ROLE, ""));
+    }
+
     // Get email
     public String getEmail() {
         return pref.getString(KEY_EMAIL, null);

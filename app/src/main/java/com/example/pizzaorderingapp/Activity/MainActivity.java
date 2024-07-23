@@ -2,7 +2,6 @@ package com.example.pizzaorderingapp.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -21,6 +20,7 @@ import com.example.pizzaorderingapp.Helper.ManagementCart;
 import com.example.pizzaorderingapp.Model.MenuItem;
 import com.example.pizzaorderingapp.Repository.MenuItemRepository;
 import com.example.pizzaorderingapp.R;
+import com.example.pizzaorderingapp.Util.SessionManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private MenuItemRepository menuItemRepository;
     private ManagementCart managementCart;
+    private SessionManager sessionManager; // Added for session management
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         menuItemRepository = new MenuItemRepository(this);
         managementCart = new ManagementCart(this);
+        sessionManager = new SessionManager(this); // Initialize SessionManager
 
         // Setup RecyclerViews
         setupRecyclerViews();
@@ -123,18 +125,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onGoToUserDashboard(View view) {
-        startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
+        if (!sessionManager.isGuest()) { // Check if the user is a guest
+            startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
+        } else {
+            Toast.makeText(this, "Guest users cannot access the dashboard. Please log in to continue.", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void onClickProfile(View view) {
         startActivity(new Intent(MainActivity.this, UpdateProfileActivity.class));
     }
 
-    public  void onClickMyStore(View view){
+    public void onClickMyStore(View view) {
         startActivity(new Intent(MainActivity.this, MyOrdersActivity.class));
     }
 
-    public  void onClickSeeMore(View view){
+    public void onClickSeeMore(View view) {
         startActivity(new Intent(MainActivity.this, AllFoodItemsActivity.class));
     }
 }
