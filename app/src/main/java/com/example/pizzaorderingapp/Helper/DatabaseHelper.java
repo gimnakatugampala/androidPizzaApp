@@ -340,29 +340,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<Order> getAllOrdersByUser(String userEmail) {
         ArrayList<Order> orders = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
 
-        Cursor cursor = db.query(TABLE_ORDERS,
-                new String[]{COLUMN_ID, COLUMN_USER_EMAIL_ORDERS, COLUMN_ORDER_STATUS, COLUMN_TOTAL_AMOUNT, COLUMN_DATE, COLUMN_COMPLETED},
-                COLUMN_USER_EMAIL_ORDERS + "=?",
-                new String[]{userEmail}, null, null, null);
+        try {
+            cursor = db.query(
+                    TABLE_ORDERS,
+                    new String[]{COLUMN_ID, COLUMN_USER_EMAIL_ORDERS, COLUMN_ORDER_STATUS, COLUMN_TOTAL_AMOUNT, COLUMN_DATE, COLUMN_COMPLETED},
+                    COLUMN_USER_EMAIL_ORDERS + "=?",
+                    new String[]{userEmail},
+                    null,
+                    null,
+                    null
+            );
 
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                int orderId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
-                String userEmailOrder = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_EMAIL_ORDERS));
-                String orderStatus = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ORDER_STATUS));
-                String totalAmount = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TOTAL_AMOUNT));
-                String orderDate = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DATE));
-                boolean completed = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_COMPLETED)) == 1;
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    int orderId = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID));
+                    String userEmailOrder = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_USER_EMAIL_ORDERS));
+                    String orderStatus = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ORDER_STATUS));
+                    String totalAmount = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TOTAL_AMOUNT));
+                    String orderDate = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DATE));
+                    boolean completed = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_COMPLETED)) == 1;
 
-                Order order = new Order(orderId, userEmailOrder, orderStatus, totalAmount, orderDate, completed);
-                orders.add(order);
+                    Order order = new Order(orderId, userEmailOrder, orderStatus, totalAmount, orderDate, completed);
+                    orders.add(order);
+                }
             }
-            cursor.close();
+        } catch (Exception e) {
+            e.printStackTrace(); // You might want to log this error or handle it differently
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
 
         return orders;
     }
+
 
 
     public ArrayList<Order> getOrdersByStatus(String status) {

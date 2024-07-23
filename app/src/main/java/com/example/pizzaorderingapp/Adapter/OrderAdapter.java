@@ -1,7 +1,6 @@
 package com.example.pizzaorderingapp.Adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +13,15 @@ import com.example.pizzaorderingapp.Model.Order;
 import com.example.pizzaorderingapp.R;
 import com.example.pizzaorderingapp.Helper.DatabaseHelper;
 import com.example.pizzaorderingapp.Utils.MailSender;
-
 import androidx.appcompat.app.AlertDialog;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
-
 
     private ArrayList<Order> orderList;
     private DatabaseHelper dbHelper;
@@ -38,12 +35,14 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     }
 
     private void sortOrdersByDateDescending() {
-        Collections.sort(orderList, new Comparator<Order>() {
-            @Override
-            public int compare(Order o1, Order o2) {
+        Collections.sort(orderList, (o1, o2) -> {
+            try {
                 long timestamp1 = Long.parseLong(o1.getDate());
                 long timestamp2 = Long.parseLong(o2.getDate());
                 return Long.compare(timestamp2, timestamp1); // Descending order
+            } catch (NumberFormatException e) {
+                e.printStackTrace(); // Log the error if date parsing fails
+                return 0;
             }
         });
     }
@@ -63,11 +62,15 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         holder.tvTotalAmount.setText("Total: " + order.getTotalAmount());
 
         // Convert the timestamp to a Date object and format it
-        long timestamp = Long.parseLong(order.getDate());
-        Date date = new Date(timestamp);
-        SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-        String dateString = outputFormat.format(date);
-        holder.tvOrderDate.setText("Date: " + dateString);
+        try {
+            long timestamp = Long.parseLong(order.getDate());
+            Date date = new Date(timestamp);
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            String dateString = outputFormat.format(date);
+            holder.tvOrderDate.setText("Date: " + dateString);
+        } catch (NumberFormatException e) {
+            holder.tvOrderDate.setText("Date: Invalid Date");
+        }
 
         // Show/Hide buttons based on order status
         if ("Pending".equals(order.getStatus())) {
@@ -95,9 +98,21 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         // Update the order status in the database
         dbHelper.updateOrderStatus(order.getId(), "Canceled");
 
-        // Remove the order from the list and notify the adapter
-        orderList.remove(order);
-        notifyDataSetChanged();
+        // Find the position of the canceled order in the list
+        int position = orderList.indexOf(order);
+        if (position != -1) {
+            // Update the order in the list
+            Order updatedOrder = new Order(
+                    order.getId(),
+                    order.getUserEmail(),
+                    "Canceled", // Update status
+                    order.getTotalAmount(),
+                    order.getDate(),
+                    false // Mark as not completed
+            );
+            orderList.set(position, updatedOrder); // Replace the order
+            notifyItemChanged(position); // Notify the adapter that the item has changed
+        }
 
         // Send email notification
         String subject = "Order Cancellation";
@@ -107,7 +122,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         // Notify the user about the successful cancellation
         Toast.makeText(context, "Order canceled successfully", Toast.LENGTH_SHORT).show();
     }
-
 
 
     static class OrderViewHolder extends RecyclerView.ViewHolder {
