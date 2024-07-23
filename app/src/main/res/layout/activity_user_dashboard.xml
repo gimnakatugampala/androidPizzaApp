@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Gimna Katugampala"
-                android:textSize="20sp"
+                android:textSize="23sp"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold" />
 
@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="gimnakatugampala1@gmail.com"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textColor="#FFFFFF" />
         </LinearLayout>
     </LinearLayout>
@@ -83,7 +83,7 @@
                     android:gravity="start|center_vertical"
                     android:padding="16dp"
                     android:text="Menu Management"
-                    android:textSize="18sp"
+                    android:textSize="21sp"
                     android:visibility="gone"
                     /> <!-- Initially hidden -->
 
@@ -95,6 +95,7 @@
                     android:orientation="vertical"
                     android:layout_marginTop="55dp"
                     android:paddingStart="32dp"
+
                     android:paddingBottom="8dp"
                     android:visibility="gone"
                     > <!-- Initially hidden -->
@@ -112,7 +113,7 @@
                         android:padding="16dp"
                         android:onClick="onMenuItemList"
                         android:text="Menu Items"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/nav_sub_item_3"
@@ -127,7 +128,7 @@
                         android:padding="16dp"
                         android:onClick="onAddMenuItem"
                         android:text="Add Menu Item"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -152,7 +153,7 @@
                     android:padding="16dp"
                     android:textStyle="bold"
                     android:text="Manage Orders"
-                    android:textSize="18sp"
+                    android:textSize="21sp"
                     android:visibility="gone"/> <!-- Initially hidden -->
 
                 <!-- Order Items -->
@@ -179,7 +180,7 @@
                         android:padding="16dp"
                         android:onClick="onClickPendingOrders"
                         android:text="Pending Orders"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/nav_sub_item_30"
@@ -194,7 +195,7 @@
                         android:gravity="start|center_vertical"
                         android:padding="16dp"
                         android:text="Delivering Orders"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/nav_sub_item_6"
@@ -209,7 +210,7 @@
                         android:padding="16dp"
                         android:onClick="onClickCancelOrders"
                         android:text="Canceled Orders"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/nav_sub_item_7"
@@ -224,7 +225,7 @@
                         android:padding="16dp"
                         android:onClick="onClickCompletedOrders"
                         android:text="Completed Orders"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -249,7 +250,7 @@
                     android:padding="16dp"
                     android:textStyle="bold"
                     android:text="Manage Promotions"
-                    android:textSize="18sp"
+                    android:textSize="21sp"
                     android:visibility="gone"/> <!-- Initially hidden -->
 
                 <!-- Promotion Items -->
@@ -276,7 +277,7 @@
                         android:padding="16dp"
                         android:onClick="onClickAllPromos"
                         android:text="All Promos"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/nav_sub_item_21"
@@ -291,7 +292,7 @@
                         android:padding="16dp"
                         android:onClick="onClickAddPromo"
                         android:text="Add Promo"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -315,7 +316,7 @@
                     android:padding="16dp"
                     android:textStyle="bold"
                     android:text="Manage Customers"
-                    android:textSize="18sp"
+                    android:textSize="21sp"
                     android:visibility="gone"/> <!-- Initially hidden -->
             </com.google.android.material.card.MaterialCardView>
 
@@ -341,7 +342,7 @@
                     android:textStyle="bold"
                     android:onClick="onClickMyOrders"
                     android:text="My Orders"
-                    android:textSize="18sp" />
+                    android:textSize="21sp" />
             </com.google.android.material.card.MaterialCardView>
 
             <!-- All Stores -->
@@ -366,7 +367,7 @@
                     android:textStyle="bold"
                     android:onClick="onClickAllStores"
                     android:text="All Stores"
-                    android:textSize="18sp" />
+                    android:textSize="21sp" />
             </com.google.android.material.card.MaterialCardView>
 
             <!-- Profile -->
@@ -391,7 +392,7 @@
                     android:textStyle="bold"
                     android:onClick="onClickProfile"
                     android:text="Profile"
-                    android:textSize="18sp" />
+                    android:textSize="21sp" />
             </com.google.android.material.card.MaterialCardView>
 
             <!-- Logout -->
@@ -413,7 +414,7 @@
                     android:padding="16dp"
                     android:onClick="onhandleLogout"
                     android:text="Logout"
-                    android:textSize="18sp"
+                    android:textSize="21sp"
                     android:textStyle="bold" />
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
