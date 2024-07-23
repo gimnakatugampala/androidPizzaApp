@@ -42,7 +42,7 @@
                         android:layout_height="wrap_content"
                         android:text="Hi Leonardo!"
                         android:textColor="#3D33A8"
-                        android:textSize="20sp"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -52,7 +52,7 @@
                         android:layout_marginTop="8dp"
                         android:text="Welcome back!"
                         android:textColor="#000000"
-                        android:textSize="20sp" />
+                        android:textSize="24sp" />
                 </LinearLayout>
 
                 <ImageView
@@ -68,16 +68,18 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="15dp">
 
                 <ImageView
                     android:id="@+id/imageView4"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scaleType="fitXY"
+                    android:layout_marginBottom="16dp"
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="true"
                     android:src="@drawable/banner" />
 
                 <TextView
@@ -88,7 +90,7 @@
                     android:layout_marginEnd="40dp"
                     android:text="Up to 49% off"
                     android:textColor="#fff"
-                    android:textSize="20sp"
+                    android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -101,7 +103,7 @@
                     android:layout_marginEnd="40dp"
                     android:text="Jan 12 - Feb 12"
                     android:textColor="#fff"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -123,25 +125,9 @@
                         android:text="Order Now"
                         android:textAlignment="center"
                         android:textColor="#fff"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <EditText
-                    android:id="@+id/editTextText"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/search_edit_background"
-                    android:drawableStart="@drawable/search"
-                    android:drawablePadding="10dp"
-                    android:ems="10"
-                    android:hint="Search Your Favorite Food"
-                    android:inputType="text"
-                    android:paddingStart="20dp"
-                    android:textStyle="italic"
-                    app:layout_constraintEnd_toEndOf="@+id/imageView4"
-                    app:layout_constraintStart_toStartOf="@+id/imageView4"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView4" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -154,7 +140,7 @@
                 android:layout_marginBottom="5dp"
                 android:text="Categories"
                 android:textColor="#000000"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -163,10 +149,9 @@
                 android:paddingStart="22dp"
                 android:paddingEnd="22dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp">
@@ -177,10 +162,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp"
-
                     android:text="Recommended"
                     android:textColor="#000000"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -193,7 +177,7 @@
                     android:onClick="onClickSeeMore"
                     android:text="See more"
                     android:textColor="#3D33A8"
-                    android:textSize="15sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/textView10"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -201,14 +185,13 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/view2"
                 android:clipToPadding="false"
                 android:paddingEnd="22dp"
                 android:paddingStart="22dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content" />
 
             <!-- Add more views here if needed -->
 
@@ -216,21 +199,17 @@
     </ScrollView>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <!-- Other content goes here -->
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="56dp"
             android:layout_gravity="bottom"
             android:backgroundTint="#f6f6f6">
 
             <LinearLayout
-
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
@@ -256,7 +235,7 @@
                         android:text="Home"
                         android:textAlignment="center"
                         android:textColor="#676767"
-                        android:textSize="12sp" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -271,6 +250,7 @@
                         android:id="@+id/imageView7"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         app:srcCompat="@drawable/baseline_person_24" />
 
                     <TextView
@@ -280,7 +260,7 @@
                         android:text="Profile"
                         android:textAlignment="center"
                         android:textColor="#676767"
-                        android:textSize="12sp" />
+                        android:textSize="16sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -305,7 +285,7 @@
                         android:text="My Cart"
                         android:textAlignment="center"
                         android:textColor="#676767"
-                        android:textSize="12sp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -329,7 +309,7 @@
                         android:text="Stores"
                         android:textAlignment="center"
                         android:textColor="#676767"
-                        android:textSize="12sp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -354,9 +334,8 @@
                         android:text="My Orders"
                         android:textAlignment="center"
                         android:textColor="#676767"
-                        android:textSize="12sp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:id="@+id/logoutPofileContainer"
@@ -381,14 +360,12 @@
                         android:text="Logout"
                         android:textAlignment="center"
                         android:textColor="#676767"
-                        android:textSize="12sp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
-
 
             </LinearLayout>
         </com.google.android.material.bottomappbar.BottomAppBar>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
