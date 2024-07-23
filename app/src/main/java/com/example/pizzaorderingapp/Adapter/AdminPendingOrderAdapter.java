@@ -1,5 +1,4 @@
 package com.example.pizzaorderingapp.Adapters;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,22 +12,28 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pizzaorderingapp.Model.Order;
 import com.example.pizzaorderingapp.R;
+import com.example.pizzaorderingapp.Utils.MailSender;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class AdminPendingOrderAdapter extends RecyclerView.Adapter<com.example.pizzaorderingapp.Adapters.AdminPendingOrderAdapter.OrderViewHolder> {
+public class AdminPendingOrderAdapter extends RecyclerView.Adapter<AdminPendingOrderAdapter.OrderViewHolder> {
 
     private Context context;
     private ArrayList<Order> orders;
     private OrderActionListener listener;
+    private ExecutorService emailExecutor;
 
     public AdminPendingOrderAdapter(Context context, ArrayList<Order> orders, OrderActionListener listener) {
         this.context = context;
         this.orders = orders;
         this.listener = listener;
+        // Initialize the ExecutorService for email sending
+        this.emailExecutor = Executors.newSingleThreadExecutor();
     }
 
     @NonNull
@@ -89,7 +94,6 @@ public class AdminPendingOrderAdapter extends RecyclerView.Adapter<com.example.p
 
             textOrderDate.setText("Order Date: " + dateString);
 
-            // Set button visibility based on order status
             if (order.getStatus().equals("Pending")) {
                 buttonCancel.setVisibility(View.VISIBLE);
                 buttonConfirm.setVisibility(View.VISIBLE);
@@ -101,7 +105,6 @@ public class AdminPendingOrderAdapter extends RecyclerView.Adapter<com.example.p
                 buttonConfirm.setVisibility(View.GONE);
             }
 
-            // Set up button click listeners
             buttonCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -113,6 +116,22 @@ public class AdminPendingOrderAdapter extends RecyclerView.Adapter<com.example.p
                 @Override
                 public void onClick(View v) {
                     listener.onConfirmClick(order.getId());
+                    sendConfirmationEmail(order.getUserEmail(), order.getId());
+                }
+            });
+        }
+
+        private void sendConfirmationEmail(final String userEmail, final int orderId) {
+            emailExecutor.submit(() -> {
+                String subject = "Order Confirmation";
+                String message = "Your order with Order Code: " + orderId + " has been confirmed for delivery. Thank you for your order!";
+                // Use your email sending implementation here
+                try {
+                    // This is a placeholder for your email sending logic
+                    MailSender mailSender = new MailSender(userEmail, subject, message);
+                    mailSender.execute(); // Assume this method sends an email
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             });
         }

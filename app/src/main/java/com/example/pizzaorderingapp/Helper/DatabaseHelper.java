@@ -6,6 +6,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
 import com.example.pizzaorderingapp.Model.Order;
 import com.example.pizzaorderingapp.Model.Customer;
 
@@ -73,8 +75,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_PROMO_DISCOUNT_PERCENT = "promo_discount_percent";
     public static final String COLUMN_PROMO_EXPIRY_DATE = "promo_expiry_date";
 
-//    Order items
-public static final String COLUMN_ORDERITEM_ORDER_ID = "order_id";
+    //    Order items
+    public static final String COLUMN_ORDERITEM_ORDER_ID = "order_id";
     public static final String COLUMN_ORDERITEM_MENU_ITEM_ID = "menu_item_id";
     public static final String COLUMN_ORDERITEM_QUANTITY = "quantity";
     public static final String COLUMN_ORDERITEM_PRICE = "price"; // Add the price column here
@@ -163,7 +165,7 @@ public static final String COLUMN_ORDERITEM_ORDER_ID = "order_id";
         db.execSQL(CREATE_TABLE_PROMO_CODES);
 
         // Insert default categories
-         insertDefaultCategories(db);
+        insertDefaultCategories(db);
     }
 
     @Override
@@ -400,7 +402,6 @@ public static final String COLUMN_ORDERITEM_ORDER_ID = "order_id";
     }
 
 
-
     public ArrayList<Order> getOrdersByCustomerEmail(String userEmail) {
         ArrayList<Order> orders = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -447,8 +448,49 @@ public static final String COLUMN_ORDERITEM_ORDER_ID = "order_id";
         return emails;
     }
 
+    public Order getOrderById(int orderId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        Order order = null;
 
+        try {
+            cursor = db.query("orders", null, "id = ?", new String[]{String.valueOf(orderId)}, null, null, null);
 
+            if (cursor != null && cursor.moveToFirst()) {
+                // Ensure column names are valid
+                int idIndex = cursor.getColumnIndex("id");
+                int userEmailIndex = cursor.getColumnIndex("user_email");
+                int statusIndex = cursor.getColumnIndex("order_status");
+                int totalAmountIndex = cursor.getColumnIndex("total_amount");
+                int dateIndex = cursor.getColumnIndex("order_date");
+                int completedIndex = cursor.getColumnIndex("completed");
+
+                // Check for valid column indices
+                if (idIndex != -1 && userEmailIndex != -1 && statusIndex != -1 && totalAmountIndex != -1 && dateIndex != -1 && completedIndex != -1) {
+                    int id = cursor.getInt(idIndex);
+                    String userEmail = cursor.getString(userEmailIndex);
+                    String status = cursor.getString(statusIndex);
+                    String totalAmount = cursor.getString(totalAmountIndex);
+                    String date = cursor.getString(dateIndex);
+                    boolean completed = cursor.getInt(completedIndex) > 0;
+
+                    order = new Order(id, userEmail, status, totalAmount, date, completed);
+                } else {
+                    // Handle case where column names are invalid or missing
+                    Log.e("DatabaseHelper", "One or more columns are missing in the cursor.");
+                }
+            }
+        } catch (Exception e) {
+            // Handle exceptions (e.g., log them)
+            Log.e("DatabaseHelper", "Error fetching order by ID", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return order;
+    }
 
 
 

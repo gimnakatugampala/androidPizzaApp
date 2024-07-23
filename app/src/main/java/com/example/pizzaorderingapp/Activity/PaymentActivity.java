@@ -210,7 +210,7 @@ public class PaymentActivity extends AppCompatActivity {
         }
 
         String subject = "Payment Confirmation";
-        String message = "Your payment of $" + totalAmount + "  has been successfully processed. Thank you for your order! Your order is being processed, and we'll notify you once it's on its way.";
+        String message = "Your payment of " + totalAmount + "  has been successfully processed. Thank you for your order! Your order is being processed, and we'll notify you once it's on its way.";
         MailSender mailSender = new MailSender(email, subject, message);
         mailSender.execute();
     }
