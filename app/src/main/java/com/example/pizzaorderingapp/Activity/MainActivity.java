@@ -6,11 +6,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.pizzaorderingapp.Adapter.CategoryAdapter;
 import com.example.pizzaorderingapp.Adapter.RecommendedAdapter;
 import com.example.pizzaorderingapp.Domain.CategoryDomain;
@@ -21,7 +19,6 @@ import com.example.pizzaorderingapp.Model.MenuItem;
 import com.example.pizzaorderingapp.Repository.MenuItemRepository;
 import com.example.pizzaorderingapp.R;
 import com.example.pizzaorderingapp.Util.SessionManager;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,11 +39,13 @@ public class MainActivity extends AppCompatActivity {
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
+        // Initialize SessionManager
+        sessionManager = new SessionManager(this);
+
         // Initialize helpers
         dbHelper = new DatabaseHelper(this);
         menuItemRepository = new MenuItemRepository(this);
         managementCart = new ManagementCart(this);
-        sessionManager = new SessionManager(this); // Initialize SessionManager
 
         // Setup RecyclerViews
         setupRecyclerViews();
@@ -73,13 +72,11 @@ public class MainActivity extends AppCompatActivity {
         Random random = new Random();
 
         for (MenuItem menuItem : menuItems) {
-            // Generate random values for star, time, and calories
-            int star = random.nextInt(5) + 1;          // Random star rating between 1 and 5
-            int time = random.nextInt(60) + 10;        // Random preparation time between 10 and 70 minutes
-            int calories = random.nextInt(500) + 100;  // Random calories between 100 and 600
+            int star = random.nextInt(5) + 1;
+            int time = random.nextInt(60) + 10;
+            int calories = random.nextInt(500) + 100;
 
-            // Convert toppings from String to List<String>
-            String toppingsString = menuItem.getToppings(); // Assuming this returns a comma-separated string
+            String toppingsString = menuItem.getToppings();
             List<String> toppings = toppingsString != null && !toppingsString.isEmpty()
                     ? Arrays.asList(toppingsString.split("\\s*,\\s*"))
                     : new ArrayList<>();
@@ -90,11 +87,11 @@ public class MainActivity extends AppCompatActivity {
                     menuItem.getImageUri(),
                     menuItem.getDescription(),
                     menuItem.getPrice(),
-                    String.valueOf(star), // Convert star to String
+                    String.valueOf(star),
                     calories,
                     time,
-                    toppings, // Pass toppings list to FoodDomain
-                    "" // Default value for selectedToppings
+                    toppings,
+                    ""
             );
             foodList.add(foodDomain);
         }
@@ -105,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 managementCart.insertFood(foodDomain);
                 Toast.makeText(MainActivity.this, "Added to cart", Toast.LENGTH_SHORT).show();
             }
-        }, MainActivity.this); // Pass the context here
+        }, MainActivity.this);
         recyclerViewPopularList.setAdapter(recommendedAdapter);
     }
 
@@ -116,16 +113,21 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout myOrdersBtn = findViewById(R.id.myOrdersBtn);
 
         homeBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, MainActivity.class)));
-
         cartBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CartActivity.class)));
-
         storeBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, AllStores.class)));
 
-//        myOrdersBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, OrderHistoryActivity.class)));
+        // Set visibility based on user role
+        if (sessionManager.isGuest()) {
+            findViewById(R.id.containerProfile).setVisibility(View.GONE);
+            myOrdersBtn.setVisibility(View.GONE);
+        }
+
+        // Optionally set click listeners
+        myOrdersBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, MyOrdersActivity.class)));
     }
 
     public void onGoToUserDashboard(View view) {
-        if (!sessionManager.isGuest()) { // Check if the user is a guest
+        if (!sessionManager.isGuest()) {
             startActivity(new Intent(MainActivity.this, UserDashboardActivity.class));
         } else {
             Toast.makeText(this, "Guest users cannot access the dashboard. Please log in to continue.", Toast.LENGTH_LONG).show();
