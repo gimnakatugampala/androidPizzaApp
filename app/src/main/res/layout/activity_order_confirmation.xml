@@ -1,24 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:context="Activity.ConfirmationActivity">
 
+    <!-- ImageView for confirmation icon -->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/confirmation"
+        android:layout_marginBottom="24dp"
+        />
+
+    <!-- Order confirmation message TextView -->
     <TextView
         android:id="@+id/tvOrderConfirmation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Your order has been placed successfully!"
-        android:textSize="18sp"
+        android:textSize="28sp"
         android:textStyle="bold"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="24dp"
+        android:gravity="center"/>
 
-    <Button
+    <!-- Go to Home Button -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnGoToHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Go to Home" />
+        android:text="Go to Home"
+        android:layout_marginTop="16dp"
+        android:textSize="22dp"
+        android:padding="12dp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/colorAccent"
+        app:cornerRadius="8dp"
+
+        app:iconPadding="8dp"/>
 
 </LinearLayout>
