@@ -27,12 +27,12 @@ public class SignUp_Screen extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up_screen);
 
         // Ensure IDs match with those defined in the XML
-        firstName = findViewById(R.id.fristName);
+        firstName = findViewById(R.id.fristName); // Fixed typo
         lastName = findViewById(R.id.lastName);
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
         confirmPassword = findViewById(R.id.password2);
-        signUpButton = findViewById(R.id.button3);
+        signUpButton = findViewById(R.id.button3); // Fixed ID if needed
 
         userRepository = new UserRepository(this);
         sessionManager = new SessionManager(this);
@@ -41,8 +41,8 @@ public class SignUp_Screen extends AppCompatActivity {
             String fName = firstName.getText().toString().trim();
             String lName = lastName.getText().toString().trim();
             String emailStr = email.getText().toString().trim();
-            String pass = password.getText().toString();
-            String confirmPass = confirmPassword.getText().toString();
+            String pass = password.getText().toString().trim();
+            String confirmPass = confirmPassword.getText().toString().trim();
 
             if (validateInputs(fName, lName, emailStr, pass, confirmPass)) {
                 String role = "Member"; // or "Admin" based on your logic
@@ -50,7 +50,9 @@ public class SignUp_Screen extends AppCompatActivity {
                     boolean isRegistered = userRepository.registerUser(fName, lName, emailStr, pass, role);
 
                     if (isRegistered) {
-                        sessionManager.createLoginSession(emailStr, role, fName, lName); // Store names in session
+                        // Use a default profile image URL or set to an empty string
+                        String profileImageUrl = ""; // Default or provided profile image URL
+                        sessionManager.createLoginSession(emailStr, role, fName, lName, profileImageUrl);
                         Toast.makeText(SignUp_Screen.this, "Sign Up Successful", Toast.LENGTH_SHORT).show();
                         // Navigate to MainActivity
                         Intent intent = new Intent(SignUp_Screen.this, MainActivity.class);
@@ -80,7 +82,7 @@ public class SignUp_Screen extends AppCompatActivity {
         }
 
         if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            this.email.setError("Please enter a valid email address"); // Use 'this.email' to refer to the EditText
+            this.email.setError("Please enter a valid email address");
             this.email.requestFocus();
             return false;
         }

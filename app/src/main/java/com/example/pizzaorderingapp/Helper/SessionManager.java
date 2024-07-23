@@ -11,6 +11,7 @@ public class SessionManager {
     private static final String KEY_ROLE = "role";
     private static final String KEY_FIRST_NAME = "firstName";
     private static final String KEY_LAST_NAME = "lastName";
+    private static final String KEY_PROFILE_IMAGE_URL = "profileImageUrl";
     private static final String KEY_FIRST_TIME_LAUNCH = "isFirstTimeLaunch";
 
     SharedPreferences pref;
@@ -26,12 +27,13 @@ public class SessionManager {
     }
 
     // Create login session
-    public void createLoginSession(String email, String role, String firstName, String lastName) {
+    public void createLoginSession(String email, String role, String firstName, String lastName, String profileImageUrl) {
         editor.putBoolean(KEY_IS_LOGGEDIN, true);
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_ROLE, role);
         editor.putString(KEY_FIRST_NAME, firstName);
         editor.putString(KEY_LAST_NAME, lastName);
+        editor.putString(KEY_PROFILE_IMAGE_URL, profileImageUrl);
         editor.apply(); // Use apply for asynchronous operation
     }
 
@@ -41,6 +43,7 @@ public class SessionManager {
         editor.putString(KEY_ROLE, "guest");
         editor.putString(KEY_FIRST_NAME, "Guest");
         editor.putString(KEY_LAST_NAME, "User");
+        editor.putString(KEY_PROFILE_IMAGE_URL, ""); // No profile image for guest
         editor.apply();
     }
 
@@ -59,7 +62,6 @@ public class SessionManager {
     public boolean isGuest() {
         return "guest".equalsIgnoreCase(pref.getString(KEY_ROLE, ""));
     }
-
 
     // Check if the user is a member
     public boolean isMember() {
@@ -86,6 +88,17 @@ public class SessionManager {
         return pref.getString(KEY_LAST_NAME, null);
     }
 
+    // Get profile image URL
+    public String getProfileImageUrl() {
+        return pref.getString(KEY_PROFILE_IMAGE_URL, null);
+    }
+
+    // Set profile image URL
+    public void setProfileImageUrl(String profileImageUrl) {
+        editor.putString(KEY_PROFILE_IMAGE_URL, profileImageUrl);
+        editor.apply(); // Use apply for asynchronous operation
+    }
+
     // Check if it's the first time launch
     public boolean isFirstTimeLaunch() {
         return pref.getBoolean(KEY_FIRST_TIME_LAUNCH, true);
@@ -98,11 +111,12 @@ public class SessionManager {
     }
 
     // Update session details
-    public void updateSession(String email, String role, String firstName, String lastName) {
+    public void updateSession(String email, String role, String firstName, String lastName, String profileImageUrl) {
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_ROLE, role);
         editor.putString(KEY_FIRST_NAME, firstName);
         editor.putString(KEY_LAST_NAME, lastName);
+        editor.putString(KEY_PROFILE_IMAGE_URL, profileImageUrl);
         editor.apply(); // Use apply for asynchronous operation
     }
 

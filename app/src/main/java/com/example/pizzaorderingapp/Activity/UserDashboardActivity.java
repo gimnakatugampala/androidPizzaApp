@@ -8,13 +8,14 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.pizzaorderingapp.R;
 import com.example.pizzaorderingapp.Util.SessionManager;
 
 public class UserDashboardActivity extends AppCompatActivity {
 
     private ImageView profileImage;
-    private TextView userName; // TextView to display the user's full name
+    private TextView userName;
     private TextView userEmail;
 
     private SessionManager sessionManager;
@@ -34,14 +35,27 @@ public class UserDashboardActivity extends AppCompatActivity {
         // Set user details
         String firstName = sessionManager.getFirstName();
         String lastName = sessionManager.getLastName();
+        String email = sessionManager.getEmail();
+        String profileImageUrl = sessionManager.getProfileImageUrl();
 
         if (firstName != null && lastName != null) {
             String fullName = firstName + " " + lastName;
-            userName.setText(fullName); // Use userName to display full name
+            userName.setText(fullName);
         }
-        userEmail.setText(sessionManager.getEmail());
+        userEmail.setText(email);
 
-        // Initialize other UI elements if needed
+        // Load profile image
+        if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
+            // Load the profile image from the URL
+            Glide.with(this)
+                    .load(profileImageUrl)
+                    .placeholder(R.drawable.profile_picture) // Default image
+                    .error(R.drawable.profile_picture) // Image to display on error
+                    .into(profileImage);
+        } else {
+            // Set default image
+            profileImage.setImageResource(R.drawable.profile_picture);
+        }
     }
 
     public void onhandleLogout(View view) {

@@ -95,7 +95,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
                             } else {
-                                openImageChooser();
+                                requestStoragePermissions();
                             }
                             break;
                     }
@@ -130,7 +130,11 @@ public class UpdateProfileActivity extends AppCompatActivity {
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
                     if (imageBitmap != null) {
                         profileImageView.setImageBitmap(imageBitmap);
-                        imageUri = saveImageToGallery(imageBitmap);
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                            imageUri = saveImageToGallery(imageBitmap);
+                        } else {
+                            requestStoragePermissions();
+                        }
                     }
                 }
             }
@@ -143,46 +147,55 @@ public class UpdateProfileActivity extends AppCompatActivity {
         return Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, imageTitle, imageDescription));
     }
 
+    private void requestStoragePermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
+        } else {
+            openImageChooser();
+        }
+    }
+
     private void loadUserProfile() {
-        Cursor cursor = databaseHelper.getReadableDatabase().query(
-                DatabaseHelper.TABLE_USERS, null, DatabaseHelper.COLUMN_USER_EMAIL + "=?",
-                new String[]{userEmail}, null, null, null
-        );
+        Cursor cursor = null;
+        try {
+            cursor = databaseHelper.getReadableDatabase().query(
+                    DatabaseHelper.TABLE_USERS, null, DatabaseHelper.COLUMN_USER_EMAIL + "=?",
+                    new String[]{userEmail}, null, null, null
+            );
 
-        if (cursor != null) {
-            try {
-                if (cursor.moveToFirst()) {
-                    int firstNameIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_FIRST_NAME);
-                    int lastNameIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_LAST_NAME);
-                    int emailIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_USER_EMAIL);
-                    int deliveryAddressIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_DELIVERY_ADDRESS);
-                    int phoneIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_PHONE);
-                    int imageUriIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_IMAGE_URI);
+            if (cursor != null && cursor.moveToFirst()) {
+                int firstNameIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_FIRST_NAME);
+                int lastNameIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_LAST_NAME);
+                int emailIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_USER_EMAIL);
+                int deliveryAddressIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_DELIVERY_ADDRESS);
+                int phoneIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_PHONE);
+                int imageUriIndex = cursor.getColumnIndex(DatabaseHelper.COLUMN_IMAGE_URI);
 
-                    if (firstNameIndex >= 0) {
-                        firstNameEditText.setText(cursor.getString(firstNameIndex));
-                    }
-                    if (lastNameIndex >= 0) {
-                        lastNameEditText.setText(cursor.getString(lastNameIndex));
-                    }
-                    if (emailIndex >= 0) {
-                        emailEditText.setText(cursor.getString(emailIndex));
-                    }
-                    if (deliveryAddressIndex >= 0) {
-                        deliveryAddressEditText.setText(cursor.getString(deliveryAddressIndex));
-                    }
-                    if (phoneIndex >= 0) {
-                        phoneEditText.setText(cursor.getString(phoneIndex));
-                    }
-                    if (imageUriIndex >= 0) {
-                        String uriString = cursor.getString(imageUriIndex);
-                        if (uriString != null && !uriString.isEmpty()) {
-                            imageUri = Uri.parse(uriString);
-                            profileImageView.setImageURI(imageUri);
-                        }
+                if (firstNameIndex >= 0) {
+                    firstNameEditText.setText(cursor.getString(firstNameIndex));
+                }
+                if (lastNameIndex >= 0) {
+                    lastNameEditText.setText(cursor.getString(lastNameIndex));
+                }
+                if (emailIndex >= 0) {
+                    emailEditText.setText(cursor.getString(emailIndex));
+                }
+                if (deliveryAddressIndex >= 0) {
+                    deliveryAddressEditText.setText(cursor.getString(deliveryAddressIndex));
+                }
+                if (phoneIndex >= 0) {
+                    phoneEditText.setText(cursor.getString(phoneIndex));
+                }
+                if (imageUriIndex >= 0) {
+                    String uriString = cursor.getString(imageUriIndex);
+                    if (uriString != null && !uriString.isEmpty()) {
+                        imageUri = Uri.parse(uriString);
+                        profileImageView.setImageURI(imageUri);
                     }
                 }
-            } finally {
+            }
+        } finally {
+            if (cursor != null) {
                 cursor.close();
             }
         }
@@ -223,6 +236,8 @@ public class UpdateProfileActivity extends AppCompatActivity {
         );
 
         if (rowsUpdated > 0) {
+            // Update the session with new details
+            sessionManager.updateSession(email, sessionManager.getRole(), firstName, lastName, imageUri != null ? imageUri.toString() : null);
             Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
             finish(); // Close the activity
         } else {

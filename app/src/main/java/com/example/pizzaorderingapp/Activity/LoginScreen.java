@@ -12,7 +12,6 @@ import com.example.pizzaorderingapp.Database.UserRepository;
 import com.example.pizzaorderingapp.R;
 import com.example.pizzaorderingapp.Util.SessionManager;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LoginScreen extends AppCompatActivity {
@@ -38,17 +37,19 @@ public class LoginScreen extends AppCompatActivity {
         }
     }
 
-    public void onLoginSubmit(View view){
+    public void onLoginSubmit(View view) {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 
-        if(validateEmail(email) && validatePassword(password)) {
+        if (validateEmail(email) && validatePassword(password)) {
             String role = userRepository.getUserRole(email, password);
             String firstName = userRepository.getUserFirstName(email); // Retrieve first name
             String lastName = userRepository.getUserLastName(email);   // Retrieve last name
 
             if (role != null) {
-                sessionManager.createLoginSession(email, role, firstName, lastName);
+                // Use a default profile image URL or set to an empty string
+                String profileImageUrl = ""; // Default or provided profile image URL
+                sessionManager.createLoginSession(email, role, firstName, lastName, profileImageUrl);
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -64,21 +65,24 @@ public class LoginScreen extends AppCompatActivity {
     }
 
     private boolean validateEmail(String email) {
-        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-        Matcher matcher = Pattern.compile(emailPattern).matcher(email);
-        if(!matcher.matches()) {
-            emailEditText.setError("Invalid email address");
+        // Pattern updated for more comprehensive email validation
+        String emailPattern = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}";
+        return Pattern.matches(emailPattern, email) || showEmailError();
+    }
+
+    private boolean validatePassword(String password) {
+        if (password.isEmpty() || password.length() < 6) {
+            passwordEditText.setError("Password must be at least 6 characters long");
+            passwordEditText.requestFocus();
             return false;
         }
         return true;
     }
 
-    private boolean validatePassword(String password) {
-        if(password.isEmpty() || password.length() < 6) {
-            passwordEditText.setError("Password must be at least 6 characters long");
-            return false;
-        }
-        return true;
+    private boolean showEmailError() {
+        emailEditText.setError("Invalid email address");
+        emailEditText.requestFocus();
+        return false;
     }
 
     public void continueAsGuest(View view) {
