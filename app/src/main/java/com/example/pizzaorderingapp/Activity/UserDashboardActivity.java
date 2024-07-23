@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ImageView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pizzaorderingapp.R;
@@ -13,15 +14,8 @@ import com.example.pizzaorderingapp.Util.SessionManager;
 public class UserDashboardActivity extends AppCompatActivity {
 
     private ImageView profileImage;
-    private TextView userName;
+    private TextView userName; // TextView to display the user's full name
     private TextView userEmail;
-    private TextView navItem1;
-    private TextView navSubItem1;
-    private TextView navSubItem2;
-    private TextView navItem2;
-    private TextView navItem3;
-    private TextView navItem4;
-    private TextView navItem5;
 
     private SessionManager sessionManager;
 
@@ -34,11 +28,17 @@ public class UserDashboardActivity extends AppCompatActivity {
 
         // Initialize UI elements
         profileImage = findViewById(R.id.profile_image);
-        userName = findViewById(R.id.user_name);
+        userName = findViewById(R.id.user_name); // Ensure this ID is correct in your XML
         userEmail = findViewById(R.id.user_email);
 
         // Set user details
-        userName.setText(sessionManager.getEmail());
+        String firstName = sessionManager.getFirstName();
+        String lastName = sessionManager.getLastName();
+
+        if (firstName != null && lastName != null) {
+            String fullName = firstName + " " + lastName;
+            userName.setText(fullName); // Use userName to display full name
+        }
         userEmail.setText(sessionManager.getEmail());
 
         // Initialize other UI elements if needed
@@ -61,22 +61,22 @@ public class UserDashboardActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public  void onMenuItemList(View view){
+    public void onMenuItemList(View view){
         Intent intent = new Intent(UserDashboardActivity.this, MenuItemListActivity.class);
         startActivity(intent);
     }
 
-    public void  onClickProfile(View view){
+    public void onClickProfile(View view){
         Intent intent = new Intent(UserDashboardActivity.this, UpdateProfileActivity.class);
         startActivity(intent);
     }
 
-    public  void onClickAddPromo(View view){
+    public void onClickAddPromo(View view){
         Intent intent = new Intent(UserDashboardActivity.this, AddPromoCodeActivity.class);
         startActivity(intent);
     }
 
-    public  void  onClickAllPromos(View view){
+    public void onClickAllPromos(View view){
         Intent intent = new Intent(UserDashboardActivity.this, PromoCodeListActivity.class);
         startActivity(intent);
     }
@@ -111,10 +111,8 @@ public class UserDashboardActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
     public void onClickManageCustomers(View view){
         Intent intent = new Intent(UserDashboardActivity.this, CustomerListActivity.class);
         startActivity(intent);
     }
-
 }
