@@ -5,16 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/white_recommended_btn"
-    android:padding="10dp"
-    android:elevation="3dp"
+    android:padding="16dp"
+    android:elevation="4dp"
     android:layout_margin="10dp">
 
     <ImageView
         android:id="@+id/pic"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_margin="5dp"
+        android:layout_marginEnd="12dp"
         android:src="@drawable/pizza_default"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,7 +25,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Food Item"
-        android:textColor="#373854"
+        android:textColor="#3D33A8"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/pic"
         app:layout_constraintStart_toStartOf="@+id/pic"
@@ -35,21 +37,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="$00.00"
-        android:textColor="#373854"
-        android:textSize="16sp"
+        android:textColor="#3D33A8"
+        android:textSize="18sp"
         android:textStyle="bold"
-
         app:layout_constraintEnd_toEndOf="@+id/pic"
         app:layout_constraintStart_toStartOf="@+id/pic"
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/add_to_cart_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:text="Add to Cart"
-        android:layout_marginTop="8dp"
+        app:backgroundTint="#F8CB2E"
+        app:cornerRadius="8dp"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconTint="@android:color/white"
         app:layout_constraintEnd_toEndOf="@+id/pic"
-        app:layout_constraintTop_toBottomOf="@+id/fee" />
-
+        app:layout_constraintStart_toStartOf="@+id/pic"
+        app:layout_constraintTop_toBottomOf="@+id/fee"
+        app:strokeColor="#F8CB2E"
+        app:strokeWidth="1dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
