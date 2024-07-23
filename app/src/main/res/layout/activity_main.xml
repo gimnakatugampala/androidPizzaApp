@@ -62,7 +62,7 @@
                     android:layout_gravity="center_vertical"
                     android:scaleType="centerCrop"
                     android:onClick="onGoToUserDashboard"
-                    android:src="@drawable/profile" />
+                    android:src="@drawable/profile_picture" />
 
             </LinearLayout>
 

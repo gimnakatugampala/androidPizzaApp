@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.pizzaorderingapp.Adapter.CategoryAdapter;
 import com.example.pizzaorderingapp.Adapter.RecommendedAdapter;
 import com.example.pizzaorderingapp.Domain.CategoryDomain;
@@ -19,6 +22,8 @@ import com.example.pizzaorderingapp.Model.MenuItem;
 import com.example.pizzaorderingapp.Repository.MenuItemRepository;
 import com.example.pizzaorderingapp.R;
 import com.example.pizzaorderingapp.Util.SessionManager;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private MenuItemRepository menuItemRepository;
     private ManagementCart managementCart;
-    private SessionManager sessionManager; // Added for session management
+    private SessionManager sessionManager;
+    private ImageView userProfileImage; // Added for profile image
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +53,32 @@ public class MainActivity extends AppCompatActivity {
         menuItemRepository = new MenuItemRepository(this);
         managementCart = new ManagementCart(this);
 
+        // Initialize ImageView
+        userProfileImage = findViewById(R.id.userProfileDetails);
+
+        // Load user profile image
+        loadUserProfileImage();
+
         // Setup RecyclerViews
         setupRecyclerViews();
 
         // Setup bottom navigation
         setupBottomNavigation();
+    }
+
+    private void loadUserProfileImage() {
+        String imageUrl = sessionManager.getProfileImageUrl();
+        if (imageUrl == null || imageUrl.isEmpty()) {
+            // Use default image if no profile picture is provided
+            userProfileImage.setImageResource(R.drawable.profile_picture);
+        } else {
+            // Load the user image using Picasso
+            Picasso.get()
+                    .load(imageUrl)
+                    .placeholder(R.drawable.profile_picture) // Optional placeholder
+                    .error(R.drawable.profile_picture) // Optional error image
+                    .into(userProfileImage);
+        }
     }
 
     private void setupRecyclerViews() {
@@ -111,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout cartBtn = findViewById(R.id.cartBtn);
         LinearLayout storeBtn = findViewById(R.id.storeBtn);
         LinearLayout myOrdersBtn = findViewById(R.id.myOrdersBtn);
-        LinearLayout GuestLogout = findViewById(R.id.logoutPofileContainer);
+        LinearLayout guestLogout = findViewById(R.id.logoutPofileContainer);
 
         homeBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, MainActivity.class)));
         cartBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CartActivity.class)));
@@ -121,12 +148,11 @@ public class MainActivity extends AppCompatActivity {
         if (sessionManager.isGuest()) {
             findViewById(R.id.containerProfile).setVisibility(View.GONE);
             myOrdersBtn.setVisibility(View.GONE);
-
-            findViewById(R.id.logoutPofileContainer).setVisibility(View.VISIBLE);
-            GuestLogout.setVisibility(View.VISIBLE);
+            guestLogout.setVisibility(View.VISIBLE);
+        } else {
+            guestLogout.setVisibility(View.GONE);
         }
 
-        // Optionally set click listeners
         myOrdersBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, MyOrdersActivity.class)));
     }
 
@@ -152,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickGuestLogout(View view) {
         // Clear session data
-        SessionManager sessionManager = new SessionManager(this);
         sessionManager.logoutUser(); // Implement this method to clear user session
 
         // Redirect to login screen
