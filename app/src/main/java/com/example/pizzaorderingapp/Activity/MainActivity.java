@@ -133,4 +133,8 @@ public class MainActivity extends AppCompatActivity {
     public  void onClickMyStore(View view){
         startActivity(new Intent(MainActivity.this, MyOrdersActivity.class));
     }
+
+    public  void onClickSeeMore(View view){
+        startActivity(new Intent(MainActivity.this, AllFoodItemsActivity.class));
+    }
 }

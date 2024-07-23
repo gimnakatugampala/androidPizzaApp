@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.example.pizzaorderingapp.Model.Order;
 import com.example.pizzaorderingapp.Model.Customer;
+import com.example.pizzaorderingapp.Model.MenuItem;
 
 
 import com.example.pizzaorderingapp.Domain.CategoryDomain;
@@ -489,6 +490,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public ArrayList<MenuItem> getAllMenuItems() {
+        ArrayList<MenuItem> menuItems = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_MENU_ITEMS, null, null, null, null, null, null);
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                MenuItem item = new MenuItem();
+                item.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
+                item.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
+                item.setDescription(cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION)));
+                item.setPrice(cursor.getDouble(cursor.getColumnIndex(COLUMN_PRICE)));
+                item.setCategory(cursor.getString(cursor.getColumnIndex(COLUMN_CATEGORY)));
+                item.setToppings(cursor.getString(cursor.getColumnIndex(COLUMN_TOPPINGS)));
+                item.setImageUri(cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_URI)));
+                menuItems.add(item);
+            }
+            cursor.close();
+        }
+
+        return menuItems;
+    }
 
 
 

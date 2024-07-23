@@ -1,7 +1,9 @@
 package com.example.pizzaorderingapp.Domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class FoodDomain implements Serializable {
 
@@ -29,7 +31,7 @@ public class FoodDomain implements Serializable {
         this.star = star;
         this.calories = calories;
         this.time = time;
-        this.toppings = toppings;
+        this.toppings = toppings != null ? new ArrayList<>(toppings) : new ArrayList<>();
         this.selectedToppings = selectedToppings;
         this.numberInCart = 1; // Default value
     }
@@ -62,8 +64,8 @@ public class FoodDomain implements Serializable {
     public int getTime() { return time; }
     public void setTime(int time) { this.time = time; }
 
-    public List<String> getToppings() { return toppings; }
-    public void setToppings(List<String> toppings) { this.toppings = toppings; }
+    public List<String> getToppings() { return new ArrayList<>(toppings); } // Return a copy for immutability
+    public void setToppings(List<String> toppings) { this.toppings = toppings != null ? new ArrayList<>(toppings) : new ArrayList<>(); }
 
     public String getSelectedToppings() { return selectedToppings; }
     public void setSelectedToppings(String selectedToppings) { this.selectedToppings = selectedToppings; }
@@ -81,6 +83,18 @@ public class FoodDomain implements Serializable {
         return totalPrice * numberInCart;
     }
 
+    // Utility method to add a selected topping
+    public void addTopping(String topping) {
+        if (toppings.contains(topping)) {
+            String[] selectedToppingArray = selectedToppings != null ? selectedToppings.split(",") : new String[]{};
+            List<String> selectedToppingList = new ArrayList<>(List.of(selectedToppingArray));
+            if (!selectedToppingList.contains(topping)) {
+                selectedToppingList.add(topping);
+                selectedToppings = String.join(",", selectedToppingList);
+            }
+        }
+    }
+
     @Override
     public String toString() {
         return "FoodDomain{" +
@@ -96,5 +110,28 @@ public class FoodDomain implements Serializable {
                 ", toppings=" + toppings +
                 ", selectedToppings='" + selectedToppings + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FoodDomain that = (FoodDomain) o;
+        return id == that.id &&
+                Double.compare(that.fee, fee) == 0 &&
+                numberInCart == that.numberInCart &&
+                calories == that.calories &&
+                time == that.time &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(pic, that.pic) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(star, that.star) &&
+                Objects.equals(toppings, that.toppings) &&
+                Objects.equals(selectedToppings, that.selectedToppings);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, pic, description, fee, numberInCart, star, calories, time, toppings, selectedToppings);
     }
 }
