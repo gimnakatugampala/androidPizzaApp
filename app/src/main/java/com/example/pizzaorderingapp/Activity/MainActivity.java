@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout cartBtn = findViewById(R.id.cartBtn);
         LinearLayout storeBtn = findViewById(R.id.storeBtn);
         LinearLayout myOrdersBtn = findViewById(R.id.myOrdersBtn);
+        LinearLayout GuestLogout = findViewById(R.id.logoutPofileContainer);
 
         homeBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, MainActivity.class)));
         cartBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CartActivity.class)));
@@ -120,6 +121,9 @@ public class MainActivity extends AppCompatActivity {
         if (sessionManager.isGuest()) {
             findViewById(R.id.containerProfile).setVisibility(View.GONE);
             myOrdersBtn.setVisibility(View.GONE);
+
+            findViewById(R.id.logoutPofileContainer).setVisibility(View.VISIBLE);
+            GuestLogout.setVisibility(View.VISIBLE);
         }
 
         // Optionally set click listeners
@@ -144,5 +148,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickSeeMore(View view) {
         startActivity(new Intent(MainActivity.this, AllFoodItemsActivity.class));
+    }
+
+    public void onClickGuestLogout(View view) {
+        // Clear session data
+        SessionManager sessionManager = new SessionManager(this);
+        sessionManager.logoutUser(); // Implement this method to clear user session
+
+        // Redirect to login screen
+        Intent intent = new Intent(this, LoginScreen.class);
+        startActivity(intent);
+
+        // Optionally, finish the current activity to prevent going back to it
+        finish();
     }
 }
