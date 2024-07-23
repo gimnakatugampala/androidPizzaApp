@@ -41,7 +41,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Hi Leonardo!"
-                        android:textColor="#ff3d68"
+                        android:textColor="#3D33A8"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -192,7 +192,7 @@
                     android:layout_marginEnd="20dp"
                     android:onClick="onClickSeeMore"
                     android:text="See more"
-                    android:textColor="#FF3D3D"
+                    android:textColor="#3D33A8"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/textView10"
