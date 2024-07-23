@@ -202,4 +202,9 @@ public class MainActivity extends AppCompatActivity {
         // Optionally, finish the current activity to prevent going back to it
         finish();
     }
+
+    public void onClickOrderNow(View view){
+        Intent intent = new Intent(this, AllFoodItemsActivity.class);
+        startActivity(intent);
+    }
 }
