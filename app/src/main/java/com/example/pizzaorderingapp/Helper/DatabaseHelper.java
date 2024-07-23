@@ -454,18 +454,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Order order = null;
 
         try {
-            cursor = db.query("orders", null, "id = ?", new String[]{String.valueOf(orderId)}, null, null, null);
+            cursor = db.query(TABLE_ORDERS, null, COLUMN_ID + " = ?", new String[]{String.valueOf(orderId)}, null, null, null);
 
             if (cursor != null && cursor.moveToFirst()) {
-                // Ensure column names are valid
-                int idIndex = cursor.getColumnIndex("id");
-                int userEmailIndex = cursor.getColumnIndex("user_email");
-                int statusIndex = cursor.getColumnIndex("order_status");
-                int totalAmountIndex = cursor.getColumnIndex("total_amount");
-                int dateIndex = cursor.getColumnIndex("order_date");
-                int completedIndex = cursor.getColumnIndex("completed");
+                int idIndex = cursor.getColumnIndex(COLUMN_ID);
+                int userEmailIndex = cursor.getColumnIndex(COLUMN_USER_EMAIL_ORDERS);
+                int statusIndex = cursor.getColumnIndex(COLUMN_ORDER_STATUS);
+                int totalAmountIndex = cursor.getColumnIndex(COLUMN_TOTAL_AMOUNT);
+                int dateIndex = cursor.getColumnIndex(COLUMN_DATE);
+                int completedIndex = cursor.getColumnIndex(COLUMN_COMPLETED);
 
-                // Check for valid column indices
                 if (idIndex != -1 && userEmailIndex != -1 && statusIndex != -1 && totalAmountIndex != -1 && dateIndex != -1 && completedIndex != -1) {
                     int id = cursor.getInt(idIndex);
                     String userEmail = cursor.getString(userEmailIndex);
@@ -476,12 +474,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                     order = new Order(id, userEmail, status, totalAmount, date, completed);
                 } else {
-                    // Handle case where column names are invalid or missing
                     Log.e("DatabaseHelper", "One or more columns are missing in the cursor.");
                 }
             }
         } catch (Exception e) {
-            // Handle exceptions (e.g., log them)
             Log.e("DatabaseHelper", "Error fetching order by ID", e);
         } finally {
             if (cursor != null) {
