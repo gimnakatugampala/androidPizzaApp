@@ -10,9 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.pizzaorderingapp.Helper.DatabaseHelper;
 import com.example.pizzaorderingapp.Model.Customer;
-import com.example.pizzaorderingapp.Model.Order;
 import com.example.pizzaorderingapp.R;
 import com.squareup.picasso.Picasso;
 
@@ -22,7 +20,6 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
 
     private Context context;
     private ArrayList<Customer> customerList;
-    private DatabaseHelper databaseHelper;
     private OnItemClickListener onItemClickListener;
 
     public interface OnItemClickListener {
@@ -32,7 +29,6 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
     public CustomerAdapter(Context context, ArrayList<Customer> customerList, OnItemClickListener onItemClickListener) {
         this.context = context;
         this.customerList = customerList;
-        this.databaseHelper = new DatabaseHelper(context);
         this.onItemClickListener = onItemClickListener;
     }
 
@@ -49,8 +45,14 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
         holder.tvName.setText(customer.getName());
         holder.tvEmail.setText(customer.getEmail());
 
-        // Load the customer image
-        Picasso.get().load(customer.getImageUrl()).into(holder.ivCustomerImage);
+        // Check if imageUrl is empty or null
+        if (customer.getImageUrl() == null || customer.getImageUrl().isEmpty()) {
+            // Use default image if no profile picture is provided
+            holder.ivCustomerImage.setImageResource(R.drawable.profile_picture);
+        } else {
+            // Load the customer image
+            Picasso.get().load(customer.getImageUrl()).into(holder.ivCustomerImage);
+        }
 
         holder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(customer));
     }
