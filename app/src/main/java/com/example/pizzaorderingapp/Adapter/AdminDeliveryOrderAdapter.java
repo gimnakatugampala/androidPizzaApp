@@ -57,7 +57,7 @@ public class AdminDeliveryOrderAdapter extends RecyclerView.Adapter<AdminDeliver
     class OrderViewHolder extends RecyclerView.ViewHolder {
 
         TextView textOrderId, textOrderStatus, textTotalAmount, textOrderDate;
-        Button buttonCancel, buttonComplete;
+        Button buttonCancel, buttonComplete, buttonConfirm;
         LinearLayout linearLayoutButtons;
 
         public OrderViewHolder(@NonNull View itemView) {
@@ -68,7 +68,8 @@ public class AdminDeliveryOrderAdapter extends RecyclerView.Adapter<AdminDeliver
             textTotalAmount = itemView.findViewById(R.id.text_total_amount);
             textOrderDate = itemView.findViewById(R.id.text_order_date);
             buttonCancel = itemView.findViewById(R.id.buttonCancel);
-            buttonComplete = itemView.findViewById(R.id.buttonConfirm);
+            buttonConfirm = itemView.findViewById(R.id.buttonConfirm);
+            buttonComplete = itemView.findViewById(R.id.buttonComplete);
             linearLayoutButtons = itemView.findViewById(R.id.buttonContainer);
         }
 
@@ -90,7 +91,7 @@ public class AdminDeliveryOrderAdapter extends RecyclerView.Adapter<AdminDeliver
                 buttonComplete.setVisibility(View.VISIBLE);
             } else {
                 buttonCancel.setVisibility(View.GONE);
-                buttonComplete.setVisibility(View.GONE);
+                buttonConfirm.setVisibility(View.GONE);
             }
 
             // Set up button click listeners with null check
