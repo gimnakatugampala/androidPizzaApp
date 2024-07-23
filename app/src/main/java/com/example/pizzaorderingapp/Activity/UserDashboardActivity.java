@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +19,12 @@ public class UserDashboardActivity extends AppCompatActivity {
     private TextView userName;
     private TextView userEmail;
 
+    // Declare variables for admin-specific UI elements using correct IDs from XML
+    private TextView menuManagementTextView;
+    private TextView manageOrdersTextView;
+    private TextView managePromotionsTextView;
+    private TextView manageCustomersTextView;
+
     private SessionManager sessionManager;
 
     @Override
@@ -29,8 +36,14 @@ public class UserDashboardActivity extends AppCompatActivity {
 
         // Initialize UI elements
         profileImage = findViewById(R.id.profile_image);
-        userName = findViewById(R.id.user_name); // Ensure this ID is correct in your XML
+        userName = findViewById(R.id.user_name);
         userEmail = findViewById(R.id.user_email);
+
+        // Initialize admin-specific UI elements using IDs from XML
+        menuManagementTextView = findViewById(R.id.nav_item_1);
+        manageOrdersTextView = findViewById(R.id.nav_item_4);
+        managePromotionsTextView = findViewById(R.id.nav_item_9);
+        manageCustomersTextView = findViewById(R.id.nav_item_8);
 
         // Set user details
         String firstName = sessionManager.getFirstName();
@@ -46,23 +59,31 @@ public class UserDashboardActivity extends AppCompatActivity {
 
         // Load profile image
         if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
-            // Load the profile image from the URL
             Glide.with(this)
                     .load(profileImageUrl)
                     .placeholder(R.drawable.profile_picture) // Default image
                     .error(R.drawable.profile_picture) // Image to display on error
                     .into(profileImage);
         } else {
-            // Set default image
             profileImage.setImageResource(R.drawable.profile_picture);
+        }
+
+        // Show admin-specific sections if the user is an admin
+        if ("Admin".equals(sessionManager.getRole())) {
+            menuManagementTextView.setVisibility(View.VISIBLE);
+            manageOrdersTextView.setVisibility(View.VISIBLE);
+            managePromotionsTextView.setVisibility(View.VISIBLE);
+            manageCustomersTextView.setVisibility(View.VISIBLE);
+        } else {
+            menuManagementTextView.setVisibility(View.GONE);
+            manageOrdersTextView.setVisibility(View.GONE);
+            managePromotionsTextView.setVisibility(View.GONE);
+            manageCustomersTextView.setVisibility(View.GONE);
         }
     }
 
     public void onhandleLogout(View view) {
-        // Clear session data
         sessionManager.logoutUser();
-
-        // Redirect to login screen with message
         Intent intent = new Intent(UserDashboardActivity.this, LoginScreen.class);
         intent.putExtra("logout_message", "Successfully logged out");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -70,62 +91,62 @@ public class UserDashboardActivity extends AppCompatActivity {
         finish();
     }
 
-    public void onAddMenuItem(View view){
+    public void onAddMenuItem(View view) {
         Intent intent = new Intent(UserDashboardActivity.this, AddMenuItemActivity.class);
         startActivity(intent);
     }
 
-    public void onMenuItemList(View view){
+    public void onMenuItemList(View view) {
         Intent intent = new Intent(UserDashboardActivity.this, MenuItemListActivity.class);
         startActivity(intent);
     }
 
-    public void onClickProfile(View view){
+    public void onClickProfile(View view) {
         Intent intent = new Intent(UserDashboardActivity.this, UpdateProfileActivity.class);
         startActivity(intent);
     }
 
-    public void onClickAddPromo(View view){
+    public void onClickAddPromo(View view) {
         Intent intent = new Intent(UserDashboardActivity.this, AddPromoCodeActivity.class);
         startActivity(intent);
     }
 
-    public void onClickAllPromos(View view){
+    public void onClickAllPromos(View view) {
         Intent intent = new Intent(UserDashboardActivity.this, PromoCodeListActivity.class);
         startActivity(intent);
     }
 
-    public void onClickPendingOrders(View view){
+    public void onClickPendingOrders(View view) {
         Intent intent = new Intent(UserDashboardActivity.this, PendingOrdersActivity.class);
         startActivity(intent);
     }
 
-    public void onClickDeliveryOrders(View view){
+    public void onClickDeliveryOrders(View view) {
         Intent intent = new Intent(UserDashboardActivity.this, DeliveringOrdersActivity.class);
         startActivity(intent);
     }
 
-    public void onClickCancelOrders(View view){
+    public void onClickCancelOrders(View view) {
         Intent intent = new Intent(UserDashboardActivity.this, CanceledOrdersActivity.class);
         startActivity(intent);
     }
 
-    public void onClickCompletedOrders(View view){
+    public void onClickCompletedOrders(View view) {
         Intent intent = new Intent(UserDashboardActivity.this, CompletedOrdersActivity.class);
         startActivity(intent);
     }
 
-    public void onClickMyOrders(View view){
+    public void onClickMyOrders(View view) {
         Intent intent = new Intent(UserDashboardActivity.this, MyOrdersActivity.class);
         startActivity(intent);
     }
 
-    public void onClickAllStores(View view){
+    public void onClickAllStores(View view) {
         Intent intent = new Intent(UserDashboardActivity.this, AllStores.class);
         startActivity(intent);
     }
 
-    public void onClickManageCustomers(View view){
+    public void onClickManageCustomers(View view) {
         Intent intent = new Intent(UserDashboardActivity.this, CustomerListActivity.class);
         startActivity(intent);
     }

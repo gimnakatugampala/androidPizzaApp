@@ -84,15 +84,16 @@
                     android:gravity="start|center_vertical"
                     android:padding="16dp"
                     android:text="Menu Management"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                    android:visibility="gone"/> <!-- Initially hidden -->
 
-                <!-- Sub-items for Navigation Item 1 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingStart="32dp"
-                    android:paddingBottom="8dp">
+                    android:paddingBottom="8dp"
+                    android:visibility="gone"> <!-- Initially hidden -->
 
                     <TextView
                         android:id="@+id/nav_sub_item_2"
@@ -138,15 +139,16 @@
                     android:padding="16dp"
                     android:textStyle="bold"
                     android:text="Manage Orders"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                    android:visibility="gone"/> <!-- Initially hidden -->
 
-                <!-- Sub-items for Navigation Item 1 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingStart="32dp"
-                    android:paddingBottom="8dp">
+                    android:paddingBottom="8dp"
+                    android:visibility="gone"> <!-- Initially hidden -->
 
                     <TextView
                         android:id="@+id/nav_sub_item_5"
@@ -175,7 +177,7 @@
                         android:onClick="onClickDeliveryOrders"
                         android:gravity="start|center_vertical"
                         android:padding="16dp"
-                        android:text="Delievering Orders"
+                        android:text="Delivering Orders"
                         android:textSize="16sp" />
 
                     <TextView
@@ -222,15 +224,16 @@
                     android:padding="16dp"
                     android:textStyle="bold"
                     android:text="Manage Promotions"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                    android:visibility="gone"/> <!-- Initially hidden -->
 
-                <!-- Sub-items for Navigation Item 1 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingStart="32dp"
-                    android:paddingBottom="8dp">
+                    android:paddingBottom="8dp"
+                    android:visibility="gone"> <!-- Initially hidden -->
 
                     <TextView
                         android:id="@+id/nav_sub_item_20"
@@ -261,7 +264,6 @@
                         android:onClick="onClickAddPromo"
                         android:text="Add Promo"
                         android:textSize="16sp" />
-
                 </LinearLayout>
 
                 <TextView
@@ -278,7 +280,8 @@
                     android:onClick="onClickManageCustomers"
                     android:textStyle="bold"
                     android:text="Manage Customers"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                    android:visibility="gone"/> <!-- Initially hidden -->
 
                 <TextView
                     android:id="@+id/nav_item_31"
