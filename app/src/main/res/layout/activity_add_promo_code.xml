@@ -7,17 +7,33 @@
     android:padding="16dp"
     android:background="@color/white">
 
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Promo Code"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:layout_marginBottom="16dp"
+        android:textColor="#3D33A8"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        android:padding="16dp"
+        android:background="@drawable/rounded_background_title" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_layout_promo_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:hintEnabled="true">
+        app:hintEnabled="true"
+        app:hintTextColor="#3D33A8">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_text_promo_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Promo Code" />
+            android:hint="Promo Code"
+            android:textSize="18sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -26,14 +42,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:hintEnabled="true"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        app:hintTextColor="#3D33A8">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_text_discount_percentage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Discount Percentage"
-            android:inputType="numberDecimal" />
+            android:inputType="numberDecimal"
+            android:textSize="18sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -42,14 +60,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:hintEnabled="true"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        app:hintTextColor="#3D33A8">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_text_expiry_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Expiry Date (YYYY-MM-DD)"
-            android:inputType="text" />
+            android:inputType="text"
+            android:textSize="18sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -61,7 +81,7 @@
         android:text="Add Promo Code"
         android:textColor="@android:color/white"
         android:background="@color/colorPrimary"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:padding="12dp"
         android:layout_gravity="center"/>
 
