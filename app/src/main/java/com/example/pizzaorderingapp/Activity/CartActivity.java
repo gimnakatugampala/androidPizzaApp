@@ -27,6 +27,8 @@ import java.util.Locale;
 
 public class CartActivity extends AppCompatActivity {
 
+    private View checkoutBtn;  // Declare as Button
+
     private RecyclerView.Adapter adapter;
     private RecyclerView recyclerViewList;
     private ManagementCart managementCart;
@@ -62,6 +64,7 @@ public class CartActivity extends AppCompatActivity {
         editTextPromoCode = findViewById(R.id.editTextPromoCode);
         buttonApplyPromoCode = findViewById(R.id.buttonApplyPromoCode);
         appliedPromoCodeTxt = findViewById(R.id.appliedPromoCodeTxt);  // New TextView for applied promo code
+        checkoutBtn = findViewById(R.id.checkoutBtn);
 
         buttonApplyPromoCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,9 +93,11 @@ public class CartActivity extends AppCompatActivity {
         if (managementCart.getListCart().isEmpty()) {
             emptyTxt.setVisibility(View.VISIBLE);
             scrollView.setVisibility(View.GONE);
+            checkoutBtn.setVisibility(View.GONE);
         } else {
             emptyTxt.setVisibility(View.GONE);
             scrollView.setVisibility(View.VISIBLE);
+            checkoutBtn.setVisibility(View.VISIBLE);
         }
     }
 
