@@ -309,6 +309,7 @@
                     android:layout_height="wrap_content"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
+                    android:onClick="onClickManageCustomers"
                     android:drawableLeft="@drawable/baseline_people_alt_24"
                     android:drawablePadding="16dp"
                     android:focusable="true"
