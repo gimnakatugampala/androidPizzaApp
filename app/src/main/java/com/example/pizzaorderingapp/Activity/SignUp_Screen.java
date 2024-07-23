@@ -101,4 +101,9 @@ public class SignUp_Screen extends AppCompatActivity {
 
         return true;
     }
+
+    public void gotoLogin(View view){
+        Intent intent = new Intent(SignUp_Screen.this, LoginScreen.class);
+        startActivity(intent);
+    }
 }

@@ -113,7 +113,7 @@
         android:layout_below="@id/loginBtn"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
-        android:text="Don't Have an Account?"
+        android:text="Don't Have an Account? Signup"
         android:textColor="#3D33A8"
         android:onClick="gotoSignUp"
         android:textSize="16sp" />
