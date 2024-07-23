@@ -6,19 +6,39 @@
     android:layout_height="match_parent"
     android:background="#ecebe6">
 
+    <ImageView
+        android:id="@+id/imgCartEmpty"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/cart_empty"
+        android:visibility="gone"
+        android:layout_marginTop="200dp"
+        app:layout_constraintVertical_bias="0.4"
+        app:layout_constraintHorizontal_bias="0.5"
+        android:foregroundGravity="center_vertical"
+        app:layout_constraintBottom_toTopOf="@id/emptyTxt"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/emptyTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Your Cart is Empty"
-        android:textColor="#7A7A7A"
-        android:textSize="16sp"
-        android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintVertical_bias="0.6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/imgCartEmpty"
+
+    />
+
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -40,7 +60,7 @@
                 android:paddingStart="16dp"
                 android:text="My Cart"
                 android:textAlignment="viewStart"
-                android:textColor="#ff3d00"
+                android:textColor="#3D33A8"
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
@@ -65,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="Enter Promo Code"
-                    android:padding="10dp"
+                    android:padding="12dp"
                     android:background="@drawable/edit_text_background"
                     android:textColor="#373b54"
                     android:textSize="16sp" />

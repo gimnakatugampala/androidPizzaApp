@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,8 @@ public class CartActivity extends AppCompatActivity {
     private ScrollView scrollView;
     private PromoCodeRepository promoCodeRepository;
 
+    private ImageView cartEmptyImg;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +68,7 @@ public class CartActivity extends AppCompatActivity {
         buttonApplyPromoCode = findViewById(R.id.buttonApplyPromoCode);
         appliedPromoCodeTxt = findViewById(R.id.appliedPromoCodeTxt);  // New TextView for applied promo code
         checkoutBtn = findViewById(R.id.checkoutBtn);
+        cartEmptyImg = findViewById(R.id.imgCartEmpty);
 
         buttonApplyPromoCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,10 +98,12 @@ public class CartActivity extends AppCompatActivity {
             emptyTxt.setVisibility(View.VISIBLE);
             scrollView.setVisibility(View.GONE);
             checkoutBtn.setVisibility(View.GONE);
+            cartEmptyImg.setVisibility(View.VISIBLE);
         } else {
             emptyTxt.setVisibility(View.GONE);
             scrollView.setVisibility(View.VISIBLE);
             checkoutBtn.setVisibility(View.VISIBLE);
+            cartEmptyImg.setVisibility(View.GONE);
         }
     }
 
