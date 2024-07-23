@@ -16,6 +16,7 @@ import com.example.pizzaorderingapp.Model.MenuItem;
 import com.example.pizzaorderingapp.Domain.CategoryDomain;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -66,6 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_PRICE = "price";
     public static final String COLUMN_CATEGORY = "category";
     public static final String COLUMN_TOPPINGS = "toppings";
+    private static final String COLUMN_IS_DELETED = "is_deleted";
 
     // Column names for menu item category table
     public static final String COLUMN_CATEGORY_NAME = "categoryName";
@@ -517,26 +519,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<MenuItem> getAllMenuItems() {
-        ArrayList<MenuItem> menuItems = new ArrayList<>();
+    public List<MenuItem> getAllMenuItems() {
+        List<MenuItem> menuItems = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_MENU_ITEMS, null, null, null, null, null, null);
+        Cursor cursor = db.query(
+                TABLE_MENU_ITEMS,
+                null,
+                COLUMN_IS_DELETED + " = ?", // Filter condition
+                new String[]{"0"}, // Value for filter condition
+                null,
+                null,
+                null
+        );
 
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                MenuItem item = new MenuItem();
-                item.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
-                item.setName(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)));
-                item.setDescription(cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION)));
-                item.setPrice(cursor.getDouble(cursor.getColumnIndex(COLUMN_PRICE)));
-                item.setCategory(cursor.getString(cursor.getColumnIndex(COLUMN_CATEGORY)));
-                item.setToppings(cursor.getString(cursor.getColumnIndex(COLUMN_TOPPINGS)));
-                item.setImageUri(cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_URI)));
-                menuItems.add(item);
-            }
-            cursor.close();
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
+                String name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME));
+                String description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION));
+                double price = cursor.getDouble(cursor.getColumnIndex(COLUMN_PRICE));
+                String category = cursor.getString(cursor.getColumnIndex(COLUMN_CATEGORY));
+                String toppings = cursor.getString(cursor.getColumnIndex(COLUMN_TOPPINGS));
+                String imageUri = cursor.getString(cursor.getColumnIndex(COLUMN_IMAGE_URI));
+                menuItems.add(new MenuItem(id, name, description, price, category, toppings, imageUri));
+            } while (cursor.moveToNext());
         }
-
+        cursor.close();
+        db.close();
         return menuItems;
     }
 
