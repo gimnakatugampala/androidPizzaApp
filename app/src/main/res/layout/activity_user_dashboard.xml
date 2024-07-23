@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#FFFFFF"
-    tools:context=".UserDashboardActivity">
+    tools:context="Activity.UserDashboardActivity">
 
     <!-- Header -->
     <LinearLayout
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Gimna Katugampala"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold" />
 
@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="gimnakatugampala1@gmail.com"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textColor="#FFFFFF" />
         </LinearLayout>
     </LinearLayout>
@@ -55,21 +55,20 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingTop="16dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp">
+        android:padding="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
-
-            <LinearLayout
+            <!-- Menu Management -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginBottom="8dp"
+
+                android:backgroundTint="@android:color/white">
 
                 <TextView
                     android:id="@+id/nav_item_1"
@@ -84,17 +83,21 @@
                     android:gravity="start|center_vertical"
                     android:padding="16dp"
                     android:text="Menu Management"
-                    android:textSize="17sp"
-                    android:visibility="gone"/> <!-- Initially hidden -->
+                    android:textSize="18sp"
+                    android:visibility="gone"
+                    /> <!-- Initially hidden -->
 
+                <!-- Menu Items -->
                 <LinearLayout
                     android:id="@+id/MenuItemsContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:layout_marginTop="55dp"
                     android:paddingStart="32dp"
                     android:paddingBottom="8dp"
-                    android:visibility="gone"> <!-- Initially hidden -->
+                    android:visibility="gone"
+                    > <!-- Initially hidden -->
 
                     <TextView
                         android:id="@+id/nav_sub_item_2"
@@ -126,6 +129,15 @@
                         android:text="Add Menu Item"
                         android:textSize="16sp" />
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Manage Orders -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+
+                android:backgroundTint="@android:color/white">
 
                 <TextView
                     android:id="@+id/nav_item_4"
@@ -140,14 +152,16 @@
                     android:padding="16dp"
                     android:textStyle="bold"
                     android:text="Manage Orders"
-                    android:textSize="17sp"
+                    android:textSize="18sp"
                     android:visibility="gone"/> <!-- Initially hidden -->
 
+                <!-- Order Items -->
                 <LinearLayout
                     android:id="@+id/OrderContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:layout_marginTop="55dp"
                     android:paddingStart="32dp"
                     android:paddingBottom="8dp"
                     android:visibility="gone"> <!-- Initially hidden -->
@@ -212,6 +226,15 @@
                         android:text="Completed Orders"
                         android:textSize="16sp" />
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Manage Promotions -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+
+                android:backgroundTint="@android:color/white">
 
                 <TextView
                     android:id="@+id/nav_item_9"
@@ -226,14 +249,16 @@
                     android:padding="16dp"
                     android:textStyle="bold"
                     android:text="Manage Promotions"
-                    android:textSize="17sp"
+                    android:textSize="18sp"
                     android:visibility="gone"/> <!-- Initially hidden -->
 
+                <!-- Promotion Items -->
                 <LinearLayout
                     android:id="@+id/PromosContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:layout_marginTop="55dp"
                     android:paddingStart="32dp"
                     android:paddingBottom="8dp"
                     android:visibility="gone"> <!-- Initially hidden -->
@@ -268,6 +293,14 @@
                         android:text="Add Promo"
                         android:textSize="16sp" />
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Manage Customers -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:backgroundTint="@android:color/white">
 
                 <TextView
                     android:id="@+id/nav_item_8"
@@ -280,11 +313,19 @@
                     android:focusable="true"
                     android:gravity="start|center_vertical"
                     android:padding="16dp"
-                    android:onClick="onClickManageCustomers"
                     android:textStyle="bold"
                     android:text="Manage Customers"
-                    android:textSize="17sp"
+                    android:textSize="18sp"
                     android:visibility="gone"/> <!-- Initially hidden -->
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- My Orders -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+
+                android:backgroundTint="@android:color/white">
 
                 <TextView
                     android:id="@+id/nav_item_31"
@@ -300,7 +341,16 @@
                     android:textStyle="bold"
                     android:onClick="onClickMyOrders"
                     android:text="My Orders"
-                    android:textSize="17sp" />
+                    android:textSize="18sp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- All Stores -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+
+                android:backgroundTint="@android:color/white">
 
                 <TextView
                     android:id="@+id/nav_item_32"
@@ -311,14 +361,21 @@
                     android:drawableLeft="@drawable/baseline_storefront_24"
                     android:drawablePadding="16dp"
                     android:focusable="true"
-                    android:onClick="onClickAllStores"
                     android:gravity="start|center_vertical"
                     android:padding="16dp"
+                    android:textStyle="bold"
+                    android:onClick="onClickAllStores"
                     android:text="All Stores"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
+                    android:textSize="18sp" />
+            </com.google.android.material.card.MaterialCardView>
 
+            <!-- Profile -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
 
+                android:backgroundTint="@android:color/white">
 
                 <TextView
                     android:id="@+id/nav_item_10"
@@ -329,12 +386,19 @@
                     android:drawableLeft="@drawable/baseline_person_2_24"
                     android:drawablePadding="16dp"
                     android:focusable="true"
-                    android:textStyle="bold"
-                    android:onClick="onClickProfile"
                     android:gravity="start|center_vertical"
                     android:padding="16dp"
+                    android:textStyle="bold"
+                    android:onClick="onClickProfile"
                     android:text="Profile"
-                    android:textSize="17sp" />
+                    android:textSize="18sp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Logout -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/white">
 
                 <TextView
                     android:id="@+id/nav_item_11"
@@ -342,7 +406,6 @@
                     android:layout_height="wrap_content"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
-                    android:textStyle="bold"
                     android:drawableLeft="@drawable/baseline_logout_24"
                     android:drawablePadding="16dp"
                     android:focusable="true"
@@ -350,8 +413,9 @@
                     android:padding="16dp"
                     android:onClick="onhandleLogout"
                     android:text="Logout"
-                    android:textSize="17sp" />
-            </LinearLayout>
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
