@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private SessionManager sessionManager;
     private ImageView userProfileImage; // Added for profile image
 
+    private TextView welcomeTextView; // Added for displaying the user's first name
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,9 +58,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize ImageView
         userProfileImage = findViewById(R.id.userProfileDetails);
+        welcomeTextView = findViewById(R.id.textView4);
 
         // Load user profile image
         loadUserProfileImage();
+
+        setWelcomeText();
 
         // Setup RecyclerViews
         setupRecyclerViews();
@@ -131,6 +137,15 @@ public class MainActivity extends AppCompatActivity {
             }
         }, MainActivity.this);
         recyclerViewPopularList.setAdapter(recommendedAdapter);
+    }
+
+    private void setWelcomeText() {
+        String firstName = sessionManager.getFirstName(); // Assuming this method returns the user's first name
+        if (firstName != null && !firstName.isEmpty()) {
+            welcomeTextView.setText("Hi " + firstName + "!");
+        } else {
+            welcomeTextView.setText("Hi there!");
+        }
     }
 
     private void setupBottomNavigation() {
