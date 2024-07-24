@@ -19,7 +19,7 @@ import com.example.pizzaorderingapp.Model.OrderItem;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import com.example.pizzaorderingapp.Model.Store;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "pizzaOrderingAppDB";
@@ -90,6 +90,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 private static final String TABLE_FAVORITES = "favorites";
     private static final String KEY_USER_EMAIL = "user_email";
     private static final String KEY_ORDER_ID = "order_id";
+
+
+    // Stores Table Schema
+    private static final String TABLE_STORES = "stores";
+    private static final String KEY_STORE_NAME = "name";
+    private static final String KEY_LATITUDE = "latitude";
+    private static final String KEY_LONGITUDE = "longitude";
+
+    private static final String CREATE_TABLE_STORES = "CREATE TABLE " + TABLE_STORES + " ("
+            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + KEY_STORE_NAME + " TEXT NOT NULL,"
+            + KEY_LATITUDE + " REAL NOT NULL,"
+            + KEY_LONGITUDE + " REAL NOT NULL"
+            + ");";
+
 
     private static final String CREATE_TABLE_FAVORITES = "CREATE TABLE " + TABLE_FAVORITES + " ("
             + KEY_USER_EMAIL + " TEXT,"
@@ -180,11 +195,16 @@ private static final String TABLE_FAVORITES = "favorites";
         db.execSQL(TABLE_MENU_ITEM_CATEGORY_CREATE);
         db.execSQL(CREATE_TABLE_PROMO_CODES);
         db.execSQL(CREATE_TABLE_FAVORITES);
+        db.execSQL(CREATE_TABLE_STORES);
+
 
         // Insert default categories
 //        insertDefaultCategories(db);
 //        Add Admin
 //        insertDefaultAdmin(db);
+
+        // Insert default stores
+//        insertStores(db);
     }
 
     @Override
@@ -241,6 +261,8 @@ private static final String TABLE_FAVORITES = "favorites";
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_CUSTOMERS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDER_ITEMS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
+            db.execSQL("DROP TABLE IF EXISTS stores"); // Replace with the actual table name
+
 
             // Recreate tables
             onCreate(db);
@@ -270,6 +292,24 @@ private static final String TABLE_FAVORITES = "favorites";
         values.put(COLUMN_IMAGE_URI, profileImageUrl);
         db.insert(TABLE_USERS, null, values); // Replace TABLE_USER with your actual table name
     }
+
+    private void insertStores(SQLiteDatabase db) {
+        insertStore(db, "Store 1", 37.3382, -121.8863); // San Jose
+        insertStore(db, "Store 2", 37.3541, -121.9552); // Santa Clara
+        insertStore(db, "Store 3", 37.3220, -121.8832); // South San Jose
+        insertStore(db, "Store 4", 37.3688, -122.0363); // Sunnyvale
+        insertStore(db, "Store 5", 37.7749, -122.4194); // San Francisco
+        insertStore(db, "Store 6", 37.4419, -122.1430); // Palo Alto
+    }
+
+    private void insertStore(SQLiteDatabase db, String storeName, double latitude, double longitude) {
+        ContentValues values = new ContentValues();
+        values.put("name", storeName);
+        values.put("latitude", latitude);
+        values.put("longitude", longitude);
+        db.insert("stores", null, values);
+    }
+
 
 
     private void insertDefaultCategories(SQLiteDatabase db) {
@@ -728,8 +768,23 @@ private static final String TABLE_FAVORITES = "favorites";
         return order;
     }
 
+    public List<Store> getAllStores() {
+        List<Store> stores = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM stores", null); // Adjust query as needed
 
+        if (cursor.moveToFirst()) {
+            do {
+                String name = cursor.getString(cursor.getColumnIndex("name"));
+                double latitude = cursor.getDouble(cursor.getColumnIndex("latitude"));
+                double longitude = cursor.getDouble(cursor.getColumnIndex("longitude"));
+                stores.add(new Store(name, latitude, longitude));
+            } while (cursor.moveToNext());
+        }
 
-
+        cursor.close();
+        db.close();
+        return stores;
+    }
 
 }
