@@ -15,6 +15,7 @@ import com.example.pizzaorderingapp.Model.MenuItem;
 
 
 import com.example.pizzaorderingapp.Domain.CategoryDomain;
+import com.example.pizzaorderingapp.Model.OrderItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -413,6 +414,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return menuItems;
     }
+
+    private List<com.example.pizzaorderingapp.Model.OrderItem> fetchOrderItems(int orderId) {
+        List<OrderItem> orderItems = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT oi.quantity, oi.price, mi.name FROM order_items oi " +
+                "JOIN menu_items mi ON oi.menu_item_id = mi._id " +
+                "WHERE oi.order_id = ?", new String[]{String.valueOf(orderId)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                int quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity"));
+                double price = cursor.getDouble(cursor.getColumnIndexOrThrow("price"));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+
+                orderItems.add(new OrderItem(name, quantity, price));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        return orderItems;
+    }
+
 
 
 

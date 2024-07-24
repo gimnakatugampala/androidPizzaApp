@@ -8,12 +8,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.pizzaorderingapp.Model.Order;
 import com.example.pizzaorderingapp.R;
 import com.example.pizzaorderingapp.Helper.DatabaseHelper;
 import com.example.pizzaorderingapp.Utils.MailSender;
-import androidx.appcompat.app.AlertDialog;
+import com.example.pizzaorderingapp.Activity.MyOrdersActivity;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,6 +79,13 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         } else {
             holder.buttonCancel.setVisibility(View.GONE);
         }
+
+        // Handle item clicks
+        holder.itemView.setOnClickListener(v -> {
+            if (context instanceof MyOrdersActivity) {
+                ((MyOrdersActivity) context).showOrderItemsDialog(order.getId());
+            }
+        });
     }
 
     @Override
@@ -96,31 +104,35 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
     private void cancelOrder(Order order) {
         // Update the order status in the database
-        dbHelper.updateOrderStatus(order.getId(), "Canceled");
+        boolean isUpdated = dbHelper.updateOrderStatus(order.getId(), "Canceled");
 
-        // Find the position of the canceled order in the list
-        int position = orderList.indexOf(order);
-        if (position != -1) {
-            // Update the order in the list
-            Order updatedOrder = new Order(
-                    order.getId(),
-                    order.getUserEmail(),
-                    "Canceled", // Update status
-                    order.getTotalAmount(),
-                    order.getDate(),
-                    false // Mark as not completed
-            );
-            orderList.set(position, updatedOrder); // Replace the order
-            notifyItemChanged(position); // Notify the adapter that the item has changed
+        if (isUpdated) {
+            // Find the position of the canceled order in the list
+            int position = orderList.indexOf(order);
+            if (position != -1) {
+                // Update the order in the list
+                Order updatedOrder = new Order(
+                        order.getId(),
+                        order.getUserEmail(),
+                        "Canceled", // Update status
+                        order.getTotalAmount(),
+                        order.getDate(),
+                        false // Mark as not completed
+                );
+                orderList.set(position, updatedOrder); // Replace the order
+                notifyItemChanged(position); // Notify the adapter that the item has changed
+            }
+
+            // Send email notification
+            String subject = "Order Cancellation";
+            String message = "Dear Customer,\n\nYour order with Code " + order.getId() + " has been successfully canceled.\n\nThank you for using our service.";
+            new MailSender(order.getUserEmail(), subject, message).execute();
+
+            // Notify the user about the successful cancellation
+            Toast.makeText(context, "Order canceled successfully", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Failed to cancel order. Please try again.", Toast.LENGTH_SHORT).show();
         }
-
-        // Send email notification
-        String subject = "Order Cancellation";
-        String message = "Dear Customer,\n\nYour order with Code " + order.getId() + " has been successfully canceled.\n\nThank you for using our service.";
-        new MailSender(order.getUserEmail(), subject, message).execute();
-
-        // Notify the user about the successful cancellation
-        Toast.makeText(context, "Order canceled successfully", Toast.LENGTH_SHORT).show();
     }
 
     static class OrderViewHolder extends RecyclerView.ViewHolder {
