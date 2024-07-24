@@ -41,6 +41,13 @@ public class AdminCanceledOrderAdapter extends RecyclerView.Adapter<AdminCancele
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Order order = orders.get(position);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onOrderItemClick(order.getId());
+            }
+        });
+
         holder.bind(order);
     }
 
@@ -50,8 +57,8 @@ public class AdminCanceledOrderAdapter extends RecyclerView.Adapter<AdminCancele
     }
 
     public interface OrderActionListener {
-        void onCompleteClick(int orderId);
         void onCancelClick(int orderId);
+        void onOrderItemClick(int orderId);
     }
 
     class OrderViewHolder extends RecyclerView.ViewHolder {
@@ -68,7 +75,7 @@ public class AdminCanceledOrderAdapter extends RecyclerView.Adapter<AdminCancele
             textTotalAmount = itemView.findViewById(R.id.text_total_amount);
             textOrderDate = itemView.findViewById(R.id.text_order_date);
             buttonCancel = itemView.findViewById(R.id.buttonCancel);
-            buttonComplete = itemView.findViewById(R.id.buttonComplete); // Note the change to buttonComplete
+            buttonComplete = itemView.findViewById(R.id.buttonComplete);
             linearLayoutButtons = itemView.findViewById(R.id.buttonContainer);
         }
 
@@ -93,20 +100,7 @@ public class AdminCanceledOrderAdapter extends RecyclerView.Adapter<AdminCancele
                 buttonComplete.setVisibility(View.GONE);
             }
 
-            // Set up button click listeners
-            buttonCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onCancelClick(order.getId());
-                }
-            });
 
-            buttonComplete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onCompleteClick(order.getId());
-                }
-            });
         }
     }
 }
