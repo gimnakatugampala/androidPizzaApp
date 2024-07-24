@@ -22,10 +22,12 @@ public class AdminCompletedOrderAdapter extends RecyclerView.Adapter<AdminComple
 
     private Context context;
     private ArrayList<Order> orders;
+    private OrderActionListener listener;
 
-    public AdminCompletedOrderAdapter(Context context, ArrayList<Order> orders) {
+    public AdminCompletedOrderAdapter(Context context, ArrayList<Order> orders, OrderActionListener listener) {
         this.context = context;
         this.orders = orders;
+        this.listener = listener;
     }
 
     @NonNull
@@ -38,12 +40,21 @@ public class AdminCompletedOrderAdapter extends RecyclerView.Adapter<AdminComple
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Order order = orders.get(position);
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onOrderItemClick(order.getId());
+            }
+        });
         holder.bind(order);
     }
 
     @Override
     public int getItemCount() {
         return orders.size();
+    }
+
+    public interface OrderActionListener {
+        void onOrderItemClick(int orderId);
     }
 
     class OrderViewHolder extends RecyclerView.ViewHolder {
