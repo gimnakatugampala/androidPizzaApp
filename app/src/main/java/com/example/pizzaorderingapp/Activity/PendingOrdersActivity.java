@@ -1,20 +1,27 @@
 package com.example.pizzaorderingapp.Activity;
 
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.app.AlertDialog;
 
+import com.example.pizzaorderingapp.Adapter.OrderItemsAdapter;
 import com.example.pizzaorderingapp.Helper.DatabaseHelper;
 import com.example.pizzaorderingapp.Model.Order;
+import com.example.pizzaorderingapp.Model.OrderItem;
 import com.example.pizzaorderingapp.R;
 import com.example.pizzaorderingapp.Utils.MailSender;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -98,6 +105,12 @@ public class PendingOrdersActivity extends AppCompatActivity implements com.exam
                 .show();
     }
 
+    @Override
+    public void onOrderItemClick(final int orderId) {
+        Log.d(TAG, "Order item clicked: " + orderId); // Log to check if the method is triggered
+        showOrderItemsDialog(orderId);
+    }
+
     private void sendCancellationEmail(final int orderId) {
         emailExecutor.submit(() -> {
             try {
@@ -163,5 +176,48 @@ public class PendingOrdersActivity extends AppCompatActivity implements com.exam
                 Log.e(TAG, "Failed to send confirmation email for Order ID: " + orderId, e);
             }
         });
+    }
+
+    private void showOrderItemsDialog(int orderId) {
+        List<OrderItem> orderItems = fetchOrderItems(orderId);
+        Log.d(TAG, "Fetched order items: " + orderItems); // Log to verify order items are fetched
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_order_items, null);
+        builder.setView(dialogView);
+
+        RecyclerView rvOrderItems = dialogView.findViewById(R.id.rvOrderItems);
+        rvOrderItems.setLayoutManager(new LinearLayoutManager(this));
+        OrderItemsAdapter adapter = new OrderItemsAdapter(orderItems);
+        rvOrderItems.setAdapter(adapter);
+
+        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private List<OrderItem> fetchOrderItems(int orderId) {
+        List<OrderItem> orderItems = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT oi.quantity, oi.price, mi.name FROM order_items oi " +
+                "JOIN menu_items mi ON oi.menu_item_id = mi._id " +
+                "WHERE oi.order_id = ?", new String[]{String.valueOf(orderId)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                int quantity = cursor.getInt(cursor.getColumnIndexOrThrow("quantity"));
+                double price = cursor.getDouble(cursor.getColumnIndexOrThrow("price"));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+
+                orderItems.add(new OrderItem(name, quantity, price));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        return orderItems;
     }
 }

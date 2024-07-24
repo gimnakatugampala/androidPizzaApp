@@ -46,6 +46,13 @@ public class AdminPendingOrderAdapter extends RecyclerView.Adapter<AdminPendingO
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Order order = orders.get(position);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onOrderItemClick(order.getId());
+            }
+        });
+
         holder.bind(order);
     }
 
@@ -62,6 +69,7 @@ public class AdminPendingOrderAdapter extends RecyclerView.Adapter<AdminPendingO
     public interface OrderActionListener {
         void onCancelClick(int orderId);
         void onConfirmClick(int orderId);
+        void onOrderItemClick(int orderId);
     }
 
     class OrderViewHolder extends RecyclerView.ViewHolder {
@@ -135,5 +143,7 @@ public class AdminPendingOrderAdapter extends RecyclerView.Adapter<AdminPendingO
                 }
             });
         }
+
+
     }
 }
