@@ -12,7 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.pizzaorderingapp.Model.Order;
 import com.example.pizzaorderingapp.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder> {
     private List<Order> favoriteOrders;
@@ -54,10 +57,21 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
 
         public void bind(Order order) {
             // Use the Order model's methods to set text in the TextViews
-            tvOrderId.setText(String.valueOf(order.getId()));
-            tvOrderStatus.setText(order.getStatus());
-            tvTotalAmount.setText(order.getTotalAmount()); // Assuming totalAmount is a formatted String
+            tvOrderId.setText("Order Code: " + String.valueOf(order.getId()));
+            tvOrderStatus.setText("Status: " + order.getStatus());
+            tvTotalAmount.setText("Total: " + order.getTotalAmount()); // Assuming totalAmount is a formatted String
             tvOrderDate.setText(order.getDate());
+
+            try {
+                long timestamp = Long.parseLong(order.getDate());
+                Date date = new Date(timestamp);
+                SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                String dateString = outputFormat.format(date);
+                tvOrderDate.setText("Date: " + dateString);
+            } catch (NumberFormatException e) {
+                tvOrderDate.setText("Date: Invalid Date");
+            }
+
         }
     }
 }
