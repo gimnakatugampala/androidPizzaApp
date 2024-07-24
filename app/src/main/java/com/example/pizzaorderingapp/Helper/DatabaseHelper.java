@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.pizzaorderingapp.Model.Order;
@@ -376,6 +377,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return orders;
     }
+
+    public List<Integer> getOrderItemIds(int orderId) {
+        List<Integer> itemIds = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT menu_item_id FROM Order_items WHERE order_id = ?", new String[]{String.valueOf(orderId)});
+        if (cursor.moveToFirst()) {
+            do {
+                itemIds.add(cursor.getInt(cursor.getColumnIndex("menu_item_id")));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return itemIds;
+    }
+
+    // DatabaseHelper.java
+    public List<MenuItem> getMenuItemsByIds(List<Integer> itemIds) {
+        List<MenuItem> menuItems = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String ids = TextUtils.join(",", itemIds);
+        Cursor cursor = db.rawQuery("SELECT * FROM MenuItem WHERE id IN (" + ids + ")", null);
+        if (cursor.moveToFirst()) {
+            do {
+                MenuItem menuItem = new MenuItem();
+                menuItem.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                menuItem.setName(cursor.getString(cursor.getColumnIndex("name")));
+                menuItem.setDescription(cursor.getString(cursor.getColumnIndex("description")));
+                menuItem.setPrice(cursor.getDouble(cursor.getColumnIndex("price")));
+                menuItem.setCategory(cursor.getString(cursor.getColumnIndex("category")));
+                menuItem.setToppings(cursor.getString(cursor.getColumnIndex("toppings")));
+                menuItem.setImageUri(cursor.getString(cursor.getColumnIndex("imageUri")));
+                menuItems.add(menuItem);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return menuItems;
+    }
+
 
 
 

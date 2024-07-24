@@ -14,7 +14,6 @@ import com.example.pizzaorderingapp.R;
 import com.example.pizzaorderingapp.Helper.DatabaseHelper;
 import com.example.pizzaorderingapp.Utils.MailSender;
 import androidx.appcompat.app.AlertDialog;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,11 +23,11 @@ import java.util.Locale;
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
 
     private ArrayList<Order> orderList;
-    private DatabaseHelper dbHelper;
-    private Context context;
+    private final DatabaseHelper dbHelper;
+    private final Context context;
 
     public OrderAdapter(ArrayList<Order> orderList, DatabaseHelper dbHelper, Context context) {
-        this.orderList = orderList;
+        this.orderList = new ArrayList<>(orderList); // Create a new list to avoid mutating the original one
         this.dbHelper = dbHelper;
         this.context = context;
         sortOrdersByDateDescending();
@@ -75,15 +74,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         // Show/Hide buttons based on order status
         if ("Pending".equals(order.getStatus())) {
             holder.buttonCancel.setVisibility(View.VISIBLE);
-            holder.buttonCancel.setOnClickListener(v -> {
-                // Show confirmation dialog before canceling the order
-                new AlertDialog.Builder(context)
-                        .setTitle("Cancel Order")
-                        .setMessage("Are you sure you want to cancel this order?")
-                        .setPositiveButton("Yes", (dialog, which) -> cancelOrder(order))
-                        .setNegativeButton("No", null)
-                        .show();
-            });
+            holder.buttonCancel.setOnClickListener(v -> showCancelConfirmationDialog(order));
         } else {
             holder.buttonCancel.setVisibility(View.GONE);
         }
@@ -92,6 +83,15 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     @Override
     public int getItemCount() {
         return orderList.size();
+    }
+
+    private void showCancelConfirmationDialog(Order order) {
+        new AlertDialog.Builder(context)
+                .setTitle("Cancel Order")
+                .setMessage("Are you sure you want to cancel this order?")
+                .setPositiveButton("Yes", (dialog, which) -> cancelOrder(order))
+                .setNegativeButton("No", null)
+                .show();
     }
 
     private void cancelOrder(Order order) {
@@ -122,7 +122,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         // Notify the user about the successful cancellation
         Toast.makeText(context, "Order canceled successfully", Toast.LENGTH_SHORT).show();
     }
-
 
     static class OrderViewHolder extends RecyclerView.ViewHolder {
         TextView tvOrderId, tvOrderStatus, tvTotalAmount, tvOrderDate;
