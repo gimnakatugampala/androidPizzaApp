@@ -654,22 +654,55 @@ private static final String TABLE_FAVORITES = "favorites";
     public List<Order> getFavoriteOrders(String userEmail) {
         List<Order> favoriteOrders = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_FAVORITES + " WHERE " + KEY_USER_EMAIL + " = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{userEmail}); // Use user's email
+        Cursor cursor = null;
 
-        if (cursor.moveToFirst()) {
-            do {
-                String orderId = cursor.getString(cursor.getColumnIndex(KEY_ORDER_ID));
-                // Fetch order details from orders table using orderId and add to favoriteOrders list
-                Order order = getOrderForFavoritesById(orderId); // Updated method name
-                favoriteOrders.add(order);
-            } while (cursor.moveToNext());
+        try {
+            // Correct the query to use the exact column names from your schema
+            String query = "SELECT o." + COLUMN_ID + ", o." + COLUMN_USER_EMAIL_ORDERS + ", o." + COLUMN_ORDER_STATUS + ", o." + COLUMN_TOTAL_AMOUNT + ", o." + COLUMN_DATE + ", o." + COLUMN_COMPLETED +
+                    " FROM " + TABLE_ORDERS + " o " +
+                    "INNER JOIN " + TABLE_FAVORITES + " f ON o." + COLUMN_ID + " = f." + COLUMN_ORDER_ID +
+                    " WHERE f." + COLUMN_USER_EMAIL_ORDERS + " = ?";
+            cursor = db.rawQuery(query, new String[]{userEmail});
+
+            if (cursor.moveToFirst()) {
+                do {
+                    // Retrieve indices
+                    int orderIdIndex = cursor.getColumnIndexOrThrow(COLUMN_ID);
+                    int userEmailIndex = cursor.getColumnIndexOrThrow(COLUMN_USER_EMAIL_ORDERS);
+                    int statusIndex = cursor.getColumnIndexOrThrow(COLUMN_ORDER_STATUS);
+                    int totalAmountIndex = cursor.getColumnIndexOrThrow(COLUMN_TOTAL_AMOUNT);
+                    int dateIndex = cursor.getColumnIndexOrThrow(COLUMN_DATE);
+                    int completedIndex = cursor.getColumnIndexOrThrow(COLUMN_COMPLETED);
+
+                    // Retrieve values
+                    int orderId = cursor.getInt(orderIdIndex);
+                    String userEmailOrder = cursor.getString(userEmailIndex);
+                    String orderStatus = cursor.getString(statusIndex);
+                    String totalAmount = cursor.getString(totalAmountIndex);
+                    String orderDate = cursor.getString(dateIndex);
+                    boolean completed = cursor.getInt(completedIndex) == 1;
+
+                    // Create a new Order object
+                    Order order = new Order(orderId, userEmailOrder, orderStatus, totalAmount, orderDate, completed);
+
+                    // Add the Order object to the list
+                    favoriteOrders.add(order);
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
 
-        cursor.close();
-        db.close();
         return favoriteOrders;
     }
+
+
+
+
+
+
 
     // New method to fetch order details by ID
     public Order getOrderForFavoritesById(String orderId) {
