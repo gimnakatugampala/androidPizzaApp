@@ -166,4 +166,10 @@ public class UserDashboardActivity extends AppCompatActivity {
         Intent intent = new Intent(UserDashboardActivity.this, CustomerListActivity.class);
         startActivity(intent);
     }
+
+
+    public void onClickGetFavs(View view) {
+        Intent intent = new Intent(UserDashboardActivity.this, FavoritesActivity.class);
+        startActivity(intent);
+    }
 }

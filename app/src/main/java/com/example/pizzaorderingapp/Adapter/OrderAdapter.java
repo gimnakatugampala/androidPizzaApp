@@ -7,14 +7,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.pizzaorderingapp.Model.Order;
 import com.example.pizzaorderingapp.R;
 import com.example.pizzaorderingapp.Helper.DatabaseHelper;
+import com.example.pizzaorderingapp.Util.SessionManager;
 import com.example.pizzaorderingapp.Utils.MailSender;
 import com.example.pizzaorderingapp.Activity.MyOrdersActivity;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,6 +84,9 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             holder.buttonCancel.setVisibility(View.GONE);
         }
 
+        // Handle Add to Favorites button
+        holder.buttonAddToFavorites.setOnClickListener(v -> addToFavorites(order));
+
         // Handle item clicks
         holder.itemView.setOnClickListener(v -> {
             if (context instanceof MyOrdersActivity) {
@@ -91,6 +98,23 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     @Override
     public int getItemCount() {
         return orderList.size();
+    }
+
+    private void addToFavorites(Order order) {
+        // Retrieve user email from the session or context
+        String userEmail = getUserEmail();
+
+        // Add order to favorites in the database
+        dbHelper.addFavoriteOrder(order, userEmail);
+
+        // Notify the user about the addition
+        Toast.makeText(context, "Order added to favorites", Toast.LENGTH_SHORT).show();
+    }
+
+    private String getUserEmail() {
+        // Retrieve the user email from session manager or context
+        SessionManager sessionManager = new SessionManager(context);
+        return sessionManager.getEmail();
     }
 
     private void showCancelConfirmationDialog(Order order) {
@@ -138,6 +162,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     static class OrderViewHolder extends RecyclerView.ViewHolder {
         TextView tvOrderId, tvOrderStatus, tvTotalAmount, tvOrderDate;
         Button buttonCancel;
+        Button buttonAddToFavorites;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -146,6 +171,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             tvTotalAmount = itemView.findViewById(R.id.tvTotalAmount);
             tvOrderDate = itemView.findViewById(R.id.tvOrderDate);
             buttonCancel = itemView.findViewById(R.id.buttonCancel);
+            buttonAddToFavorites = itemView.findViewById(R.id.buttonAddToFavorites);
         }
     }
 }

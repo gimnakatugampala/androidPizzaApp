@@ -48,6 +48,7 @@
         <activity android:name=".Activity.CanceledOrdersActivity" android:exported="false" />
         <activity android:name=".Activity.CustomerListActivity" android:exported="false" />
         <activity android:name=".Activity.AllFoodItemsActivity" android:exported="false" />
+        <activity android:name=".Activity.FavoritesActivity" android:exported="false" />
 
 
 

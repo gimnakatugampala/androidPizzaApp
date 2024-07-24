@@ -86,6 +86,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ORDERITEM_QUANTITY = "quantity";
     public static final String COLUMN_ORDERITEM_PRICE = "price"; // Add the price column here
 
+//    Favorites
+private static final String TABLE_FAVORITES = "favorites";
+    private static final String KEY_USER_EMAIL = "user_email";
+    private static final String KEY_ORDER_ID = "order_id";
+
+    private static final String CREATE_TABLE_FAVORITES = "CREATE TABLE " + TABLE_FAVORITES + " ("
+            + KEY_USER_EMAIL + " TEXT,"
+            + KEY_ORDER_ID + " TEXT,"
+            + "PRIMARY KEY (" + KEY_USER_EMAIL + ", " + KEY_ORDER_ID + "));";
+
+
     private static final String TABLE_ORDERS_CREATE =
             "CREATE TABLE " + TABLE_ORDERS + " (" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -168,6 +179,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(TABLE_MENU_ITEMS_CREATE);
         db.execSQL(TABLE_MENU_ITEM_CATEGORY_CREATE);
         db.execSQL(CREATE_TABLE_PROMO_CODES);
+        db.execSQL(CREATE_TABLE_FAVORITES);
 
         // Insert default categories
 //        insertDefaultCategories(db);
@@ -625,6 +637,65 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return menuItems;
     }
+
+
+// Inside DatabaseHelper class
+
+    public void addFavoriteOrder(Order order, String userEmail) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_USER_EMAIL, userEmail); // Use user's email
+        values.put(KEY_ORDER_ID, order.getId());
+
+        db.insert(TABLE_FAVORITES, null, values);
+        db.close();
+    }
+
+    public List<Order> getFavoriteOrders(String userEmail) {
+        List<Order> favoriteOrders = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_FAVORITES + " WHERE " + KEY_USER_EMAIL + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{userEmail}); // Use user's email
+
+        if (cursor.moveToFirst()) {
+            do {
+                String orderId = cursor.getString(cursor.getColumnIndex(KEY_ORDER_ID));
+                // Fetch order details from orders table using orderId and add to favoriteOrders list
+                Order order = getOrderForFavoritesById(orderId); // Updated method name
+                favoriteOrders.add(order);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return favoriteOrders;
+    }
+
+    // New method to fetch order details by ID
+    public Order getOrderForFavoritesById(String orderId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_ORDERS + " WHERE " + KEY_ORDER_ID + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{orderId});
+        Order order = null;
+
+        if (cursor.moveToFirst()) {
+            // Create an Order object and populate its fields
+            int id = cursor.getInt(cursor.getColumnIndex(KEY_ORDER_ID));
+            String userEmail = cursor.getString(cursor.getColumnIndex(KEY_USER_EMAIL));
+            String status = cursor.getString(cursor.getColumnIndex(COLUMN_ORDER_STATUS));
+            String totalAmount = cursor.getString(cursor.getColumnIndex(COLUMN_TOTAL_AMOUNT));
+            String date = cursor.getString(cursor.getColumnIndex(COLUMN_DATE));
+            boolean completed = cursor.getInt(cursor.getColumnIndex(COLUMN_COMPLETED)) > 0;
+
+            order = new Order(id, userEmail, status, totalAmount, date, completed);
+        }
+
+        cursor.close();
+        db.close();
+        return order;
+    }
+
+
 
 
 

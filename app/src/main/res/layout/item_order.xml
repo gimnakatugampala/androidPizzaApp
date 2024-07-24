@@ -64,5 +64,12 @@
             android:textSize="16sp"
             android:textAllCaps="false"
             android:visibility="gone" />
+
+
+        <Button
+            android:id="@+id/buttonAddToFavorites"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add to Favorites" />
     </LinearLayout>
 </LinearLayout>

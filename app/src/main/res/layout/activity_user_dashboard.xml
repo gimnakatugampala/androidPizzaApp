@@ -396,6 +396,32 @@
                     android:textSize="21sp" />
             </com.google.android.material.card.MaterialCardView>
 
+<!--            favorites-->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+
+                android:backgroundTint="@android:color/white">
+
+                <TextView
+                    android:id="@+id/nav_item_120"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:drawableLeft="@drawable/baseline_bookmark_24"
+                    android:drawablePadding="16dp"
+                    android:focusable="true"
+                    android:gravity="start|center_vertical"
+                    android:padding="16dp"
+
+                    android:textStyle="bold"
+                    android:onClick="onClickGetFavs"
+                    android:text="Favorites"
+                    android:textSize="21sp" />
+            </com.google.android.material.card.MaterialCardView>
+
             <!-- Logout -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
