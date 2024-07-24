@@ -43,6 +43,12 @@ public class EditMenuItemActivity extends AppCompatActivity {
     private MenuItem menuItem;
     private Uri imageUri;
 
+    public interface OnMenuItemUpdatedListener {
+        void onMenuItemUpdated();
+    }
+
+    private OnMenuItemUpdatedListener updateListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +97,11 @@ public class EditMenuItemActivity extends AppCompatActivity {
         // Set up button click listeners
         buttonChooseImage.setOnClickListener(v -> openImageChooser());
         buttonSubmit.setOnClickListener(v -> updateMenuItem());
+
+        // Set up the listener from the calling activity
+        if (getIntent().hasExtra("UPDATE_LISTENER")) {
+            updateListener = (OnMenuItemUpdatedListener) getIntent().getSerializableExtra("UPDATE_LISTENER");
+        }
     }
 
     private void populateFields(MenuItem menuItem) {
@@ -172,6 +183,9 @@ public class EditMenuItemActivity extends AppCompatActivity {
         boolean success = menuItemRepository.updateMenuItem(menuItem);
         if (success) {
             Toast.makeText(this, "Menu item updated successfully", Toast.LENGTH_SHORT).show();
+            if (updateListener != null) {
+                updateListener.onMenuItemUpdated();
+            }
             finish();
         } else {
             Toast.makeText(this, "Failed to update menu item", Toast.LENGTH_SHORT).show();
