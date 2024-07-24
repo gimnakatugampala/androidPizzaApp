@@ -100,9 +100,9 @@ public class EditMenuItemActivity extends AppCompatActivity {
         spinnerCategory.setSelection(categoryAdapter.getPosition(menuItem.getCategory()));
 
         // Set toppings
-        checkBoxTopping1.setChecked(menuItem.getToppings().contains("Topping 1"));
-        checkBoxTopping2.setChecked(menuItem.getToppings().contains("Topping 2"));
-        checkBoxTopping3.setChecked(menuItem.getToppings().contains("Topping 3"));
+        checkBoxTopping1.setChecked(menuItem.getToppings().contains("Mushrooms"));
+        checkBoxTopping2.setChecked(menuItem.getToppings().contains("Olives"));
+        checkBoxTopping3.setChecked(menuItem.getToppings().contains("Extra Cheese"));
 
         // Set image URI
         if (menuItem.getImageUri() != null) {
@@ -151,13 +151,13 @@ public class EditMenuItemActivity extends AppCompatActivity {
         // Set toppings
         StringBuilder toppings = new StringBuilder();
         if (checkBoxTopping1.isChecked()) {
-            toppings.append("Topping 1,");
+            toppings.append("Mushrooms,");
         }
         if (checkBoxTopping2.isChecked()) {
-            toppings.append("Topping 2,");
+            toppings.append("Olives,");
         }
         if (checkBoxTopping3.isChecked()) {
-            toppings.append("Topping 3,");
+            toppings.append("Extra Cheese,");
         }
         if (toppings.length() > 0) {
             toppings.setLength(toppings.length() - 1); // Remove the trailing comma
