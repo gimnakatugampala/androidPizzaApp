@@ -7,13 +7,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.pizzaorderingapp.Model.Order;
 import com.example.pizzaorderingapp.R;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,6 +38,13 @@ public class AdminDeliveryOrderAdapter extends RecyclerView.Adapter<AdminDeliver
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Order order = orders.get(position);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onOrderItemClick(order.getId());
+            }
+        });
+
         holder.bind(order);
     }
 
@@ -52,6 +56,7 @@ public class AdminDeliveryOrderAdapter extends RecyclerView.Adapter<AdminDeliver
     public interface OrderActionListener {
         void onCompleteClick(int orderId);
         void onCancelClick(int orderId);
+        void onOrderItemClick(int orderId);
     }
 
     class OrderViewHolder extends RecyclerView.ViewHolder {
